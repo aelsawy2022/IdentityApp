@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using static IdentityApplication.Models.Enums;
 
 namespace IdentityApplication
 {
@@ -36,7 +37,7 @@ namespace IdentityApplication
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("RequireSuperAdmin",
-                     policy => policy.RequireRole("Super Admin"));
+                     policy => policy.RequireRole(SystemRoles.Super_Admin.ToString().Replace("_", " ")));
             });
 
             services.AddControllersWithViews();
