@@ -1,7 +1,9 @@
 ﻿using IdentityApplication.Data.Repositories.AddressRepo;
+using IdentityApplication.Data.Repositories.ClassRepo;
 using IdentityApplication.Data.Repositories.GradeRepo;
 using IdentityApplication.Data.Repositories.ManagementRepo;
 using IdentityApplication.Data.Repositories.SchoolRepo;
+using IdentityApplication.Data.Repositories.UserTypeRepo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,13 +18,17 @@ namespace IdentityApplication.Data.UnitOfWorks
         private IAddressRepository _addressRepository;
         private IManagementRepository _managementRepository;
         private IGradeRepository _gradeRepository;
+        private IClassRepository _classRepository;
+        private IUserTypeRepository _userTypeRepository;
 
         public UnitOfWork(
             ApplicationDbContext context,
             ISchoolRepository schoolRepository,
             IAddressRepository addressRepository,
             IManagementRepository managementRepository,
-            IGradeRepository gradeRepository
+            IGradeRepository gradeRepository,
+            IClassRepository classRepository,
+            IUserTypeRepository userTypeRepository
             )
         {
             _context = context;
@@ -30,6 +36,8 @@ namespace IdentityApplication.Data.UnitOfWorks
             _addressRepository = addressRepository;
             _managementRepository = managementRepository;
             _gradeRepository = gradeRepository;
+            _classRepository = classRepository;
+            _userTypeRepository = userTypeRepository;
         }
 
         public ISchoolRepository SchoolRepository
@@ -61,6 +69,22 @@ namespace IdentityApplication.Data.UnitOfWorks
             get
             {
                 return _gradeRepository;
+            }
+        }
+
+        public IClassRepository ClassRepository
+        {
+            get
+            {
+                return _classRepository;
+            }
+        }
+
+        public IUserTypeRepository UserTypeRepository
+        {
+            get
+            {
+                return _userTypeRepository;
             }
         }
 

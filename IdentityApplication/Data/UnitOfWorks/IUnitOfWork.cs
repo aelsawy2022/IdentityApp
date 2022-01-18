@@ -1,7 +1,9 @@
 ﻿using IdentityApplication.Data.Repositories.AddressRepo;
+using IdentityApplication.Data.Repositories.ClassRepo;
 using IdentityApplication.Data.Repositories.GradeRepo;
 using IdentityApplication.Data.Repositories.ManagementRepo;
 using IdentityApplication.Data.Repositories.SchoolRepo;
+using IdentityApplication.Data.Repositories.UserTypeRepo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +17,8 @@ namespace IdentityApplication.Data.UnitOfWorks
         IAddressRepository AddressRepository { get; }
         IManagementRepository ManagementRepository { get; }
         IGradeRepository GradeRepository { get; }
+        IClassRepository ClassRepository { get; }
+        IUserTypeRepository UserTypeRepository { get; }
 
 
         void Save();
