@@ -1,0 +1,46 @@
+﻿@model IdentityApplication.Models.ViewModels.ManagementViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.Error))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @ViewBag.Error
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
+<div class="text-center">
+    <h1 class="display-4">Managements</h1>
+    <p>You can manage managements from this screen.</p>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        &nbsp;
+    </div>
+</div>
+
+<a asp-action="Create">Create</a>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <td>Id</td>
+            <td>Name</td>
+            <td>Creation Date</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var manage in Model.Managements)
+        {
+            <tr>
+                <td>@manage.Id</td>
+                <td>@manage.Name</td>
+                <td>@manage.CreationDate.ToString("MM/dd/yyyy")</td>
+            </tr>
+
+        }
+    </tbody>
+</table> 

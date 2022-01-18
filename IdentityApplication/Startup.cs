@@ -1,5 +1,6 @@
 using IdentityApplication.Data;
 using IdentityApplication.Data.Entities;
+using IdentityApplication.ExtensionMethods;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -31,6 +32,9 @@ namespace IdentityApplication
                  .AddDefaultUI()
                  .AddEntityFrameworkStores<ApplicationDbContext>()
                  .AddDefaultTokenProviders();
+
+            // extension method to register services
+            services.Register();
 
             services.AddAutoMapper(typeof(Startup));
 

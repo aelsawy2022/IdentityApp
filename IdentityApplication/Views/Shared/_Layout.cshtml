@@ -34,12 +34,6 @@
                         </li>
                         @if (SignInManager.IsSignedIn(User))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="List">Users</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">Roles</a>
-                            </li>
                         }
 
                     </ul>
@@ -48,9 +42,25 @@
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <div class="row">
+                <div class="col-md-3">
+                    <partial name="_ManageAdminNav" />
+                </div>
+                <div class="col-md-9">
+                    <main role="main" class="pb-3">
+                        @RenderBody()
+                    </main>
+                </div>
+            </div>
+        }
+        else
+        {
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        }
     </div>
 
     <footer class="border-top footer text-muted">

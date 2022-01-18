@@ -7,6 +7,7 @@ namespace IdentityApplication.Data.Entities
 {
     public class School : BaseEntity
     {
+        public string Name { get; set; }
         public Address Address { get; set; }
         public Management Management { get; set; }
         public ICollection<Grade> Grades { get; set; }

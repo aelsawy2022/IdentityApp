@@ -7,6 +7,7 @@ namespace IdentityApplication.Data.Entities
 {
     public class Governorate : BaseEntity
     {
+        public string Name { get; set; }
         public ICollection<Management> Managements { get; set; }
         public ICollection<User> Users { get; set; }
     }
