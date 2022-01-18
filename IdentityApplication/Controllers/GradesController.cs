@@ -76,5 +76,27 @@ namespace IdentityApplication.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> Delete(Guid gradeId)
+        {
+            try
+            {
+                Grade grade = await _unitOfWork.GradeRepository.GetByIDAsync(gradeId);
+                if (grade == null)
+                {
+                    ViewBag.Error = "Not Found";
+                    return View("Index");
+                }
+
+                await _unitOfWork.GradeRepository.DeleteAsync(grade);
+                await _unitOfWork.SaveAsync();
+            }
+            catch (Exception ex)
+            {
+                while (ex.InnerException != null) ex = ex.InnerException;
+                ViewBag.Error = ex.Message.ToString();
+            }
+            return RedirectToAction("Index");
+        }
     }
 }

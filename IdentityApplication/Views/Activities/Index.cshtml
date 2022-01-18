@@ -44,8 +44,11 @@
                 </div>
             </td>
             <td>
-                <a class="btn btn-info" asp-action="Edit" asp-controller="Activities" 
+                <a class="btn btn-info" asp-action="Edit" asp-controller="Activities"
                    asp-route-activityId="@activity.Id">Edit</a>
+
+                <a class="btn btn-danger" asp-action="Delete" asp-controller="Activities"
+                   asp-route-activityId="@activity.Id" onclick="return confirm('Are you sure you want to delete @activity.Name?')">Delete</a>
             </td>
         </tr>
 

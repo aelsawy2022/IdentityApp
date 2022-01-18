@@ -92,5 +92,27 @@ namespace IdentityApplication.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> Delete(Guid userTypeId)
+        {
+            try
+            {
+                UserType userType = await _unitOfWork.UserTypeRepository.GetByIDAsync(userTypeId);
+                if (userType == null)
+                {
+                    ViewBag.Error = "Not Found";
+                    return View("Index");
+                }
+
+                await _unitOfWork.UserTypeRepository.DeleteAsync(userType);
+                await _unitOfWork.SaveAsync();
+            }
+            catch (Exception ex)
+            {
+                while (ex.InnerException != null) ex = ex.InnerException;
+                ViewBag.Error = ex.Message.ToString();
+            }
+            return RedirectToAction("Index");
+        }
     }
 }

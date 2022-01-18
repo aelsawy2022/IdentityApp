@@ -66,5 +66,27 @@ namespace IdentityApplication.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> Delete(Guid governorateId)
+        {
+            try
+            {
+                Governorate governorate = await _governorateRepository.GetByIDAsync(governorateId);
+                if (governorate == null)
+                {
+                    ViewBag.Error = "Not Found";
+                    return View("Index");
+                }
+
+                await _governorateRepository.DeleteAsync(governorate);
+                await _governorateRepository.SaveAsync();
+            }
+            catch (Exception ex)
+            {
+                while (ex.InnerException != null) ex = ex.InnerException;
+                ViewBag.Error = ex.Message.ToString();
+            }
+            return RedirectToAction("Index");
+        }
     }
 }

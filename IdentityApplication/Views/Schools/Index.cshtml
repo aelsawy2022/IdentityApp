@@ -47,6 +47,10 @@
             <td>
                 <a class="btn btn-info" asp-action="Edit" asp-controller="Schools"
                    asp-route-schoolId="@school.Id">Edit</a>
+
+                <a class="btn btn-danger" asp-action="Delete" asp-controller="Schools"
+                   asp-route-schoolId="@school.Id"
+                   onclick="return confirm('Are you sure you want to delete @school.Name?')">Delete</a>
             </td>
         </tr>
 

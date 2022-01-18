@@ -103,5 +103,27 @@ namespace IdentityApplication.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> Delete(Guid activityId)
+        {
+            try
+            {
+                Activity activity = await _unitOfWork.ActivityRepository.GetByIDAsync(activityId);
+                if (activity == null)
+                {
+                    ViewBag.Error = "Not Found";
+                    return View("Index");
+                }
+
+                await _unitOfWork.ActivityRepository.DeleteAsync(activity);
+                await _unitOfWork.SaveAsync();
+            }
+            catch (Exception ex)
+            {
+                while (ex.InnerException != null) ex = ex.InnerException;
+                ViewBag.Error = ex.Message.ToString();
+            }
+            return RedirectToAction("Index");
+        }
     }
 }

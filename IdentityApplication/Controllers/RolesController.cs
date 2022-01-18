@@ -56,5 +56,26 @@ namespace IdentityApplication.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> Delete(string roleId)
+        {
+            try
+            {
+                Role role = await _roleManager.FindByIdAsync(roleId);
+                if (role == null)
+                {
+                    ViewBag.Error = "Not Found";
+                    return View("Index");
+                }
+
+                await _roleManager.DeleteAsync(role);
+            }
+            catch (Exception ex)
+            {
+                while (ex.InnerException != null) ex = ex.InnerException;
+                ViewBag.Error = ex.Message.ToString();
+            }
+            return RedirectToAction("Index");
+        }
     }
 }

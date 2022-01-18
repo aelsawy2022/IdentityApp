@@ -86,5 +86,27 @@ namespace IdentityApplication.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> Delete(Guid schoolId)
+        {
+            try
+            {
+                School school = await _unitOfWork.SchoolRepository.GetByIDAsync(schoolId);
+                if (school == null)
+                {
+                    ViewBag.Error = "Not Found";
+                    return View("Index");
+                }
+
+                await _unitOfWork.SchoolRepository.DeleteAsync(school);
+                await _unitOfWork.SaveAsync();
+            }
+            catch (Exception ex)
+            {
+                while (ex.InnerException != null) ex = ex.InnerException;
+                ViewBag.Error = ex.Message.ToString();
+            }
+            return RedirectToAction("Index");
+        }
     }
 }
