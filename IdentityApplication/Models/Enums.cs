@@ -9,7 +9,7 @@ namespace IdentityApplication.Models
     {
         public enum SystemRoles
         {
-            Super_Admin,
+            SuperAdmin,
             Admin
         }
     }

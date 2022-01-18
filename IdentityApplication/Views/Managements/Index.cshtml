@@ -31,17 +31,22 @@
             <td>Name</td>
             <td>Governorate</td>
             <td>Creation Date</td>
+            <td>Actions</td>
         </tr>
     </thead>
     <tbody>
         @foreach (var manage in Model.Managements)
         {
-            <tr>
-                <td>@manage.Id</td>
-                <td>@manage.Name</td>
-                <td>@manage.Governorate?.Name</td>
-                <td>@manage.CreationDate.ToString("MM/dd/yyyy")</td>
-            </tr>
+        <tr>
+            <td>@manage.Id</td>
+            <td>@manage.Name</td>
+            <td>@manage.Governorate?.Name</td>
+            <td>@manage.CreationDate.ToString("MM/dd/yyyy")</td>
+            <td>
+                <a class="btn btn-info" asp-action="Edit" asp-controller="Managements"
+                   asp-route-managementId="@manage.Id">Edit</a>
+            </td>
+        </tr>
 
         }
     </tbody>

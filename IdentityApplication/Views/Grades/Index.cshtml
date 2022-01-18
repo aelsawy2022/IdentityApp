@@ -32,18 +32,23 @@
             <td>Desc</td>
             <td>School</td>
             <td>Creation Date</td>
+            <td>Actions</td>
         </tr>
     </thead>
     <tbody>
         @foreach (var grade in Model)
         {
-            <tr>
-                <td>@grade.Id</td>
-                <td>@grade.Name</td>
-                <td>@grade.Desc</td>
-                <td>@grade.School?.Name</td>
-                <td>@grade.CreationDate.ToString("MM/dd/yyyy")</td>
-            </tr>
+        <tr>
+            <td>@grade.Id</td>
+            <td>@grade.Name</td>
+            <td>@grade.Desc</td>
+            <td>@grade.School?.Name</td>
+            <td>@grade.CreationDate.ToString("MM/dd/yyyy")</td>
+            <td>
+                <a class="btn btn-info" asp-action="Edit" asp-controller="Grades"
+                   asp-route-gradeId="@grade.Id">Edit</a>
+            </td>
+        </tr>
 
         }
     </tbody>

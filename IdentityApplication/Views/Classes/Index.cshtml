@@ -33,19 +33,24 @@
             <td>Grade</td>
             <td>Creation Date</td>
             <td>Active</td>
+            <td>Actions</td>
         </tr>
     </thead>
     <tbody>
         @foreach (var _class in Model)
         {
-            <tr>
-                <td>@_class.Id</td>
-                <td>@_class.Name</td>
-                <td>@_class.Position</td>
-                <td>@_class.Grade?.Name</td>
-                <td>@_class.CreationDate.ToString("MM/dd/yyyy")</td>
-                <td>@_class.Active</td>
-            </tr>
+        <tr>
+            <td>@_class.Id</td>
+            <td>@_class.Name</td>
+            <td>@_class.Position</td>
+            <td>@_class.Grade?.Name</td>
+            <td>@_class.CreationDate.ToString("MM/dd/yyyy")</td>
+            <td>@_class.Active</td>
+            <td>
+                <a class="btn btn-info" asp-action="Edit" asp-controller="Classes"
+                   asp-route-classId="@_class.Id">Edit</a>
+            </td>
+        </tr>
 
         }
     </tbody>

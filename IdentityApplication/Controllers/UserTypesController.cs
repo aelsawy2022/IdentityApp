@@ -71,5 +71,26 @@ namespace IdentityApplication.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> Edit(Guid userTypeId)
+        {
+            return View(await _unitOfWork.UserTypeRepository.GetByIDAsync(userTypeId));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(UserType userType)
+        {
+            try
+            {
+                await _unitOfWork.UserTypeRepository.UpdateAsync(userType);
+                await _unitOfWork.SaveAsync();
+            }
+            catch (Exception ex)
+            {
+                while (ex.InnerException != null) ex = ex.InnerException;
+                ViewBag.Error = ex.Message.ToString();
+            }
+            return RedirectToAction("Index");
+        }
     }
 }

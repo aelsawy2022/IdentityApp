@@ -1,0 +1,57 @@
+﻿@model IdentityApplication.Models.ViewModels.ClassViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.Error))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @ViewBag.Error
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<h1>Edit Class</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                @Html.HiddenFor(a => a.Class.CreationDate, Model.Class.CreationDate)
+                @Html.HiddenFor(a => a.Class.Id, Model.Class.Id)
+                <label asp-for="Class.Id" class="control-label"></label>
+                <input value="@Model.Class.Id" class="form-control" disabled />
+            </div>
+            <div class="form-group">
+                <label asp-for="Class.Name" class="control-label"></label>
+                <input asp-for="Class.Name" class="form-control" />
+                <span asp-validation-for="Class.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Class.Position" class="control-label"></label>
+                <input asp-for="Class.Position" class="form-control" />
+                <span asp-validation-for="Class.Position" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <select id="drpEmpList" class="form-control"
+                        asp-for="Class.Grade.Id"
+                        asp-items="@(new SelectList(Model.Grades, "Id", "Name"))">
+                    <option value="">--Select--</option>
+                </select>
+                <input type="hidden" asp-for="Class.Grade.Id" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Edit" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}  

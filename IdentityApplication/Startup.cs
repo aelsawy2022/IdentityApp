@@ -41,7 +41,7 @@ namespace IdentityApplication
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("RequireSuperAdmin",
-                     policy => policy.RequireRole(SystemRoles.Super_Admin.ToString().Replace("_", " ")));
+                     policy => policy.RequireRole(SystemRoles.SuperAdmin.ToString()));
             });
 
             services.AddControllersWithViews();

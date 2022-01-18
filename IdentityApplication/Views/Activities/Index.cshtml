@@ -23,26 +23,31 @@
             <td>School</td>
             <td>Creation Date</td>
             <td>Active</td>
+            <td>Actions</td>
         </tr>
     </thead>
     <tbody>
         @foreach (var activity in Model)
         {
-            <tr>
-                <td>@activity.Id</td>
-                <td>@activity.Name</td>
-                <td>@activity.School?.Name</td>
-                <td>@activity.CreationDate.ToString("MM/dd/yyyy")</td>
-                <td>
-                    @{
-                        var url = Url.Action("ActivateActivity", "Activities", new { activityId = activity.Id }, null);
-                    }
-                    <div class="form-check form-switch">
-                        @Html.CheckBoxFor(m => activity.Active, new { @class = "form-check-input", @id = "flexSwitchCheckDefault", onclick = "window.location = '" + url + "'" })
-                        <label class="form-check-label" for="flexSwitchCheckDefault"></label>
-                    </div>
-                </td>
-            </tr>
+        <tr>
+            <td>@activity.Id</td>
+            <td>@activity.Name</td>
+            <td>@activity.School?.Name</td>
+            <td>@activity.CreationDate.ToString("MM/dd/yyyy")</td>
+            <td>
+                @{
+                    var url = Url.Action("ActivateActivity", "Activities", new { activityId = activity.Id }, null);
+                }
+                <div class="form-check form-switch">
+                    @Html.CheckBoxFor(m => activity.Active, new { @class = "form-check-input", @id = "flexSwitchCheckDefault", onclick = "window.location = '" + url + "'" })
+                    <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+                </div>
+            </td>
+            <td>
+                <a class="btn btn-info" asp-action="Edit" asp-controller="Activities" 
+                   asp-route-activityId="@activity.Id">Edit</a>
+            </td>
+        </tr>
 
         }
     </tbody>

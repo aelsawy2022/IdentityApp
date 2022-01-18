@@ -45,5 +45,26 @@ namespace IdentityApplication.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> Edit(Guid governorateId)
+        {
+            return View(await _governorateRepository.GetByIDAsync(governorateId));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Governorate governorate)
+        {
+            try
+            {
+                await _governorateRepository.UpdateAsync(governorate);
+                await _governorateRepository.SaveAsync();
+            }
+            catch (Exception ex)
+            {
+                while (ex.InnerException != null) ex = ex.InnerException;
+                ViewBag.Error = ex.Message.ToString();
+            }
+            return RedirectToAction("Index");
+        }
     }
 }

@@ -58,5 +58,31 @@ namespace IdentityApplication.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> Edit(Guid managementId)
+        {
+            ManagementViewModel managementViewModel = new ManagementViewModel();
+            managementViewModel.Management = await _managementRepository.GetByIDAsync(managementId);
+            managementViewModel.Governorates = await _governorateRepository.GetAllAsync() as List<Governorate>;
+            return View(managementViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Management management)
+        {
+            try
+            {
+                management.Governorate = await _governorateRepository.GetByIDAsync(management.Governorate.Id);
+
+                await _managementRepository.UpdateAsync(management);
+                await _managementRepository.SaveAsync();
+            }
+            catch (Exception ex)
+            {
+                while (ex.InnerException != null) ex = ex.InnerException;
+                ViewBag.Error = ex.Message.ToString();
+            }
+            return RedirectToAction("Index");
+        }
     }
 }

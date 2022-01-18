@@ -22,25 +22,30 @@
             <td>Name</td>
             <td>Creation Date</td>
             <td>Active</td>
+            <td>Actions</td>
         </tr>
     </thead>
     <tbody>
         @foreach (var type in Model)
         {
-            <tr>
-                <td>@type.Id</td>
-                <td>@type.Name</td>
-                <td>@type.CreationDate.ToString("MM/dd/yyyy")</td>
-                <td>
-                    @{
-                        var url = Url.Action("ActivateType", "UserTypes", new { typeId = type.Id }, null);
-                    }
-                    <div class="form-check form-switch">
-                        @Html.CheckBoxFor(m => type.Active, new { @class = "form-check-input", @id = "flexSwitchCheckDefault", onclick = "window.location = '" + url + "'" })
-                        <label class="form-check-label" for="flexSwitchCheckDefault"></label>
-                    </div>
-                </td>
-            </tr>
+        <tr>
+            <td>@type.Id</td>
+            <td>@type.Name</td>
+            <td>@type.CreationDate.ToString("MM/dd/yyyy")</td>
+            <td>
+                @{
+                    var url = Url.Action("ActivateType", "UserTypes", new { typeId = type.Id }, null);
+                }
+                <div class="form-check form-switch">
+                    @Html.CheckBoxFor(m => type.Active, new { @class = "form-check-input", @id = "flexSwitchCheckDefault", onclick = "window.location = '" + url + "'" })
+                    <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+                </div>
+            </td>
+            <td>
+                <a class="btn btn-info" asp-action="Edit" asp-controller="UserTypes"
+                   asp-route-userTypeId="@type.Id">Edit</a>
+            </td>
+        </tr>
 
         }
     </tbody>

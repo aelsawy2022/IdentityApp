@@ -50,5 +50,31 @@ namespace IdentityApplication.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> Edit(Guid classId)
+        {
+            ClassViewModel classViewModel = new ClassViewModel();
+            classViewModel.Class = await _unitOfWork.ClassRepository.GetByIDAsync(classId);
+            classViewModel.Grades = await _unitOfWork.GradeRepository.GetAllAsync() as List<Grade>;
+            return View(classViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Class Class)
+        {
+            try
+            {
+                Class.Grade = await _unitOfWork.GradeRepository.GetByIDAsync(Class.Grade.Id);
+
+                await _unitOfWork.ClassRepository.UpdateAsync(Class);
+                await _unitOfWork.SaveAsync();
+            }
+            catch (Exception ex)
+            {
+                while (ex.InnerException != null) ex = ex.InnerException;
+                ViewBag.Error = ex.Message.ToString();
+            }
+            return RedirectToAction("Index");
+        }
     }
 }

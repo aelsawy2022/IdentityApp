@@ -21,16 +21,21 @@
             <td>Id</td>
             <td>Name</td>
             <td>Creation Date</td>
+            <td>Actions</td>
         </tr>
     </thead>
     <tbody>
-        @foreach (var role in Model)
+        @foreach (var governorate in Model)
         {
-            <tr>
-                <td>@role.Id</td>
-                <td>@role.Name</td>
-                <td>@role.CreationDate.ToString("MM/dd/yyyy")</td>
-            </tr>
+        <tr>
+            <td>@governorate.Id</td>
+            <td>@governorate.Name</td>
+            <td>@governorate.CreationDate.ToString("MM/dd/yyyy")</td>
+            <td>
+                <a class="btn btn-info" asp-action="Edit" asp-controller="Governorate"
+                   asp-route-governorateId="@governorate.Id">Edit</a>
+            </td>
+        </tr>
 
         }
     </tbody>
