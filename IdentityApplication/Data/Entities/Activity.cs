@@ -9,6 +9,7 @@ namespace IdentityApplication.Data.Entities
     {
         public string Name { get; set; }
         public string Desc { get; set; }
+        public bool Active { get; set; }
         public School School { get; set; }
         public ICollection<Role> Roles { get; set; }
         //public ICollection<ActivityClass> Classes { get; set; }

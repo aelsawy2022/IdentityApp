@@ -1,4 +1,5 @@
-﻿using IdentityApplication.Data.Repositories.AddressRepo;
+﻿using IdentityApplication.Data.Repositories.ActivityRepo;
+using IdentityApplication.Data.Repositories.AddressRepo;
 using IdentityApplication.Data.Repositories.ClassRepo;
 using IdentityApplication.Data.Repositories.GradeRepo;
 using IdentityApplication.Data.Repositories.ManagementRepo;
@@ -19,6 +20,7 @@ namespace IdentityApplication.Data.UnitOfWorks
         IGradeRepository GradeRepository { get; }
         IClassRepository ClassRepository { get; }
         IUserTypeRepository UserTypeRepository { get; }
+        IActivityRepository ActivityRepository { get; }
 
 
         void Save();

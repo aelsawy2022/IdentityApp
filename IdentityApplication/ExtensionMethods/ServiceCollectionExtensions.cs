@@ -1,4 +1,5 @@
-﻿using IdentityApplication.Data.Repositories.AddressRepo;
+﻿using IdentityApplication.Data.Repositories.ActivityRepo;
+using IdentityApplication.Data.Repositories.AddressRepo;
 using IdentityApplication.Data.Repositories.ClassRepo;
 using IdentityApplication.Data.Repositories.GenericRepo;
 using IdentityApplication.Data.Repositories.GovernorateRepo;
@@ -23,6 +24,7 @@ namespace IdentityApplication.ExtensionMethods
             services.AddScoped(typeof(IGradeRepository), typeof(GradeRepository));
             services.AddScoped(typeof(IClassRepository), typeof(ClassRepository));
             services.AddScoped(typeof(IUserTypeRepository), typeof(UserTypeRepository));
+            services.AddScoped(typeof(IActivityRepository), typeof(ActivityRepository));
 
 
             services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));

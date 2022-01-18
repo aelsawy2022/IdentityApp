@@ -1,4 +1,5 @@
-﻿using IdentityApplication.Data.Repositories.AddressRepo;
+﻿using IdentityApplication.Data.Repositories.ActivityRepo;
+using IdentityApplication.Data.Repositories.AddressRepo;
 using IdentityApplication.Data.Repositories.ClassRepo;
 using IdentityApplication.Data.Repositories.GradeRepo;
 using IdentityApplication.Data.Repositories.ManagementRepo;
@@ -20,6 +21,7 @@ namespace IdentityApplication.Data.UnitOfWorks
         private IGradeRepository _gradeRepository;
         private IClassRepository _classRepository;
         private IUserTypeRepository _userTypeRepository;
+        private IActivityRepository _activityRepository;
 
         public UnitOfWork(
             ApplicationDbContext context,
@@ -28,7 +30,8 @@ namespace IdentityApplication.Data.UnitOfWorks
             IManagementRepository managementRepository,
             IGradeRepository gradeRepository,
             IClassRepository classRepository,
-            IUserTypeRepository userTypeRepository
+            IUserTypeRepository userTypeRepository,
+            IActivityRepository activityRepository
             )
         {
             _context = context;
@@ -38,6 +41,7 @@ namespace IdentityApplication.Data.UnitOfWorks
             _gradeRepository = gradeRepository;
             _classRepository = classRepository;
             _userTypeRepository = userTypeRepository;
+            _activityRepository = activityRepository;
         }
 
         public ISchoolRepository SchoolRepository
@@ -85,6 +89,14 @@ namespace IdentityApplication.Data.UnitOfWorks
             get
             {
                 return _userTypeRepository;
+            }
+        }
+
+        public IActivityRepository ActivityRepository
+        {
+            get
+            {
+                return _activityRepository;
             }
         }
 
