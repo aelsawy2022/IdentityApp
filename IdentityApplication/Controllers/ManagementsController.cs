@@ -27,7 +27,7 @@ namespace IdentityApplication.Controllers
         public async Task<IActionResult> Index()
         {
             ManagementViewModel managementViewModel = new ManagementViewModel();
-            managementViewModel.Managements = await _managementRepository.GetAllAsync() as List<Management>;
+            managementViewModel.Managements = await _managementRepository.GetAllAsync(o => o.OrderBy(m => m.CreationDate), "Governorate") as List<Management>;
             return View(managementViewModel);
         }
 

@@ -24,7 +24,7 @@ namespace IdentityApplication.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var schools = await _unitOfWork.SchoolRepository.GetAllAsync(o => o.OrderBy(s => s.Name), "Address") as List<School>;
+            var schools = await _unitOfWork.SchoolRepository.GetAllAsync(o => o.OrderBy(s => s.Name), "Address,Management") as List<School>;
             return View(schools);
         }
 

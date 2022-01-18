@@ -1,4 +1,4 @@
-﻿@model IEnumerable<IdentityApplication.Data.Entities.School>
+﻿@model IEnumerable<IdentityApplication.Data.Entities.Grade>
 @{
     ViewData["Title"] = "Index";
 }
@@ -13,8 +13,8 @@
 
 
 <div class="text-center">
-    <h1 class="display-4">Schools</h1>
-    <p>You can manage schools from this screen.</p>
+    <h1 class="display-4">Grades</h1>
+    <p>You can manage grades from this screen.</p>
 </div>
 
 <div class="row">
@@ -29,20 +29,20 @@
         <tr>
             <td>Id</td>
             <td>Name</td>
-            <td>Location</td>
-            <td>Management</td>
+            <td>Desc</td>
+            <td>School</td>
             <td>Creation Date</td>
         </tr>
     </thead>
     <tbody>
-        @foreach (var school in Model)
+        @foreach (var grade in Model)
         {
             <tr>
-                <td>@school.Id</td>
-                <td>@school.Name</td>
-                <td>@school.Address?.Desc</td>
-                <td>@school.Management?.Name</td>
-                <td>@school.CreationDate.ToString("MM/dd/yyyy")</td>
+                <td>@grade.Id</td>
+                <td>@grade.Name</td>
+                <td>@grade.Desc</td>
+                <td>@grade.School?.Name</td>
+                <td>@grade.CreationDate.ToString("MM/dd/yyyy")</td>
             </tr>
 
         }
