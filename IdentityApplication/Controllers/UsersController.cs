@@ -65,7 +65,7 @@ namespace IdentityApplication.Controllers
             {
                 user.IsAdmin = _userManager.IsInRoleAsync(_mapper.Map<User>(user), SystemRoles.Admin.ToString()).Result;
                 user.IsSuperAdmin = _userManager.IsInRoleAsync(_mapper.Map<User>(user), SystemRoles.SuperAdmin.ToString()).Result;
-                if (user.Image != null) user.Image = Path.Combine(_environment.WebRootPath, "Upload", "Images", user.Image);
+                //if (user.Image != null) user.Image = Path.Combine(_environment.WebRootPath, "Upload", "Images", user.Image);
             }
             usersViewModel.Roles = _roleManager.Roles.ToList();
 
@@ -139,9 +139,8 @@ namespace IdentityApplication.Controllers
         public async Task<IActionResult> Edit(string userId)
         {
             UsersViewModel usersViewModel = new UsersViewModel();
-            usersViewModel.User = _mapper.Map<UsersModel>(
-                await _unitOfWork.UserRepository.GetOneAsync(
-                    u => u.Id == userId, "Governorate"));
+            usersViewModel.User = _mapper.Map<UsersModel>(await _unitOfWork.UserRepository.GetOneAsync(
+                                                                    u => u.Id == userId, "Governorate"));
 
             usersViewModel.Governorates = await _governorateRepository.GetAllAsync(o => o.OrderBy(g => g.Name)) as List<Governorate>;
             return View(usersViewModel);
@@ -152,26 +151,9 @@ namespace IdentityApplication.Controllers
         {
             try
             {
-                if (user.ImageFile == null)
-                {
-                    user.ImageFile = (IFormFile)Request.Form.Files;
-                }
-                if (!Directory.Exists(Path.Combine(_environment.WebRootPath, "Upload", "Images")))
-                {
-                    Directory.CreateDirectory(Path.Combine(_environment.WebRootPath, "Upload", "Images"));
-                }
-
-                string fileName = DateTime.Now.ToString("MM-dd-yyyy_hmmsstt") + "_" + user.ImageFile.FileName;
-
-                using (FileStream fileStream = System.IO.File.Create(Path.Combine(_environment.WebRootPath, "Upload", "Images", fileName)))
-                {
-                    await user.ImageFile.CopyToAsync(fileStream);
-                    fileStream.Flush();
-                }
-
                 User u = await _unitOfWork.UserRepository.GetByIDAsync(user.Id);
 
-                u.Image = user.ImageFile.FileName;
+                u.Image = await UploadImage(user.ImageFile);
                 u.Governorate = await _governorateRepository.GetByIDAsync(user.Governorate.Id);
                 u.Name = user.Name;
 
@@ -186,6 +168,27 @@ namespace IdentityApplication.Controllers
                 errorViewModel.ErrorMessage = ex.Message.ToString();
                 return View("Error", errorViewModel);
             }
+        }
+
+        private async Task<string> UploadImage(IFormFile image)
+        {
+            if (image == null)
+            {
+                image = (IFormFile)Request.Form.Files;
+            }
+            if (!Directory.Exists(Path.Combine(_environment.WebRootPath, "Upload", "Images")))
+            {
+                Directory.CreateDirectory(Path.Combine(_environment.WebRootPath, "Upload", "Images"));
+            }
+
+            string fileName = DateTime.Now.ToString("MM-dd-yyyy_hmmsstt") + "_" + image.FileName;
+
+            using (FileStream fileStream = System.IO.File.Create(Path.Combine(_environment.WebRootPath, "Upload", "Images", fileName)))
+            {
+                await image.CopyToAsync(fileStream);
+                fileStream.Flush();
+            }
+            return fileName;
         }
     }
 }
