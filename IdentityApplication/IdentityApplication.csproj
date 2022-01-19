@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <Folder Include="Models\Repositories\" />
+    <Folder Include="wwwroot\Upload\Images\" />
   </ItemGroup>
 
 </Project>

@@ -31,10 +31,9 @@
         {
         <tr>
             <td>
-                <img src="~/Upload/Images/@user.Image"
+                <img src="@Url.Content(user.Image)"
                      class="rounded-circle"
-                     height="40" width="40"
-                     asp-append-version="true" />
+                     height="40" width="40" />
                 @user.Name
             </td>
             <td>@user.UserName</td>
@@ -67,9 +66,9 @@
                 <a class="btn btn-info" asp-action="Edit" asp-controller="Users"
                    asp-route-userId="@user.Id">Edit</a>
 
-                <a class="btn btn-danger" asp-action="Delete" asp-controller="Users"
+                @*<a class="btn btn-danger" asp-action="Delete" asp-controller="Users"
                    asp-route-userId="@user.Id"
-                   onclick="return confirm('Are you sure you want to delete @user.Name?')">Delete</a>
+                   onclick="return confirm('Are you sure you want to delete @user.Name?')">Delete</a>*@
             </td>
         </tr>
 

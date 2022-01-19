@@ -65,6 +65,7 @@ namespace IdentityApplication.Controllers
             {
                 user.IsAdmin = _userManager.IsInRoleAsync(_mapper.Map<User>(user), SystemRoles.Admin.ToString()).Result;
                 user.IsSuperAdmin = _userManager.IsInRoleAsync(_mapper.Map<User>(user), SystemRoles.SuperAdmin.ToString()).Result;
+                if (user.Image != null) user.Image = Path.Combine(_environment.WebRootPath, "Upload", "Images", user.Image);
             }
             usersViewModel.Roles = _roleManager.Roles.ToList();
 
@@ -155,14 +156,14 @@ namespace IdentityApplication.Controllers
                 {
                     user.ImageFile = (IFormFile)Request.Form.Files;
                 }
-                if (!Directory.Exists(_environment.WebRootPath + "\\Upload\\Images\\"))
+                if (!Directory.Exists(Path.Combine(_environment.WebRootPath, "Upload", "Images")))
                 {
-                    Directory.CreateDirectory(_environment.WebRootPath + "\\Upload\\Images\\");
+                    Directory.CreateDirectory(Path.Combine(_environment.WebRootPath, "Upload", "Images"));
                 }
 
                 string fileName = DateTime.Now.ToString("MM-dd-yyyy_hmmsstt") + "_" + user.ImageFile.FileName;
 
-                using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\Upload\\Images\\" + fileName))
+                using (FileStream fileStream = System.IO.File.Create(Path.Combine(_environment.WebRootPath, "Upload", "Images", fileName)))
                 {
                     await user.ImageFile.CopyToAsync(fileStream);
                     fileStream.Flush();
