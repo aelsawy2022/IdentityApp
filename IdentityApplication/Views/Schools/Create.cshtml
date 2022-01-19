@@ -24,6 +24,7 @@
                 <span asp-validation-for="School.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="School.Management.Id" class="control-label">Management</label>
                 <select id="drpEmpList" class="form-control"
                         asp-for="School.Management.Id"
                         asp-items="@(new SelectList(Model.Managements, "Id", "Name"))">

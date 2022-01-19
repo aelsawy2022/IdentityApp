@@ -29,6 +29,7 @@
                 <span asp-validation-for="Activity.Desc" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Activity.School.Id" class="control-label">School</label>
                 <select id="drpEmpList" class="form-control"
                         asp-for="Activity.School.Id"
                         asp-items="@(new SelectList(Model.Schools, "Id", "Name"))">

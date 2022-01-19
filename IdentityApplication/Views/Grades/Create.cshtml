@@ -12,12 +12,13 @@
     </div>
 }
 
-<h1>Create Grade</h1>
+<h1>Create Grade for @Model.School.Name</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Grade.School.Id" value="@Model.School.Id"/>
             <div class="form-group">
                 <label asp-for="Grade.Name" class="control-label"></label>
                 <input asp-for="Grade.Name" class="form-control" />
@@ -28,14 +29,15 @@
                 <input asp-for="Grade.Desc" class="form-control" />
                 <span asp-validation-for="Grade.Desc" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <select id="drpEmpList" class="form-control"
-                        asp-for="Grade.School.Id"
-                        asp-items="@(new SelectList(Model.Schools, "Id", "Name"))">
-                    <option value="">--Select--</option>
-                </select>
-                <input type="hidden" asp-for="Grade.School.Id" />
-            </div>
+            @*<div class="form-group">
+            <label asp-for="Grade.School.Id" class="control-label">School</label>
+            <select id="drpEmpList" class="form-control"
+                    asp-for="Grade.School.Id"
+                    asp-items="@(new SelectList(Model.Schools, "Id", "Name"))">
+                <option value="">--Select--</option>
+            </select>
+            <input type="hidden" asp-for="Grade.School.Id" />
+        </div>*@
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -43,7 +45,7 @@
     </div>
 </div>
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" asp-route-schoolId="@Model.School.Id">Back to List</a>
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");

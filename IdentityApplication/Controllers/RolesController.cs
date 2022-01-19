@@ -1,4 +1,5 @@
 ﻿using IdentityApplication.Data.Entities;
+using IdentityApplication.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -48,13 +49,15 @@ namespace IdentityApplication.Controllers
             try
             {
                 await _roleManager.UpdateAsync(role);
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 while (ex.InnerException != null) ex = ex.InnerException;
-                ViewBag.Error = ex.Message.ToString();
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.ErrorMessage = ex.Message.ToString();
+                return View("Error", errorViewModel);
             }
-            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Delete(string roleId)
@@ -69,13 +72,15 @@ namespace IdentityApplication.Controllers
                 }
 
                 await _roleManager.DeleteAsync(role);
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 while (ex.InnerException != null) ex = ex.InnerException;
-                ViewBag.Error = ex.Message.ToString();
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.ErrorMessage = ex.Message.ToString();
+                return View("Error", errorViewModel);
             }
-            return RedirectToAction("Index");
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using IdentityApplication.Data.Entities;
 using IdentityApplication.Data.UnitOfWorks;
+using IdentityApplication.Models;
 using IdentityApplication.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -18,16 +19,21 @@ namespace IdentityApplication.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(Guid schoolId)
         {
-            return View(await _unitOfWork.GradeRepository.GetAllAsync(o => o.OrderBy(g => g.Name), "School") as List<Grade>);
+            if (schoolId == null || schoolId == Guid.Empty) return RedirectToAction("Index", "Schools");
+
+            GradeViewModel gradeViewModel = new GradeViewModel();
+            gradeViewModel.Grades = await _unitOfWork.GradeRepository.GetAsync(x => x.School.Id == schoolId, o => o.OrderBy(g => g.Name)) as List<Grade>;
+            gradeViewModel.School = await _unitOfWork.SchoolRepository.GetByIDAsync(schoolId);
+            return View(gradeViewModel);
         }
 
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(Guid schoolId)
         {
             GradeViewModel gradeViewModel = new GradeViewModel();
             gradeViewModel.Grade = new Grade();
-            gradeViewModel.Schools = await _unitOfWork.SchoolRepository.GetAllAsync() as List<School>;
+            gradeViewModel.School = await _unitOfWork.SchoolRepository.GetByIDAsync(schoolId);
             return View(gradeViewModel);
         }
 
@@ -42,20 +48,22 @@ namespace IdentityApplication.Controllers
 
                 await _unitOfWork.GradeRepository.AddAsync(grade);
                 await _unitOfWork.SaveAsync();
+                return RedirectToAction("Index", new { schoolId = grade.School.Id });
             }
             catch (Exception ex)
             {
                 while (ex.InnerException != null) ex = ex.InnerException;
-                ViewBag.Error = ex.Message.ToString();
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.ErrorMessage = ex.Message.ToString();
+                return View("Error", errorViewModel);
             }
-            return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Edit(Guid gradeId)
+        public async Task<IActionResult> Edit(Guid gradeId, Guid schoolId)
         {
             GradeViewModel gradeViewModel = new GradeViewModel();
             gradeViewModel.Grade = await _unitOfWork.GradeRepository.GetByIDAsync(gradeId);
-            gradeViewModel.Schools = await _unitOfWork.SchoolRepository.GetAllAsync() as List<School>;
+            gradeViewModel.School = await _unitOfWork.SchoolRepository.GetByIDAsync(schoolId);
             return View(gradeViewModel);
         }
 
@@ -68,35 +76,37 @@ namespace IdentityApplication.Controllers
 
                 await _unitOfWork.GradeRepository.UpdateAsync(grade);
                 await _unitOfWork.SaveAsync();
+                return RedirectToAction("Index", new { schoolId = grade.School.Id });
             }
             catch (Exception ex)
             {
                 while (ex.InnerException != null) ex = ex.InnerException;
-                ViewBag.Error = ex.Message.ToString();
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.ErrorMessage = ex.Message.ToString();
+                return View("Error", errorViewModel);
             }
-            return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Delete(Guid gradeId)
+        public async Task<IActionResult> Delete(Guid gradeId, Guid schoolId)
         {
             try
             {
                 Grade grade = await _unitOfWork.GradeRepository.GetByIDAsync(gradeId);
-                if (grade == null)
-                {
-                    ViewBag.Error = "Not Found";
-                    return View("Index");
-                }
+
+                if (grade == null)  ViewBag.Error = "Not Found";
 
                 await _unitOfWork.GradeRepository.DeleteAsync(grade);
                 await _unitOfWork.SaveAsync();
+
+                return View("Index", new { schoolId = schoolId });
             }
             catch (Exception ex)
             {
                 while (ex.InnerException != null) ex = ex.InnerException;
-                ViewBag.Error = ex.Message.ToString();
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.ErrorMessage = ex.Message.ToString();
+                return View("Error", errorViewModel);
             }
-            return RedirectToAction("Index");
         }
     }
 }

@@ -2,6 +2,7 @@
 using IdentityApplication.Data.Repositories.ManagementRepo;
 using IdentityApplication.Data.Repositories.SchoolRepo;
 using IdentityApplication.Data.UnitOfWorks;
+using IdentityApplication.Models;
 using IdentityApplication.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -51,13 +52,15 @@ namespace IdentityApplication.Controllers
                 await _unitOfWork.AddressRepository.AddAsync(school.Address);
                 await _unitOfWork.SchoolRepository.AddAsync(school);
                 await _unitOfWork.SaveAsync();
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 while (ex.InnerException != null) ex = ex.InnerException;
-                ViewBag.Error = ex.Message.ToString();
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.ErrorMessage = ex.Message.ToString();
+                return View("Error", errorViewModel);
             }
-            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Edit(Guid schoolId)
@@ -78,13 +81,15 @@ namespace IdentityApplication.Controllers
                 await _unitOfWork.AddressRepository.UpdateAsync(school.Address);
                 await _unitOfWork.SchoolRepository.UpdateAsync(school);
                 await _unitOfWork.SaveAsync();
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 while (ex.InnerException != null) ex = ex.InnerException;
-                ViewBag.Error = ex.Message.ToString();
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.ErrorMessage = ex.Message.ToString();
+                return View("Error", errorViewModel);
             }
-            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Delete(Guid schoolId)
@@ -100,13 +105,15 @@ namespace IdentityApplication.Controllers
 
                 await _unitOfWork.SchoolRepository.DeleteAsync(school);
                 await _unitOfWork.SaveAsync();
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 while (ex.InnerException != null) ex = ex.InnerException;
-                ViewBag.Error = ex.Message.ToString();
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.ErrorMessage = ex.Message.ToString();
+                return View("Error", errorViewModel);
             }
-            return RedirectToAction("Index");
         }
     }
 }

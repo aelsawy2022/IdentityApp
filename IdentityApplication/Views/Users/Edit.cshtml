@@ -1,0 +1,63 @@
+﻿@model IdentityApplication.Models.ViewModels.UsersViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+<h1>Edit User @Model.User.UserName</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form enctype="multipart/form-data" asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="User" />
+
+            <div class="form-group">
+                @Html.HiddenFor(a => a.User.Id, Model.User.Id)
+                <label asp-for="User.Id" class="control-label"></label>
+                <input value="@Model.User.Id" class="form-control" disabled />
+            </div>
+            <div class="form-group">
+                <label asp-for="User.Name" class="control-label"></label>
+                <input asp-for="User.Name" class="form-control" />
+                <span asp-validation-for="User.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="User.Governorate.Id" class="control-label">Governorate</label>
+                <select id="drpEmpList" class="form-control"
+                        asp-for="User.Governorate.Id"
+                        asp-items="@(new SelectList(Model.Governorates, "Id", "Name"))">
+                    <option value="">--Select--</option>
+                </select>
+                <input type="hidden" asp-for="User.Governorate.Id" />
+            </div>
+            <div class="form-group">
+                <label asp-for="User.ImageFile" class="control-label"></label>
+                <div class="custom-file">
+                    <input asp-for="User.ImageFile" type="file" class="custom-file-input" id="customFile">
+                    <label class="custom-file-label" for="customFile">Choose file</label>
+                </div>
+                <span asp-validation-for="User.ImageFile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Edit" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="List">Back to List</a>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+}  

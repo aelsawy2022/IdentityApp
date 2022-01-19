@@ -10,6 +10,8 @@ namespace IdentityApplication.Models.ViewModels
     public class UsersViewModel : PagingModel
     {
         public List<UsersModel> Users { get; set; }
+        public UsersModel User { get; set; }
         public List<Role> Roles { get; set; }
+        public List<Governorate> Governorates { get; set; }
     }
 }

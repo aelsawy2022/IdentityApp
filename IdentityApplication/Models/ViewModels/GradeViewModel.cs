@@ -9,6 +9,7 @@ namespace IdentityApplication.Models.ViewModels
     public class GradeViewModel
     {
         public Grade Grade { get; set; }
-        public List<School> Schools { get; set; }
+        public List<Grade> Grades { get; set; }
+        public School School { get; set; }
     }
 }

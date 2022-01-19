@@ -1,5 +1,6 @@
 ﻿using IdentityApplication.Data.Entities;
 using IdentityApplication.Data.UnitOfWorks;
+using IdentityApplication.Models;
 using IdentityApplication.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -43,13 +44,15 @@ namespace IdentityApplication.Controllers
 
                 await _unitOfWork.ActivityRepository.AddAsync(activity);
                 await _unitOfWork.SaveAsync();
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 while (ex.InnerException != null) ex = ex.InnerException;
-                ViewBag.Error = ex.Message.ToString();
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.ErrorMessage = ex.Message.ToString();
+                return View("Error", errorViewModel);
             }
-            return RedirectToAction("Index");
         }
 
         [Authorize(Policy = "RequireSuperAdmin")]
@@ -68,13 +71,15 @@ namespace IdentityApplication.Controllers
                 activity.Active = !activity.Active;
                 await _unitOfWork.ActivityRepository.UpdateAsync(activity);
                 await _unitOfWork.SaveAsync();
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 while (ex.InnerException != null) ex = ex.InnerException;
-                ViewBag.Error = ex.Message.ToString();
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.ErrorMessage = ex.Message.ToString();
+                return View("Error", errorViewModel);
             }
-            return RedirectToAction("Index");
         }
 
 
@@ -95,13 +100,15 @@ namespace IdentityApplication.Controllers
 
                 await _unitOfWork.ActivityRepository.UpdateAsync(activity);
                 await _unitOfWork.SaveAsync();
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 while (ex.InnerException != null) ex = ex.InnerException;
-                ViewBag.Error = ex.Message.ToString();
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.ErrorMessage = ex.Message.ToString();
+                return View("Error", errorViewModel);
             }
-            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Delete(Guid activityId)
@@ -117,13 +124,15 @@ namespace IdentityApplication.Controllers
 
                 await _unitOfWork.ActivityRepository.DeleteAsync(activity);
                 await _unitOfWork.SaveAsync();
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 while (ex.InnerException != null) ex = ex.InnerException;
-                ViewBag.Error = ex.Message.ToString();
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.ErrorMessage = ex.Message.ToString();
+                return View("Error", errorViewModel);
             }
-            return RedirectToAction("Index");
         }
     }
 }

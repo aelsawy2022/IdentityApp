@@ -12,7 +12,7 @@
     </div>
 }
 
-<h1>Edit Grade</h1>
+<h1>Edit Grade of @Model.School.Name</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -21,6 +21,7 @@
             <div class="form-group">
                 @Html.HiddenFor(a => a.Grade.CreationDate, Model.Grade.CreationDate)
                 @Html.HiddenFor(a => a.Grade.Id, Model.Grade.Id)
+                <input type="hidden" asp-for="Grade.School.Id" />
                 <label asp-for="Grade.Id" class="control-label"></label>
                 <input value="@Model.Grade.Id" class="form-control" disabled />
             </div>
@@ -34,14 +35,15 @@
                 <input asp-for="Grade.Desc" class="form-control" />
                 <span asp-validation-for="Grade.Desc" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
+                <label asp-for="Grade.School.Id" class="control-label">School</label>
                 <select id="drpEmpList" class="form-control"
                         asp-for="Grade.School.Id"
                         asp-items="@(new SelectList(Model.Schools, "Id", "Name"))">
                     <option value="">--Select--</option>
                 </select>
                 <input type="hidden" asp-for="Grade.School.Id" />
-            </div>
+            </div>*@
             <div class="form-group">
                 <input type="submit" value="Edit" class="btn btn-primary" />
             </div>
@@ -49,7 +51,7 @@
     </div>
 </div>
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" asp-route-schoolId="@Model.School.Id">Back to List</a>
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");

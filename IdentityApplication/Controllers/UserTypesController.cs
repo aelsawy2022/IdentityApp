@@ -1,5 +1,6 @@
 ﻿using IdentityApplication.Data.Entities;
 using IdentityApplication.Data.UnitOfWorks;
+using IdentityApplication.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -37,13 +38,15 @@ namespace IdentityApplication.Controllers
                 userType.Id = Guid.NewGuid();
                 await _unitOfWork.UserTypeRepository.AddAsync(userType);
                 await _unitOfWork.SaveAsync();
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 while (ex.InnerException != null) ex = ex.InnerException;
-                ViewBag.Error = ex.Message.ToString();
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.ErrorMessage = ex.Message.ToString();
+                return View("Error", errorViewModel);
             }
-            return RedirectToAction("Index");
         }
 
 
@@ -63,13 +66,15 @@ namespace IdentityApplication.Controllers
                 type.Active = !type.Active;
                 await _unitOfWork.UserTypeRepository.UpdateAsync(type);
                 await _unitOfWork.SaveAsync();
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 while (ex.InnerException != null) ex = ex.InnerException;
-                ViewBag.Error = ex.Message.ToString();
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.ErrorMessage = ex.Message.ToString();
+                return View("Error", errorViewModel);
             }
-            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Edit(Guid userTypeId)
@@ -84,13 +89,15 @@ namespace IdentityApplication.Controllers
             {
                 await _unitOfWork.UserTypeRepository.UpdateAsync(userType);
                 await _unitOfWork.SaveAsync();
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 while (ex.InnerException != null) ex = ex.InnerException;
-                ViewBag.Error = ex.Message.ToString();
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.ErrorMessage = ex.Message.ToString();
+                return View("Error", errorViewModel);
             }
-            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Delete(Guid userTypeId)
@@ -106,13 +113,15 @@ namespace IdentityApplication.Controllers
 
                 await _unitOfWork.UserTypeRepository.DeleteAsync(userType);
                 await _unitOfWork.SaveAsync();
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 while (ex.InnerException != null) ex = ex.InnerException;
-                ViewBag.Error = ex.Message.ToString();
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.ErrorMessage = ex.Message.ToString();
+                return View("Error", errorViewModel);
             }
-            return RedirectToAction("Index");
         }
     }
 }

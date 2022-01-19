@@ -6,6 +6,7 @@ using IdentityApplication.Data.Repositories.GovernorateRepo;
 using IdentityApplication.Data.Repositories.GradeRepo;
 using IdentityApplication.Data.Repositories.ManagementRepo;
 using IdentityApplication.Data.Repositories.SchoolRepo;
+using IdentityApplication.Data.Repositories.UserRepo;
 using IdentityApplication.Data.Repositories.UserTypeRepo;
 using IdentityApplication.Data.UnitOfWorks;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +26,7 @@ namespace IdentityApplication.ExtensionMethods
             services.AddScoped(typeof(IClassRepository), typeof(ClassRepository));
             services.AddScoped(typeof(IUserTypeRepository), typeof(UserTypeRepository));
             services.AddScoped(typeof(IActivityRepository), typeof(ActivityRepository));
+            services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 
 
             services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));

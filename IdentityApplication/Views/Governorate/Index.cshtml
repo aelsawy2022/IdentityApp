@@ -3,6 +3,15 @@
     ViewData["Title"] = "Index";
 }
 
+@if (!string.IsNullOrEmpty((string)ViewBag.Error))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @ViewData["Error"].ToString();
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
 <div class="text-center">
     <h1 class="display-4">Governorates</h1>
     <p>You can manage governorates from this screen.</p>
@@ -27,19 +36,19 @@
     <tbody>
         @foreach (var governorate in Model)
         {
-        <tr>
-            <td>@governorate.Id</td>
-            <td>@governorate.Name</td>
-            <td>@governorate.CreationDate.ToString("MM/dd/yyyy")</td>
-            <td>
-                <a class="btn btn-info" asp-action="Edit" asp-controller="Governorate"
-                   asp-route-governorateId="@governorate.Id">Edit</a>
+            <tr>
+                <td>@governorate.Id</td>
+                <td>@governorate.Name</td>
+                <td>@governorate.CreationDate.ToString("MM/dd/yyyy")</td>
+                <td>
+                    <a class="btn btn-info" asp-action="Edit" asp-controller="Governorate"
+                       asp-route-governorateId="@governorate.Id">Edit</a>
 
-                <a class="btn btn-danger" asp-action="Delete" asp-controller="Governorate"
-                   asp-route-governorateId="@governorate.Id"
-                   onclick="return confirm('Are you sure you want to delete @governorate.Name?')">Delete</a>
-            </td>
-        </tr>
+                    <a class="btn btn-danger" asp-action="Delete" asp-controller="Governorate"
+                       asp-route-governorateId="@governorate.Id"
+                       onclick="return confirm('Are you sure you want to delete @governorate.Name?')">Delete</a>
+                </td>
+            </tr>
 
         }
     </tbody>

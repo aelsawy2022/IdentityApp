@@ -1,6 +1,7 @@
 ﻿using IdentityApplication.Data.Entities;
 using IdentityApplication.Data.Repositories.GovernorateRepo;
 using IdentityApplication.Data.Repositories.ManagementRepo;
+using IdentityApplication.Models;
 using IdentityApplication.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -50,13 +51,15 @@ namespace IdentityApplication.Controllers
                 management.Governorate = governorate;
                 await _managementRepository.AddAsync(management);
                 await _managementRepository.SaveAsync();
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 while (ex.InnerException != null) ex = ex.InnerException;
-                ViewBag.Error = ex.Message.ToString();
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.ErrorMessage = ex.Message.ToString();
+                return View("Error", errorViewModel);
             }
-            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Edit(Guid managementId)
@@ -76,13 +79,15 @@ namespace IdentityApplication.Controllers
 
                 await _managementRepository.UpdateAsync(management);
                 await _managementRepository.SaveAsync();
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 while (ex.InnerException != null) ex = ex.InnerException;
-                ViewBag.Error = ex.Message.ToString();
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.ErrorMessage = ex.Message.ToString();
+                return View("Error", errorViewModel);
             }
-            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Delete(Guid managementId)
@@ -98,13 +103,15 @@ namespace IdentityApplication.Controllers
 
                 await _managementRepository.DeleteAsync(management);
                 await _managementRepository.SaveAsync();
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 while (ex.InnerException != null) ex = ex.InnerException;
-                ViewBag.Error = ex.Message.ToString();
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.ErrorMessage = ex.Message.ToString();
+                return View("Error", errorViewModel);
             }
-            return RedirectToAction("Index");
         }
     }
 }
