@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Edit";
 }
-<h1>Edit User @Model.User.UserName</h1>
+<h1>Edit User @Model.User.Name</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -32,15 +32,18 @@
                 <input type="hidden" asp-for="User.Governorate.Id" />
             </div>
             <div class="form-group">
+                <img src="@("~/Upload/Images/" + @Model.User.Image)" asp-append-version="true"
+                     height="240" width="240" />
+            </div>
+            <div class="form-group">
                 <label asp-for="User.ImageFile" class="control-label"></label>
                 <div class="custom-file">
                     <input asp-for="User.ImageFile" type="file" class="custom-file-input" id="customFile">
                     <label class="custom-file-label" for="customFile">Choose file</label>
                 </div>
-                <span asp-validation-for="User.ImageFile" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Edit" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -51,4 +54,13 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script type="text/javascript">
+
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
 }  

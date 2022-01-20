@@ -39,7 +39,8 @@
 
                     <img src="@("~/Upload/Images/" + user.Image)" asp-append-version="true" class="rounded-circle"
                          height="40" width="40" />
-                    @user.Name
+                    <a class="btn btn-link" asp-action="Edit" asp-controller="Users"
+                       asp-route-userId="@user.Id">@user.Name</a>
                 </td>
                 <td>@user.UserName</td>
                 <td>@user.Email</td>

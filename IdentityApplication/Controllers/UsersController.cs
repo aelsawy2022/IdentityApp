@@ -65,7 +65,6 @@ namespace IdentityApplication.Controllers
             {
                 user.IsAdmin = _userManager.IsInRoleAsync(_mapper.Map<User>(user), SystemRoles.Admin.ToString()).Result;
                 user.IsSuperAdmin = _userManager.IsInRoleAsync(_mapper.Map<User>(user), SystemRoles.SuperAdmin.ToString()).Result;
-                //if (user.Image != null) user.Image = Path.Combine(_environment.WebRootPath, "Upload", "Images", user.Image);
             }
             usersViewModel.Roles = _roleManager.Roles.ToList();
 
@@ -153,6 +152,10 @@ namespace IdentityApplication.Controllers
             {
                 User u = await _unitOfWork.UserRepository.GetByIDAsync(user.Id);
 
+                if(user.ImageFile != null)
+                {
+                    DeleteCurrentImageIfExists(u.Image);
+                }
                 u.Image = await UploadImage(user.ImageFile);
                 u.Governorate = await _governorateRepository.GetByIDAsync(user.Governorate.Id);
                 u.Name = user.Name;
@@ -172,10 +175,6 @@ namespace IdentityApplication.Controllers
 
         private async Task<string> UploadImage(IFormFile image)
         {
-            if (image == null)
-            {
-                image = (IFormFile)Request.Form.Files;
-            }
             if (!Directory.Exists(Path.Combine(_environment.WebRootPath, "Upload", "Images")))
             {
                 Directory.CreateDirectory(Path.Combine(_environment.WebRootPath, "Upload", "Images"));
@@ -189,6 +188,16 @@ namespace IdentityApplication.Controllers
                 fileStream.Flush();
             }
             return fileName;
+        }
+
+        private void DeleteCurrentImageIfExists(string image)
+        {
+            string imagePath = Path.Combine(_environment.WebRootPath, "Upload", "Images", image);
+
+            if (System.IO.File.Exists(imagePath))
+            {
+                System.IO.File.Delete(imagePath);
+            }
         }
     }
 }
