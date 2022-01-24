@@ -10,6 +10,7 @@ namespace RMS_APIs.AutoMapperConfig
         {
             CreateMap<User, UsersModel>().ReverseMap();
             CreateMap<Role, RolesModel>().ReverseMap();
+            CreateMap<ClassUser, ClassUsersModel>().ReverseMap();
 
             //.ForMember(dto=> dto.Chain, conf => conf.MapFrom(r=>r.Chain))
         }

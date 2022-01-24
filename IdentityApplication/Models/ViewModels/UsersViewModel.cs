@@ -14,4 +14,12 @@ namespace IdentityApplication.Models.ViewModels
         public List<Role> Roles { get; set; }
         public List<Governorate> Governorates { get; set; }
     }
+
+    public class UsersFilter : PagingModel
+    {
+        public string Name { get; set; }
+        public string Id { get; set; }
+        public Guid ClassId { get; set; }
+
+    }
 }

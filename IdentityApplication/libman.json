@@ -9,6 +9,14 @@
     {
       "library": "jquery@3.6.0",
       "destination": "wwwroot/lib/jquery/"
+    },
+    {
+      "library": "font-awesome@5.15.4",
+      "destination": "wwwroot/lib/font-awesome/"
+    },
+    {
+      "library": "popper.js@2.11.2",
+      "destination": "wwwroot/lib/popper.js/"
     }
   ]
 }

@@ -1,9 +1,11 @@
 ﻿using IdentityApplication.Data.Repositories.ActivityRepo;
 using IdentityApplication.Data.Repositories.AddressRepo;
 using IdentityApplication.Data.Repositories.ClassRepo;
+using IdentityApplication.Data.Repositories.ClassUserRepo;
 using IdentityApplication.Data.Repositories.GradeRepo;
 using IdentityApplication.Data.Repositories.ManagementRepo;
 using IdentityApplication.Data.Repositories.SchoolRepo;
+using IdentityApplication.Data.Repositories.SeasonRepo;
 using IdentityApplication.Data.Repositories.UserRepo;
 using IdentityApplication.Data.Repositories.UserTypeRepo;
 using System;
@@ -24,6 +26,8 @@ namespace IdentityApplication.Data.UnitOfWorks
         private IUserTypeRepository _userTypeRepository;
         private IActivityRepository _activityRepository;
         private IUserRepository _userRepository;
+        private IClassUserRepository _classUserRepository;
+        private ISeasonRepository _seasonRepository;
 
         public UnitOfWork(
             ApplicationDbContext context,
@@ -34,7 +38,9 @@ namespace IdentityApplication.Data.UnitOfWorks
             IClassRepository classRepository,
             IUserTypeRepository userTypeRepository,
             IActivityRepository activityRepository,
-            IUserRepository userRepository
+            IUserRepository userRepository,
+            IClassUserRepository classUserRepository,
+            ISeasonRepository seasonRepository
             )
         {
             _context = context;
@@ -46,6 +52,8 @@ namespace IdentityApplication.Data.UnitOfWorks
             _userTypeRepository = userTypeRepository;
             _activityRepository = activityRepository;
             _userRepository = userRepository;
+            _classUserRepository = classUserRepository;
+            _seasonRepository = seasonRepository;
         }
 
         public ISchoolRepository SchoolRepository
@@ -109,6 +117,22 @@ namespace IdentityApplication.Data.UnitOfWorks
             get
             {
                 return _userRepository;
+            }
+        }
+
+        public IClassUserRepository ClassUserRepository
+        {
+            get
+            {
+                return _classUserRepository;
+            }
+        }
+
+        public ISeasonRepository SeasonRepository
+        {
+            get
+            {
+                return _seasonRepository;
             }
         }
 

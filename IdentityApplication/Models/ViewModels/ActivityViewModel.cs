@@ -9,6 +9,7 @@ namespace IdentityApplication.Models.ViewModels
     public class ActivityViewModel
     {
         public Activity Activity { get; set; }
-        public List<School> Schools { get; set; }
+        public List<Activity> Activities { get; set; }
+        public School School { get; set; }
     }
 }

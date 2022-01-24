@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using static IdentityApplication.Models.Enums;
 
@@ -44,8 +45,20 @@ namespace IdentityApplication.Controllers
             _environment = environment;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(UsersFilter filter)
         {
+            //Expression<Func<User, bool>> _Expression = null;
+
+            //if (filter != null)
+            //{
+            //    _Expression =
+            //    (
+            //        x => (!string.IsNullOrEmpty(filter.Name) ? (x.Name == filter.Name || x.UserName == filter.Name) : true)
+            //        && (!string.IsNullOrEmpty(filter.Id) ? x.Id == filter.Id : true)
+            //    );
+            //}
+
+            //await _unitOfWork.
             return View();
         }
 
@@ -198,6 +211,16 @@ namespace IdentityApplication.Controllers
             {
                 System.IO.File.Delete(imagePath);
             }
+        }
+
+        public async Task<IActionResult> ClassUsers(Guid schoolId)
+        {
+            //if (schoolId == null || schoolId == Guid.Empty) return View("List");
+
+            //School school = await _unitOfWork.SchoolRepository.GetByIDAsync(schoolId);
+            //school.use
+            //_unitOfWork.UserRepository.GetAsync(u => u.ClassUsers.)
+            return View();
         }
     }
 }

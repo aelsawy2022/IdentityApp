@@ -8,5 +8,6 @@ namespace IdentityApplication.Models
         public bool IsAdmin { get; set; }
         public bool IsSuperAdmin { get; set; }
         public IFormFile ImageFile { get; set; }
+        public bool IsSelected { get; set; }
     }
 }
