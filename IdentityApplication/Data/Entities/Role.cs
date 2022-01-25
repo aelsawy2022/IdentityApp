@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace IdentityApplication.Data.Entities
 {
-    public class Role : IdentityRole
+    public class Role : IdentityRole<Guid>
     {
         public bool Active { get; set; }
         public School School { get; set; }
         public Activity Activity { get; set; }
+
+        public ICollection<UserRole> UserRoles { get; set; }
     }
 }

@@ -11,8 +11,14 @@ namespace IdentityApplication.Models.ViewModels
     {
         public List<UsersModel> Users { get; set; }
         public UsersModel User { get; set; }
-        public List<Role> Roles { get; set; }
         public List<Governorate> Governorates { get; set; }
+
+        public List<RolesModel> Roles { get; set; }
+        public List<SchoolModel> Schools { get; set; }
+        public List<ActivityModel> Activities { get; set; }
+
+        public bool IsGeneralRolesSelected { get; set; }
+        public bool IsSchoolsRolesSelected { get; set; }
     }
 
     public class UsersFilter : PagingModel

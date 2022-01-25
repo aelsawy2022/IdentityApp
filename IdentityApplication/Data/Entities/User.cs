@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IdentityApplication.Data.Entities
 {
-    public class User : IdentityUser
+    public class User : IdentityUser<Guid>
     {
         public string Name { get; set; }
         public string Image { get; set; }
@@ -14,5 +14,6 @@ namespace IdentityApplication.Data.Entities
 
         public Governorate Governorate { get; set; }
         public ICollection<ClassUser> ClassUsers { get; set; }
+        public ICollection<UserRole> UserRoles { get; set; }
     }
 }

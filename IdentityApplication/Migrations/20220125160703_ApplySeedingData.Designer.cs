@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace IdentityApplication.Data.Migrations
+namespace IdentityApplication.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220117170111_addNewEntitesAndExtendIdentityUser")]
-    partial class addNewEntitesAndExtendIdentityUser
+    [Migration("20220125160703_ApplySeedingData")]
+    partial class ApplySeedingData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,6 +26,9 @@ namespace IdentityApplication.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
@@ -69,6 +72,9 @@ namespace IdentityApplication.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
@@ -78,14 +84,51 @@ namespace IdentityApplication.Data.Migrations
                     b.Property<int>("MaterilasNo")
                         .HasColumnType("int");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Position")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("StudenstNo")
                         .HasColumnType("int");
+
+                    b.Property<string>("StudentImg")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TeacherImg")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("GradeId");
 
                     b.ToTable("Classes");
+                });
+
+            modelBuilder.Entity("IdentityApplication.Data.Entities.ClassUser", b =>
+                {
+                    b.Property<Guid>("ClassId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserTypeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SeasonId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ClassId", "UserId", "UserTypeId", "SeasonId");
+
+                    b.HasIndex("SeasonId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserTypeId");
+
+                    b.ToTable("ClassUsers");
                 });
 
             modelBuilder.Entity("IdentityApplication.Data.Entities.Governorate", b =>
@@ -97,9 +140,26 @@ namespace IdentityApplication.Data.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Governorates");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("586be096-48ef-44d7-94e4-2d0a0c06302a"),
+                            CreationDate = new DateTime(2022, 1, 25, 18, 7, 2, 922, DateTimeKind.Local).AddTicks(9530),
+                            Name = "Cairo"
+                        },
+                        new
+                        {
+                            Id = new Guid("e6a4960f-5dce-4c6f-b5e1-b5d146f3ea7a"),
+                            CreationDate = new DateTime(2022, 1, 25, 18, 7, 2, 922, DateTimeKind.Local).AddTicks(9549),
+                            Name = "Giza"
+                        });
                 });
 
             modelBuilder.Entity("IdentityApplication.Data.Entities.Grade", b =>
@@ -114,8 +174,14 @@ namespace IdentityApplication.Data.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Desc")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("MaterialsNo")
                         .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("SchoolId")
                         .HasColumnType("uniqueidentifier");
@@ -142,11 +208,73 @@ namespace IdentityApplication.Data.Migrations
                     b.Property<Guid?>("GovernorateId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("GovernorateId");
 
                     b.ToTable("Managements");
+                });
+
+            modelBuilder.Entity("IdentityApplication.Data.Entities.Role", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ActivityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("NormalizedName")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<Guid?>("SchoolId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActivityId");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.HasIndex("SchoolId");
+
+                    b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("b87c04ec-05ae-46bc-9822-1b71d5ba54ba"),
+                            Active = true,
+                            ConcurrencyStamp = "5ef3c762-e074-4d42-b8dc-1c2c57f29477",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = new Guid("260365fd-1e85-4c62-a794-ffe3c4dc4215"),
+                            Active = true,
+                            ConcurrencyStamp = "94ff9e37-6e70-47fb-b586-00dfa63a1977",
+                            Name = "SuperAdmin",
+                            NormalizedName = "SUPERADMIN"
+                        });
                 });
 
             modelBuilder.Entity("IdentityApplication.Data.Entities.School", b =>
@@ -164,6 +292,9 @@ namespace IdentityApplication.Data.Migrations
                     b.Property<Guid?>("ManagementId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId");
@@ -173,10 +304,42 @@ namespace IdentityApplication.Data.Migrations
                     b.ToTable("Schools");
                 });
 
+            modelBuilder.Entity("IdentityApplication.Data.Entities.Season", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Current")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("From")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("SchoolId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("To")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SchoolId");
+
+                    b.ToTable("Seasons");
+                });
+
             modelBuilder.Entity("IdentityApplication.Data.Entities.User", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -250,6 +413,41 @@ namespace IdentityApplication.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("75eb25d7-6f73-4281-a01e-a5ee8208fdd4"),
+                            AccessFailedCount = 0,
+                            Active = true,
+                            ConcurrencyStamp = "b9bf9aea-a77d-42f6-b466-a8ce0221b807",
+                            Email = "admin@school.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = true,
+                            Name = "Admin",
+                            NormalizedEmail = "ADMIN@SCHOOL.COM",
+                            NormalizedUserName = "ADMIN@SCHOOL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBufQAQJbYDau/j+n+KO6uup6jdG4PwIXKoCyUCE3ctCHNDSJkWl5U4HJxmNIJ6EEw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "MHERALYVWRDCTGRJYR4MHFEK77FFQ6JU",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@school.com"
+                        });
+                });
+
+            modelBuilder.Entity("IdentityApplication.Data.Entities.UserRole", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles");
                 });
 
             modelBuilder.Entity("IdentityApplication.Data.Entities.UserType", b =>
@@ -270,36 +468,32 @@ namespace IdentityApplication.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("61127563-eadd-495e-b334-3c427cc6f85b"),
+                            Active = true,
+                            CreationDate = new DateTime(2022, 1, 25, 18, 7, 2, 922, DateTimeKind.Local).AddTicks(1354),
+                            Name = "Student"
+                        },
+                        new
+                        {
+                            Id = new Guid("edd32a5d-b776-4b06-a880-a084a6bec2e2"),
+                            Active = true,
+                            CreationDate = new DateTime(2022, 1, 25, 18, 7, 2, 922, DateTimeKind.Local).AddTicks(8627),
+                            Name = "Teacher"
+                        },
+                        new
+                        {
+                            Id = new Guid("f44ed6f2-0c3e-4184-abee-97fa9e8cbdc1"),
+                            Active = true,
+                            CreationDate = new DateTime(2022, 1, 25, 18, 7, 2, 922, DateTimeKind.Local).AddTicks(8644),
+                            Name = "Manager"
+                        });
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
-
-                    b.Property<string>("NormalizedName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -312,9 +506,8 @@ namespace IdentityApplication.Data.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -323,7 +516,7 @@ namespace IdentityApplication.Data.Migrations
                     b.ToTable("AspNetRoleClaims");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -336,9 +529,8 @@ namespace IdentityApplication.Data.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -347,7 +539,7 @@ namespace IdentityApplication.Data.Migrations
                     b.ToTable("AspNetUserClaims");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -358,9 +550,8 @@ namespace IdentityApplication.Data.Migrations
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -369,25 +560,10 @@ namespace IdentityApplication.Data.Migrations
                     b.ToTable("AspNetUserLogins");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -417,6 +593,33 @@ namespace IdentityApplication.Data.Migrations
                         .HasForeignKey("GradeId");
                 });
 
+            modelBuilder.Entity("IdentityApplication.Data.Entities.ClassUser", b =>
+                {
+                    b.HasOne("IdentityApplication.Data.Entities.Class", "Class")
+                        .WithMany("ClassUsers")
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IdentityApplication.Data.Entities.Season", "Season")
+                        .WithMany("ClassUsers")
+                        .HasForeignKey("SeasonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IdentityApplication.Data.Entities.User", "User")
+                        .WithMany("ClassUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IdentityApplication.Data.Entities.UserType", "UserType")
+                        .WithMany("ClassUsers")
+                        .HasForeignKey("UserTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("IdentityApplication.Data.Entities.Grade", b =>
                 {
                     b.HasOne("IdentityApplication.Data.Entities.School", "School")
@@ -431,6 +634,17 @@ namespace IdentityApplication.Data.Migrations
                         .HasForeignKey("GovernorateId");
                 });
 
+            modelBuilder.Entity("IdentityApplication.Data.Entities.Role", b =>
+                {
+                    b.HasOne("IdentityApplication.Data.Entities.Activity", "Activity")
+                        .WithMany("Roles")
+                        .HasForeignKey("ActivityId");
+
+                    b.HasOne("IdentityApplication.Data.Entities.School", "School")
+                        .WithMany("Roles")
+                        .HasForeignKey("SchoolId");
+                });
+
             modelBuilder.Entity("IdentityApplication.Data.Entities.School", b =>
                 {
                     b.HasOne("IdentityApplication.Data.Entities.Address", "Address")
@@ -442,6 +656,13 @@ namespace IdentityApplication.Data.Migrations
                         .HasForeignKey("ManagementId");
                 });
 
+            modelBuilder.Entity("IdentityApplication.Data.Entities.Season", b =>
+                {
+                    b.HasOne("IdentityApplication.Data.Entities.School", "School")
+                        .WithMany("Seasons")
+                        .HasForeignKey("SchoolId");
+                });
+
             modelBuilder.Entity("IdentityApplication.Data.Entities.User", b =>
                 {
                     b.HasOne("IdentityApplication.Data.Entities.Governorate", "Governorate")
@@ -449,16 +670,31 @@ namespace IdentityApplication.Data.Migrations
                         .HasForeignKey("GovernorateId");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("IdentityApplication.Data.Entities.UserRole", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("IdentityApplication.Data.Entities.Role", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IdentityApplication.Data.Entities.User", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+                {
+                    b.HasOne("IdentityApplication.Data.Entities.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
                     b.HasOne("IdentityApplication.Data.Entities.User", null)
                         .WithMany()
@@ -467,7 +703,7 @@ namespace IdentityApplication.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
                     b.HasOne("IdentityApplication.Data.Entities.User", null)
                         .WithMany()
@@ -476,22 +712,7 @@ namespace IdentityApplication.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("IdentityApplication.Data.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
                     b.HasOne("IdentityApplication.Data.Entities.User", null)
                         .WithMany()

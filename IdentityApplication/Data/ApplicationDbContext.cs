@@ -1,4 +1,5 @@
 ﻿using IdentityApplication.Data.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,7 +8,9 @@ using System.Text;
 
 namespace IdentityApplication.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<User>
+    public class ApplicationDbContext : IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>,
+                                                          UserRole, IdentityUserLogin<Guid>,
+                                                          IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -22,6 +25,51 @@ namespace IdentityApplication.Data
                 .HasOne<User>(cu => cu.User)
                 .WithMany(s => s.ClassUsers)
                 .HasForeignKey(cu => cu.UserId);
+
+            modelBuilder.Entity<UserRole>(userRole =>
+            {
+                userRole.HasKey(ur => new { ur.UserId, ur.RoleId });
+
+                userRole.HasOne(ur => ur.Role)
+                    .WithMany(r => r.UserRoles)
+                    .HasForeignKey(ur => ur.RoleId)
+                    .IsRequired();
+
+                userRole.HasOne(ur => ur.User)
+                    .WithMany(r => r.UserRoles)
+                    .HasForeignKey(ur => ur.UserId)
+                    .IsRequired();
+            });
+
+            modelBuilder.Entity<Role>().HasData(
+                            new Role { Id = Guid.NewGuid(), Active = true, Name = "Admin", NormalizedName = "ADMIN" },
+                            new Role { Id = Guid.NewGuid(), Active = true, Name = "SuperAdmin", NormalizedName = "SUPERADMIN" });
+
+            modelBuilder.Entity<UserType>().HasData(
+                new UserType() { Id = Guid.NewGuid(), Name = "Student", CreationDate = DateTime.Now, Active = true },
+                new UserType() { Id = Guid.NewGuid(), Name = "Teacher", CreationDate = DateTime.Now, Active = true },
+                new UserType() { Id = Guid.NewGuid(), Name = "Manager", CreationDate = DateTime.Now, Active = true });
+
+            modelBuilder.Entity<Governorate>().HasData(
+                            new Governorate { Id = Guid.NewGuid(), Name = "Cairo", CreationDate = DateTime.Now },
+                            new Governorate { Id = Guid.NewGuid(), Name = "Giza", CreationDate = DateTime.Now });
+
+            modelBuilder.Entity<User>().HasData(
+                            new User { 
+                                Id = Guid.NewGuid(), 
+                                Name = "Admin", 
+                                UserName = "admin@school.com",
+                                NormalizedUserName = "ADMIN@SCHOOL.COM",
+                                Email = "admin@school.com",
+                                NormalizedEmail = "ADMIN@SCHOOL.COM",
+                                EmailConfirmed = true,
+                                PasswordHash = "AQAAAAEAACcQAAAAEBufQAQJbYDau/j+n+KO6uup6jdG4PwIXKoCyUCE3ctCHNDSJkWl5U4HJxmNIJ6EEw==",
+                                SecurityStamp = "MHERALYVWRDCTGRJYR4MHFEK77FFQ6JU",
+                                ConcurrencyStamp = "b9bf9aea-a77d-42f6-b466-a8ce0221b807",
+                                LockoutEnabled = true,
+                                Active = true
+                            });
+
             //modelBuilder.Entity<ActivityClass>().HasKey(ac => new { ac.ActivityId, ac.ClassId });
             //modelBuilder.Entity<ActivityUserType>().HasKey(ac => new { ac.ActivityId, ac.UserTypeId });
         }

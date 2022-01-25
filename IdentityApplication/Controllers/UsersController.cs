@@ -79,7 +79,7 @@ namespace IdentityApplication.Controllers
                 user.IsAdmin = _userManager.IsInRoleAsync(_mapper.Map<User>(user), SystemRoles.Admin.ToString()).Result;
                 user.IsSuperAdmin = _userManager.IsInRoleAsync(_mapper.Map<User>(user), SystemRoles.SuperAdmin.ToString()).Result;
             }
-            usersViewModel.Roles = _roleManager.Roles.ToList();
+            //usersViewModel.Roles = _roleManager.Roles.ToList();
 
             return View(usersViewModel);
         }
@@ -148,14 +148,59 @@ namespace IdentityApplication.Controllers
             return View(result);
         }
 
-        public async Task<IActionResult> Edit(string userId)
+        public async Task<IActionResult> Edit(Guid userId)
         {
             UsersViewModel usersViewModel = new UsersViewModel();
             usersViewModel.User = _mapper.Map<UsersModel>(await _unitOfWork.UserRepository.GetOneAsync(
-                                                                    u => u.Id == userId, "Governorate"));
+                                                                    u => u.Id == userId, "Governorate,UserRoles"));
+
+
+            usersViewModel.Schools = _mapper.Map<List<SchoolModel>>(await _unitOfWork.SchoolRepository.GetSchoolWithActivitiesAndRolesAsync(null, o => o.OrderBy(s => s.Name)) as List<School>);
+            usersViewModel.Roles = _mapper.Map<List<RolesModel>>(await _unitOfWork.RoleRepository.GetAsync(r => r.School == null && r.Activity == null, o => o.OrderBy(r => r.Name)) as List<Role>);
+            //usersViewModel.Activities = _mapper.Map<List<ActivityModel>>(await _unitOfWork.ActivityRepository.GetAllAsync(o => o.OrderBy(a => a.Name), "Roles") as List<Activity>);
 
             usersViewModel.Governorates = await _governorateRepository.GetAllAsync(o => o.OrderBy(g => g.Name)) as List<Governorate>;
+
+            SyncUserRolesWithSystemRoles(usersViewModel);
+
             return View(usersViewModel);
+        }
+
+        private void SyncUserRolesWithSystemRoles(UsersViewModel usersViewModel)
+        {
+            foreach(SchoolModel school in usersViewModel.Schools)
+            {
+                foreach(RolesModel schoolRole in school.Roles)
+                {
+                    if (usersViewModel.User.Roles.Any() && usersViewModel.User.Roles.Any(ur => ur.RoleId == schoolRole.Id))
+                        schoolRole.IsSelected = true;
+                }
+                foreach(ActivityModel activity in school.Activities)
+                {
+                    foreach(RolesModel activityRole in activity.Roles)
+                    {
+                        if (usersViewModel.User.Roles.Any(ur => ur.RoleId == activityRole.Id))
+                            activityRole.IsSelected = true;
+                    }
+                    if (activity.Roles.Any() && !activity.Roles.Any(ar => !ar.IsSelected))
+                        activity.IsSelected = true;
+                }
+                if (school.Roles.Any() && !school.Roles.Any(sr => !sr.IsSelected))
+                    school.IsSelected = true;
+
+                if (school.Activities.Any() && !school.Activities.Any(a => !a.IsSelected))
+                    school.IsActivitiesSelected = true;
+            }
+            foreach(RolesModel generalRole in usersViewModel.Roles)
+            {
+                if (usersViewModel.User.Roles.Any(ur => ur.RoleId == generalRole.Id))
+                    generalRole.IsSelected = true;
+            }
+            if (!usersViewModel.Roles.Any(gr => !gr.IsSelected))
+                usersViewModel.IsGeneralRolesSelected = true;
+
+            if (!usersViewModel.Schools.Any(s => !s.IsSelected))
+                usersViewModel.IsSchoolsRolesSelected = true;
         }
 
         [HttpPost]

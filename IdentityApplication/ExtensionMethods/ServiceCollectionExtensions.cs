@@ -6,6 +6,7 @@ using IdentityApplication.Data.Repositories.GenericRepo;
 using IdentityApplication.Data.Repositories.GovernorateRepo;
 using IdentityApplication.Data.Repositories.GradeRepo;
 using IdentityApplication.Data.Repositories.ManagementRepo;
+using IdentityApplication.Data.Repositories.RoleRepo;
 using IdentityApplication.Data.Repositories.SchoolRepo;
 using IdentityApplication.Data.Repositories.SeasonRepo;
 using IdentityApplication.Data.Repositories.UserRepo;
@@ -31,6 +32,7 @@ namespace IdentityApplication.ExtensionMethods
             services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
             services.AddScoped(typeof(IClassUserRepository), typeof(ClassUserRepository));
             services.AddScoped(typeof(ISeasonRepository), typeof(SeasonRepository));
+            services.AddScoped(typeof(IRoleRepository), typeof(RoleRepository));
 
 
             services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));

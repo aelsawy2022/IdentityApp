@@ -5,9 +5,10 @@
 }
 <h1>Edit User @Model.User.Name</h1>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form enctype="multipart/form-data" asp-action="Edit">
+
+<form enctype="multipart/form-data" asp-action="Edit">
+    <div class="row">
+        <div class="col-md-4">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <input type="hidden" asp-for="User" />
@@ -45,9 +46,218 @@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
-        </form>
+        </div>
+        <div class="col-md-2"></div>
+        <div class="col-md-6">
+            <h3>User Roles</h3>
+            <br />
+
+            @*<button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#demo">Simple collapsible</button>
+                <div id="demo" class="collapse">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                </div>*@
+
+            <ul class="list-group list-group-flush">
+
+                <li class="list-group-item">
+                    <div class="custom-control custom-checkbox btn-group">
+                        <div class="row">
+                            <div class="col-auto" style="margin-right: 5px;">
+                                @if (Model.Roles.Any())
+                                {
+                                    <a data-bs-toggle="collapse" data-bs-target="#generalRoles"
+                                       onclick="showHideRoles('showGeneralRolesBtn')">
+                                        <i id="showGeneralRolesBtn" class="fa fa-angle-down"></i>
+                                    </a>
+                                }
+                            </div>
+                            <div class="col-auto">
+                                @Html.CheckBoxFor(x => Model.IsGeneralRolesSelected, new { @class = "custom-control-input", @id = "general-roles" })
+                                <label class="custom-control-label" for="general-roles">General Roles</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ul id="generalRoles" class="list-group list-group-flush collapse">
+                        <li class="list-group-item">
+                            <ul class="list-group list-group-flush">
+                                @foreach (RolesModel role in Model.Roles)
+                                {
+                                    <li class="list-group-item">
+                                        <div class="custom-control custom-checkbox btn-group">
+                                            <div class="row">
+                                                <div class="col-auto" style="margin-right: 5px;">
+                                                </div>
+                                                <div class="col-auto">
+                                                    @Html.CheckBoxFor(x => role.IsSelected, new { @class = "custom-control-input", @id = role.Id })
+                                                    <label class="custom-control-label" for="@role.Id">@role.Name</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+
+                <li class="list-group-item">
+                    <div class="custom-control custom-checkbox btn-group">
+                        <div class="row">
+                            <div class="col-auto" style="margin-right: 5px;">
+                                @if (Model.Schools.Any())
+                                {
+                                    <a data-bs-toggle="collapse" data-bs-target="#schoolsRoles"
+                                       onclick="showHideRoles('showSchoolsRoles')">
+                                        <i id="showSchoolsRoles" class="fa fa-angle-down"></i>
+                                    </a>
+                                }
+                            </div>
+                            <div class="col-auto">
+                                @Html.CheckBoxFor(x => Model.IsSchoolsRolesSelected, new { @class = "custom-control-input", @id = "schools-roles" })
+                                <label class="custom-control-label" for="schools-roles">Schools Roles</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ul id="schoolsRoles" class="list-group list-group-flush collapse">
+
+                        @{
+                            int schoolCount = 0;
+                            int activityCount = 0;
+                        }
+
+                        @foreach (SchoolModel school in Model.Schools)
+                        {
+                            schoolCount++;
+                            string _id = "school" + schoolCount;
+                            string _expandId = "expandSchool" + schoolCount;
+
+
+                            <li class="list-group-item">
+                                <div class="custom-control custom-checkbox btn-group">
+                                    <div class="row">
+                                        <div class="col-auto" style="margin-right: 5px;">
+                                            @if (school.Roles.Any())
+                                            {
+                                                <a data-bs-toggle="collapse" data-bs-target="#@_id"
+                                                   onclick="showHideRoles('@_expandId')">
+                                                    <i id="@_expandId" class="fa fa-angle-down"></i>
+                                                </a>
+                                            }
+                                        </div>
+                                        <div class="col-auto">
+                                            @Html.CheckBoxFor(x => school.IsSelected, new { @class = "custom-control-input", @id = school.Id })
+                                            <label class="custom-control-label" for="@school.Id">@school.Name</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <ul id="@_id" class="list-group list-group-flush collapse">
+
+                                    <li class="list-group-item">
+                                        <ul class="list-group list-group-flush">
+                                            @foreach (RolesModel role in school.Roles)
+                                            {
+                                                <li class="list-group-item">
+                                                    <div class="custom-control custom-checkbox btn-group">
+                                                        <div class="row">
+                                                            <div class="col-auto">
+                                                                <a data-bs-toggle="collapse" data-bs-target="#schoolActivities"
+                                                                   hidden>
+                                                                    <i id="showSchoolActivities" class="fa fa-angle-down"></i>
+                                                                </a>
+                                                            </div>
+                                                            <div class="col-auto">
+                                                                @Html.CheckBoxFor(x => role.IsSelected, new { @class = "custom-control-input", @id = role.Id })
+                                                                <label class="custom-control-label" for="@role.Id">@role.Name</label>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+
+                                    @if (school.Activities.Any())
+                                    {
+                                        <li class="list-group-item">
+                                            <div class="custom-control custom-checkbox btn-group">
+                                                <div class="row">
+                                                    <div class="col-auto" style="margin-right: 5px;">
+                                                        <a data-bs-toggle="collapse" data-bs-target="#schoolActivities@_id"
+                                                           onclick="showHideRoles('showSchoolActivities@_id')">
+                                                            <i id="showSchoolActivities@_id" class="fa fa-angle-down"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        @Html.CheckBoxFor(x => school.IsActivitiesSelected, new { @class = "custom-control-input", @id = "school-activities-" + _id })
+                                                        <label class="custom-control-label" for="school-activities-@_id">Activities</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <ul id="schoolActivities@_id" class="list-group list-group-flush collapse">
+                                                <li class="list-group-item">
+                                                    <ul class="list-group list-group-flush">
+                                                        @foreach (ActivityModel activity in school.Activities)
+                                                        {
+                                                            activityCount++;
+                                                            string _activityId = "activity" + activityCount + _id;
+                                                            string _expandActivityId = "expandActivity" + activityCount + _expandId;
+
+                                                            <li class="list-group-item">
+                                                                <div class="custom-control custom-checkbox btn-group">
+                                                                    <div class="row">
+                                                                        <div class="col-auto" style="margin-right: 5px;">
+                                                                            @if (activity.Roles.Any())
+                                                                            {
+                                                                                <a data-bs-toggle="collapse" data-bs-target="#@_activityId"
+                                                                                   onclick="showHideRoles('@_expandActivityId')">
+                                                                                    <i id="@_expandActivityId" class="fa fa-angle-down"></i>
+                                                                                </a>
+                                                                            }
+                                                                        </div>
+                                                                        <div class="col-auto">
+                                                                            @Html.CheckBoxFor(x => activity.IsSelected, new { @class = "custom-control-input", @id = activity.Id })
+                                                                            <label class="custom-control-label" for="@activity.Id">@activity.Name</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <ul id="@_activityId" class="list-group list-group-flush collapse">
+                                                                    @foreach (RolesModel activityRole in activity.Roles)
+                                                                    {
+                                                                        <li class="list-group-item">
+                                                                            <div class="custom-control custom-checkbox btn-group">
+                                                                                @Html.CheckBoxFor(x => activityRole.IsSelected, new { @class = "custom-control-input", @id = activityRole.Id })
+                                                                                <label class="custom-control-label" for="@activityRole.Id">@activityRole.Name</label>
+                                                                            </div>
+                                                                        </li>
+                                                                    }
+                                                                </ul>
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            </ul>
+
+            <br />
+        </div>
     </div>
-</div>
+</form>
 <div>
     <a asp-action="List">Back to List</a>
 </div>
@@ -62,5 +272,17 @@
             var fileName = $(this).val().split("\\").pop();
             $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
         });
+
+        function showHideRoles(id) {
+            debugger;
+            if (document.getElementById(id).classList.contains('fa-angle-down')) {
+                document.getElementById(id).classList.remove("fa-angle-down");
+                document.getElementById(id).classList.add("fa-angle-up");
+            }
+            else {
+                document.getElementById(id).classList.remove("fa-angle-up");
+                document.getElementById(id).classList.add("fa-angle-down");
+            }
+        }
     </script>
-}  
+}

@@ -4,6 +4,7 @@ using IdentityApplication.Data.Repositories.ClassRepo;
 using IdentityApplication.Data.Repositories.ClassUserRepo;
 using IdentityApplication.Data.Repositories.GradeRepo;
 using IdentityApplication.Data.Repositories.ManagementRepo;
+using IdentityApplication.Data.Repositories.RoleRepo;
 using IdentityApplication.Data.Repositories.SchoolRepo;
 using IdentityApplication.Data.Repositories.SeasonRepo;
 using IdentityApplication.Data.Repositories.UserRepo;
@@ -28,6 +29,7 @@ namespace IdentityApplication.Data.UnitOfWorks
         private IUserRepository _userRepository;
         private IClassUserRepository _classUserRepository;
         private ISeasonRepository _seasonRepository;
+        private IRoleRepository _roleRepository;
 
         public UnitOfWork(
             ApplicationDbContext context,
@@ -40,7 +42,8 @@ namespace IdentityApplication.Data.UnitOfWorks
             IActivityRepository activityRepository,
             IUserRepository userRepository,
             IClassUserRepository classUserRepository,
-            ISeasonRepository seasonRepository
+            ISeasonRepository seasonRepository,
+            IRoleRepository roleRepository
             )
         {
             _context = context;
@@ -54,6 +57,7 @@ namespace IdentityApplication.Data.UnitOfWorks
             _userRepository = userRepository;
             _classUserRepository = classUserRepository;
             _seasonRepository = seasonRepository;
+            _roleRepository = roleRepository;
         }
 
         public ISchoolRepository SchoolRepository
@@ -133,6 +137,14 @@ namespace IdentityApplication.Data.UnitOfWorks
             get
             {
                 return _seasonRepository;
+            }
+        }
+
+        public IRoleRepository RoleRepository
+        {
+            get
+            {
+                return _roleRepository;
             }
         }
 

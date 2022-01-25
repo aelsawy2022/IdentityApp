@@ -4,6 +4,7 @@ using IdentityApplication.Data.Repositories.ClassRepo;
 using IdentityApplication.Data.Repositories.ClassUserRepo;
 using IdentityApplication.Data.Repositories.GradeRepo;
 using IdentityApplication.Data.Repositories.ManagementRepo;
+using IdentityApplication.Data.Repositories.RoleRepo;
 using IdentityApplication.Data.Repositories.SchoolRepo;
 using IdentityApplication.Data.Repositories.SeasonRepo;
 using IdentityApplication.Data.Repositories.UserRepo;
@@ -27,6 +28,7 @@ namespace IdentityApplication.Data.UnitOfWorks
         IUserRepository UserRepository { get; }
         IClassUserRepository ClassUserRepository { get; }
         ISeasonRepository SeasonRepository { get; }
+        IRoleRepository RoleRepository { get; }
 
 
         void Save();
