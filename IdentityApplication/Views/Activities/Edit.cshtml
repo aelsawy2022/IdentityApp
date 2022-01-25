@@ -12,7 +12,7 @@
     </div>
 }
 
-<h1>Edit Activity</h1>
+<h1>Edit Activity @Model.Activity.Name</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -22,7 +22,7 @@
                 @Html.HiddenFor(a => a.Activity.CreationDate, Model.Activity.CreationDate)
                 @Html.HiddenFor(a => a.Activity.Id, Model.Activity.Id)
                 <label asp-for="Activity.Id" class="control-label"></label>
-                <input value="@Model.Activity.Id" class="form-control" disabled/>
+                <input value="@Model.Activity.Id" class="form-control" disabled />
             </div>
             <div class="form-group">
                 <label asp-for="Activity.Name" class="control-label"></label>
@@ -35,14 +35,19 @@
                 <span asp-validation-for="Activity.Desc" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Activity.School.Id" class="control-label">School</label>
-                <select id="drpEmpList" class="form-control"
-                        asp-for="Activity.School.Id"
-                        asp-items="@(new SelectList(Model.Schools, "Id", "Name"))">
-                    <option value="">--Select--</option>
-                </select>
-                <input type="hidden" asp-for="Activity.School.Id" />
+                <label asp-for="Activity.School" class="control-label"></label>
+                <input asp-for="Activity.School.Name" class="form-control" value="@Model.School.Name" disabled />
+                <input type="hidden" asp-for="Activity.School.Id" value="@Model.School.Id" />
             </div>
+            @*<div class="form-group">
+                    <label asp-for="Activity.School.Id" class="control-label">School</label>
+                    <select id="drpEmpList" class="form-control"
+                            asp-for="Activity.School.Id"
+                            asp-items="@(new SelectList(Model.Schools, "Id", "Name"))">
+                        <option value="">--Select--</option>
+                    </select>
+                    <input type="hidden" asp-for="Activity.School.Id" />
+                </div>*@
             <div class="form-group">
                 <div class="form-check form-switch">
                     <input type="checkbox" asp-for="Activity.Active" class="form-check-input" />
@@ -50,13 +55,13 @@
                 </div>
             </div>
             <div class="form-group">
-                <input type="submit" value="Edit" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" asp-route-schoolId="@Model.School.Id">Back to List</a>
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");

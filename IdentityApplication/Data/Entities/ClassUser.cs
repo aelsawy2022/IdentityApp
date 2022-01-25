@@ -10,7 +10,7 @@ namespace IdentityApplication.Data.Entities
         public Guid ClassId { get; set; }
         public Class Class { get; set; }
 
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
         public User User { get; set; }
 
         public Guid UserTypeId { get; set; }

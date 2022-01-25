@@ -20,16 +20,21 @@ namespace IdentityApplication.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(Guid schoolId)
         {
-            return View(await _unitOfWork.ActivityRepository.GetAllAsync(o => o.OrderBy(a => a.CreationDate), "School") as List<Activity>);
+            if(schoolId == null || schoolId == Guid.Empty) return RedirectToAction("Index", "Schools");
+
+            ActivityViewModel activityViewModel = new ActivityViewModel();
+            activityViewModel.Activities = await _unitOfWork.ActivityRepository.GetAsync(a => a.School.Id == schoolId, o => o.OrderBy(a => a.CreationDate)) as List<Activity>;
+            activityViewModel.School = await _unitOfWork.SchoolRepository.GetByIDAsync(schoolId);
+            return View(activityViewModel);
         }
 
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(Guid schoolId)
         {
             ActivityViewModel activityViewModel = new ActivityViewModel();
             activityViewModel.Activity = new Activity();
-            activityViewModel.Schools = await _unitOfWork.SchoolRepository.GetAllAsync() as List<School>;
+            activityViewModel.School = await _unitOfWork.SchoolRepository.GetByIDAsync(schoolId);
             return View(activityViewModel);
         }
 
@@ -44,7 +49,7 @@ namespace IdentityApplication.Controllers
 
                 await _unitOfWork.ActivityRepository.AddAsync(activity);
                 await _unitOfWork.SaveAsync();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { schoolId = activity.School.Id });
             }
             catch (Exception ex)
             {
@@ -56,7 +61,7 @@ namespace IdentityApplication.Controllers
         }
 
         [Authorize(Policy = "RequireSuperAdmin")]
-        public async Task<IActionResult> ActivateActivity(Guid activityId)
+        public async Task<IActionResult> ActivateActivity(Guid activityId, Guid schoolId)
         {
             try
             {
@@ -71,7 +76,7 @@ namespace IdentityApplication.Controllers
                 activity.Active = !activity.Active;
                 await _unitOfWork.ActivityRepository.UpdateAsync(activity);
                 await _unitOfWork.SaveAsync();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { schoolId = schoolId});
             }
             catch (Exception ex)
             {
@@ -83,11 +88,11 @@ namespace IdentityApplication.Controllers
         }
 
 
-        public async Task<IActionResult> Edit(Guid activityId)
+        public async Task<IActionResult> Edit(Guid activityId, Guid schoolId)
         {
             ActivityViewModel activityViewModel = new ActivityViewModel();
             activityViewModel.Activity = await _unitOfWork.ActivityRepository.GetByIDAsync(activityId);
-            activityViewModel.Schools = await _unitOfWork.SchoolRepository.GetAllAsync() as List<School>;
+            activityViewModel.School = await _unitOfWork.SchoolRepository.GetByIDAsync(schoolId);
             return View(activityViewModel);
         }
 
@@ -100,7 +105,7 @@ namespace IdentityApplication.Controllers
 
                 await _unitOfWork.ActivityRepository.UpdateAsync(activity);
                 await _unitOfWork.SaveAsync();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { schoolId = activity.School.Id });
             }
             catch (Exception ex)
             {
@@ -111,7 +116,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
-        public async Task<IActionResult> Delete(Guid activityId)
+        public async Task<IActionResult> Delete(Guid activityId, Guid schoolId)
         {
             try
             {
@@ -124,7 +129,7 @@ namespace IdentityApplication.Controllers
 
                 await _unitOfWork.ActivityRepository.DeleteAsync(activity);
                 await _unitOfWork.SaveAsync();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { schoolId = schoolId });
             }
             catch (Exception ex)
             {

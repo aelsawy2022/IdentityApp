@@ -46,6 +46,15 @@
 
                 <a class="btn btn-primary" asp-action="Index" asp-controller="Grades"
                    asp-route-schoolId="@school.Id">Grades</a>
+
+                <a class="btn btn-dark" asp-action="Index" asp-controller="Activities"
+                   asp-route-schoolId="@school.Id">Activities</a>
+
+                <a class="btn btn-light" asp-action="Index" asp-controller="Seasons"
+                   asp-route-schoolId="@school.Id">Seasons</a>
+
+                <a class="btn btn-success" asp-action="Index" asp-controller="SchoolRoles"
+                   asp-route-schoolId="@school.Id">Roles</a>
             </td>
         </tr>
 

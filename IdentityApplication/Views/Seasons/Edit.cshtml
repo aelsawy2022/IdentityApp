@@ -1,0 +1,76 @@
+﻿@model IdentityApplication.Models.ViewModels.SeasonViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.Error))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @ViewBag.Error
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<h1>Edit Activity @Model.Season.Name</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                @Html.HiddenFor(a => a.Season.CreationDate, Model.Season.CreationDate)
+                @Html.HiddenFor(a => a.Season.Id, Model.Season.Id)
+                @Html.HiddenFor(a => a.Season.Current, Model.Season.Current)
+
+                <label asp-for="Season.Id" class="control-label"></label>
+                <input value="@Model.Season.Id" class="form-control" disabled />
+            </div>
+            <div class="form-group">
+                <label asp-for="Season.Name" class="control-label"></label>
+                <input asp-for="Season.Name" class="form-control" />
+                <span asp-validation-for="Season.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Season.From" class="control-label"></label>
+                <input type="date" asp-for="Season.From" class="form-control" />
+                <span asp-validation-for="Season.From" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Season.To" class="control-label"></label>
+                <input type="date" asp-for="Season.To" class="form-control" />
+                <span asp-validation-for="Season.To" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Season.School" class="control-label"></label>
+                <input asp-for="Season.School.Name" class="form-control" value="@Model.School.Name" disabled />
+                <input type="hidden" asp-for="Season.School.Id" value="@Model.School.Id" />
+            </div>
+            @*<div class="form-group">
+                    <label asp-for="Activity.School.Id" class="control-label">School</label>
+                    <select id="drpEmpList" class="form-control"
+                            asp-for="Activity.School.Id"
+                            asp-items="@(new SelectList(Model.Schools, "Id", "Name"))">
+                        <option value="">--Select--</option>
+                    </select>
+                    <input type="hidden" asp-for="Activity.School.Id" />
+                </div>*@
+            @*<div class="form-group">
+                <div class="form-check form-switch">
+                    <input type="checkbox" asp-for="Activity.Active" class="form-check-input" />
+                    <label asp-for="Activity.Active" class="form-check-label"></label>
+                </div>
+            </div>*@
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="Index" asp-route-schoolId="@Model.School.Id">Back to List</a>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}  

@@ -1,0 +1,178 @@
+﻿@model IdentityApplication.Models.ViewModels.ClassUserViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<div class="text-center">
+    <h1 class="display-4">Users of Class @Model.Class.Name</h1>
+    <p>You can manage class users from this screen.</p>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        &nbsp;
+    </div>
+</div>
+
+<br />
+
+<form asp-action="AddUsers" asp-controller="ClassUsers">
+    @Html.HiddenFor(c => Model.Class.Id)
+    @Html.HiddenFor(c => Model.Class.Name)
+    @Html.HiddenFor(c => Model.GradeId)
+    @Html.HiddenFor(c => Model.SchoolId)
+
+    <div class="row">
+        <div class="col-5">
+            <div class="form-group">
+                <label asp-for="SelectedTypeId" class="control-label">Type</label>
+                <select id="drpEmpList" class="form-control"
+                        asp-for="SelectedTypeId"
+                        asp-items="@(new SelectList(Model.Types, "Id", "Name"))">
+                    <option value="">--Select--</option>
+                </select>
+                <input type="hidden" asp-for="SelectedTypeId" />
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <div class="row">
+
+        <div class="dual-list list-left col-md-5">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-10 mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text" id="basic-addon1">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <input type="text" class="form-control" placeholder="search" aria-label="SearchDualList" aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="btn-group">
+                                @if (Model.AllUsers == null || Model.AllUsers.Count < 1)
+                                {
+                                    <button type="button" class="btn btn-light" style="width: 60px;" title="Add all" disabled>
+                                        <i class="fa fa-chevron-right"></i>
+                                        <i class="fa fa-chevron-right"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-light" style="width: 60px;" title="Add all"
+                                            asp-action="AddAllUsers" asp-controller="ClassUsers">
+                                        <i class="fa fa-chevron-right"></i>
+                                        <i class="fa fa-chevron-right"></i>
+                                    </button>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="list-group">
+                        @for (int i = 0; i < Model.AllUsers.Count; i++)
+                        {
+                            @Html.HiddenFor(au => Model.AllUsers[i].UserName)
+                            @Html.HiddenFor(au => Model.AllUsers[i].Id)
+                            <li class="list-group-item">
+                                @Html.CheckBoxFor(m => Model.AllUsers[i].IsSelected, new { @class = "form-check-input", @id = Model.AllUsers[i].Id })
+                                @Model.AllUsers[i].UserName
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="list-arrows col-md-1 text-center">
+            <button class="btn btn-light btn-sm move-left" type="submit"
+                    asp-action="DeleteUser" asp-controller="ClassUsers">
+                <span class="fa fa-arrow-left"></span>
+            </button>
+
+            <br />
+
+            <button class="btn btn-light btn-sm move-right" type="submit">
+                <span class="fa fa-arrow-right"></span>
+            </button>
+        </div>
+
+        <div class="dual-list list-right col-md-5">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="btn-group">
+                                @if (Model.ClassUsers == null || Model.ClassUsers.Count < 1)
+                                {
+                                    <button type="button" class="btn btn-light" style="width: 60px;" title="Delete all" disabled>
+                                        <i class="fa fa-chevron-left"></i>
+                                        <i class="fa fa-chevron-left"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-light" style="width: 60px;" title="Delete all"
+                                            asp-action="DeleteAllUsers" asp-controller="ClassUsers">
+                                        <i class="fa fa-chevron-left"></i>
+                                        <i class="fa fa-chevron-left"></i>
+                                    </button>
+                                }
+
+                            </div>
+                        </div>
+                        <div class="col-md-10">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="search" aria-label="SearchDualList" aria-describedby="basic-addon2">
+                                <span class="input-group-text" id="basic-addon2">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="list-group">
+                        @if (Model.ClassUsers == null || Model.ClassUsers.Count < 1)
+                        {
+                            <li class="list-group-item">
+                                No Users added for this class yet
+                            </li>
+                        }
+                        else
+                        {
+                            @for (int i = 0; i < Model.ClassUsers.Count; i++)
+                            {
+                                @Html.HiddenFor(au => Model.ClassUsers[i].User.UserName)
+                                @Html.HiddenFor(au => Model.ClassUsers[i].User.Id)
+                                @Html.HiddenFor(au => Model.ClassUsers[i].UserTypeId)
+                                @Html.HiddenFor(au => Model.ClassUsers[i].SeasonId)
+
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    @Html.CheckBoxFor(m => Model.ClassUsers[i].User.IsSelected, new { @class = "form-check-input", @id = Model.ClassUsers[i].User.Id })
+                                    @Model.ClassUsers[i].User.UserName
+                                    @if (Model.ClassUsers[i].UserType.Name == "Manager")
+                                    {<span class="badge bg-danger rounded-pill">@Model.ClassUsers[i].UserType.Name</span>}
+                                else if (Model.ClassUsers[i].UserType.Name == "Teacher")
+                                {<span class="badge bg-primary rounded-pill">@Model.ClassUsers[i].UserType.Name</span> }
+                            else if (Model.ClassUsers[i].UserType.Name == "Student")
+                            {<span class="badge bg-success rounded-pill">@Model.ClassUsers[i].UserType.Name</span>}
+
+                                </li>
+                                @*<li class="list-group-item">
+                                        @Html.CheckBoxFor(m => Model.ClassUsers[i].User.IsSelected, new { @class = "form-check-input", @id = Model.ClassUsers[i].User.Id })
+                                        @Model.ClassUsers[i].User.UserName
+                                    </li>*@
+                            }
+                        }
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</form>

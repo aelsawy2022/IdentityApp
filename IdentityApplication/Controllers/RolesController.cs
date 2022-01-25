@@ -22,7 +22,7 @@ namespace IdentityApplication.Controllers
 
         public IActionResult Index()
         {
-            var roles = _roleManager.Roles.ToList();
+            var roles = _roleManager.Roles.Where(r => r.School == null && r.Activity == null).ToList();
             return View(roles);
         }
 

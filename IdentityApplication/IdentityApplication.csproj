@@ -6,6 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Migrations\20220125144559_LinkUserAndRoleEntities.cs" />
+    <Compile Remove="Data\Migrations\20220125144559_LinkUserAndRoleEntities.Designer.cs" />
+    <Compile Remove="Data\Migrations\20220125151547_LinkUserAndRoleEntitiesAndApplySeedingData.cs" />
+    <Compile Remove="Data\Migrations\20220125151547_LinkUserAndRoleEntitiesAndApplySeedingData.Designer.cs" />
+    <Compile Remove="Data\Migrations\20220125152802_LinkUserAndRoleEntitiesAndApplySeedingData.cs" />
+    <Compile Remove="Data\Migrations\20220125152802_LinkUserAndRoleEntitiesAndApplySeedingData.Designer.cs" />
+    <Compile Remove="Data\Migrations\20220125152909_LinkUserAndRoleEntitiesAndApplySeedingData.cs" />
+    <Compile Remove="Data\Migrations\20220125152909_LinkUserAndRoleEntitiesAndApplySeedingData.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.12" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.21" />
@@ -19,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Data\Migrations\" />
     <Folder Include="Models\Repositories\" />
     <Folder Include="wwwroot\Upload\Images\" />
   </ItemGroup>
