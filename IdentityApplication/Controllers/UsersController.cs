@@ -258,13 +258,9 @@ namespace IdentityApplication.Controllers
             }
         }
 
-        public async Task<IActionResult> ClassUsers(Guid schoolId)
+        public async Task<IActionResult> AssignRolesToUser(UsersViewModel usersViewModel)
         {
-            //if (schoolId == null || schoolId == Guid.Empty) return View("List");
 
-            //School school = await _unitOfWork.SchoolRepository.GetByIDAsync(schoolId);
-            //school.use
-            //_unitOfWork.UserRepository.GetAsync(u => u.ClassUsers.)
             return View();
         }
     }

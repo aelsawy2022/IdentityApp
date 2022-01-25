@@ -54,7 +54,7 @@ namespace IdentityApplication.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "Active", "ConcurrencyStamp", "Email", "EmailConfirmed", "GovernorateId", "Image", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { new Guid("75eb25d7-6f73-4281-a01e-a5ee8208fdd4"), 0, true, "b9bf9aea-a77d-42f6-b466-a8ce0221b807", "admin@school.com", true, new Guid("586be096-48ef-44d7-94e4-2d0a0c06302a"), null, true, null, "Admin", "ADMIN@SCHOOL.COM", "ADMIN@SCHOOL.COM", "AQAAAAEAACcQAAAAEBufQAQJbYDau/j+n+KO6uup6jdG4PwIXKoCyUCE3ctCHNDSJkWl5U4HJxmNIJ6EEw==", null, false, "MHERALYVWRDCTGRJYR4MHFEK77FFQ6JU", false, "admin@school.com" });
+                values: new object[] { new Guid("75eb25d7-6f73-4281-a01e-a5ee8208fdd4"), 0, true, "b9bf9aea-a77d-42f6-b466-a8ce0221b807", "admin@school.com", true, null, null, true, null, "Admin", "ADMIN@SCHOOL.COM", "ADMIN@SCHOOL.COM", "AQAAAAEAACcQAAAAEBufQAQJbYDau/j+n+KO6uup6jdG4PwIXKoCyUCE3ctCHNDSJkWl5U4HJxmNIJ6EEw==", null, false, "MHERALYVWRDCTGRJYR4MHFEK77FFQ6JU", false, "admin@school.com" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",

@@ -5,10 +5,9 @@
 }
 <h1>Edit User @Model.User.Name</h1>
 <hr />
-
-<form enctype="multipart/form-data" asp-action="Edit">
-    <div class="row">
-        <div class="col-md-4">
+<div class="row">
+    <div class="col-md-4">
+        <form enctype="multipart/form-data" asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <input type="hidden" asp-for="User" />
@@ -46,18 +45,13 @@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
-        </div>
-        <div class="col-md-2"></div>
-        <div class="col-md-6">
-            <h3>User Roles</h3>
-            <br />
-
-            @*<button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#demo">Simple collapsible</button>
-                <div id="demo" class="collapse">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                </div>*@
+        </form>
+    </div>
+    <div class="col-md-2"></div>
+    <div class="col-md-6">
+        <h3>User Roles</h3>
+        <br />
+        <form asp-action="AssignRolesToUser">
 
             <ul class="list-group list-group-flush">
 
@@ -254,10 +248,11 @@
                 </li>
             </ul>
 
-            <br />
-        </div>
+        </form>
+
+        <br />
     </div>
-</form>
+</div>
 <div>
     <a asp-action="List">Back to List</a>
 </div>
@@ -285,4 +280,4 @@
             }
         }
     </script>
-}
+}  
