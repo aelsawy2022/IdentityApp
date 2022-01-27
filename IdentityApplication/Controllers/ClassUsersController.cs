@@ -63,18 +63,28 @@ namespace IdentityApplication.Controllers
             {
                 Season schoolCurrentSeason = await _unitOfWork.SeasonRepository.GetOneAsync(s => s.Current && s.School.Id == model.SchoolId);
 
-                foreach (UsersModel user in model.AllUsers.Where(u => u.IsSelected))
+                if(schoolCurrentSeason == null)
                 {
-                    ClassUser _classUser = new ClassUser();
-                    _classUser.UserId = user.Id;
-                    _classUser.UserTypeId = model.SelectedTypeId;
-                    _classUser.ClassId = model.Class.Id;
-                    _classUser.SeasonId = schoolCurrentSeason.Id;
-
-                    await _unitOfWork.ClassUserRepository.AddAsync(_classUser);
+                    TempData["ErrorMsg"] = "No Seasons added to this school yet, Please add season first and try again";
                 }
-                await _unitOfWork.SaveAsync();
+                else if (model.SelectedTypeId == null || model.SelectedTypeId == Guid.Empty)
+                {
+                    TempData["ErrorMsg"] = "You must select user type";
+                }
+                else
+                {
+                    foreach (UsersModel user in model.AllUsers.Where(u => u.IsSelected))
+                    {
+                        ClassUser _classUser = new ClassUser();
+                        _classUser.UserId = user.Id;
+                        _classUser.UserTypeId = model.SelectedTypeId;
+                        _classUser.ClassId = model.Class.Id;
+                        _classUser.SeasonId = schoolCurrentSeason.Id;
 
+                        await _unitOfWork.ClassUserRepository.AddAsync(_classUser);
+                    }
+                    await _unitOfWork.SaveAsync();
+                }
                 return RedirectToAction("Index", new { gradeId = model.GradeId, schoolId = model.SchoolId, classId = model.Class.Id });
             }
             catch (Exception ex)

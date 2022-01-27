@@ -22,7 +22,7 @@ namespace IdentityApplication.Controllers
 
         public async Task<IActionResult> Index(Guid schoolId)
         {
-            if(schoolId == null || schoolId == Guid.Empty) return RedirectToAction("Index", "Schools");
+            if (schoolId == null || schoolId == Guid.Empty) return RedirectToAction("Index", "Schools");
 
             ActivityViewModel activityViewModel = new ActivityViewModel();
             activityViewModel.Activities = await _unitOfWork.ActivityRepository.GetAsync(a => a.School.Id == schoolId, o => o.OrderBy(a => a.CreationDate)) as List<Activity>;
@@ -46,6 +46,13 @@ namespace IdentityApplication.Controllers
                 activity.CreationDate = DateTime.Now;
                 activity.Id = Guid.NewGuid();
                 activity.School = await _unitOfWork.SchoolRepository.GetByIDAsync(activity.School.Id);
+
+                Role role = new Role() { Id = Guid.NewGuid(), Name = activity.Name, Active = true, School = activity.School };
+                await _unitOfWork.RoleRepository.AddAsync(role);
+
+                if (activity.Roles == null) activity.Roles = new List<Role>();
+
+                activity.Roles.Add(role);
 
                 await _unitOfWork.ActivityRepository.AddAsync(activity);
                 await _unitOfWork.SaveAsync();
@@ -76,7 +83,7 @@ namespace IdentityApplication.Controllers
                 activity.Active = !activity.Active;
                 await _unitOfWork.ActivityRepository.UpdateAsync(activity);
                 await _unitOfWork.SaveAsync();
-                return RedirectToAction("Index", new { schoolId = schoolId});
+                return RedirectToAction("Index", new { schoolId = schoolId });
             }
             catch (Exception ex)
             {
@@ -86,7 +93,6 @@ namespace IdentityApplication.Controllers
                 return View("Error", errorViewModel);
             }
         }
-
 
         public async Task<IActionResult> Edit(Guid activityId, Guid schoolId)
         {
@@ -102,6 +108,12 @@ namespace IdentityApplication.Controllers
             try
             {
                 activity.School = await _unitOfWork.SchoolRepository.GetByIDAsync(activity.School.Id);
+                Role role = await _unitOfWork.RoleRepository.GetOneAsync(r => r.School.Id == activity.School.Id && r.Activity.Id == activity.Id);
+                if(role != null)
+                {
+                    role.Name = activity.Name;
+                    await _unitOfWork.RoleRepository.UpdateAsync(role);
+                }
 
                 await _unitOfWork.ActivityRepository.UpdateAsync(activity);
                 await _unitOfWork.SaveAsync();
@@ -120,13 +132,20 @@ namespace IdentityApplication.Controllers
         {
             try
             {
-                Activity activity = await _unitOfWork.ActivityRepository.GetByIDAsync(activityId);
+                Activity activity = (await _unitOfWork.ActivityRepository.GetAsync(a => a.Id == activityId, null, "Roles")).FirstOrDefault();
                 if (activity == null)
                 {
                     ViewBag.Error = "Not Found";
                     return View("Index");
                 }
 
+                if(activity.Roles != null)
+                {
+                    foreach(Role role in activity.Roles)
+                    {
+                        await _unitOfWork.RoleRepository.DeleteAsync(role);
+                    }
+                }
                 await _unitOfWork.ActivityRepository.DeleteAsync(activity);
                 await _unitOfWork.SaveAsync();
                 return RedirectToAction("Index", new { schoolId = schoolId });

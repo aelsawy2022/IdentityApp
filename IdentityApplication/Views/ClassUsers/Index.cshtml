@@ -3,7 +3,6 @@
     ViewData["Title"] = "Index";
 }
 
-
 <div class="text-center">
     <h1 class="display-4">Users of Class @Model.Class.Name</h1>
     <p>You can manage class users from this screen.</p>
@@ -46,9 +45,19 @@
                     <div class="row">
                         <div class="col-md-10 mb-3">
                             <div class="input-group">
-                                <span class="input-group-text" id="basic-addon1">
-                                    <i class="fa fa-search"></i>
-                                </span>
+                                @if (Model.AllUsers == null || Model.AllUsers.Count < 1)
+                                {
+                                    <button class="btn input-group-text border" id="basic-addon1" disabled>
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="btn input-group-text border" id="basic-addon1">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                }
+
                                 <input type="text" class="form-control" placeholder="search" aria-label="SearchDualList" aria-describedby="basic-addon1">
                             </div>
                         </div>
@@ -128,9 +137,18 @@
                         <div class="col-md-10">
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control" placeholder="search" aria-label="SearchDualList" aria-describedby="basic-addon2">
-                                <span class="input-group-text" id="basic-addon2">
-                                    <i class="fa fa-search"></i>
-                                </span>
+                                @if (Model.ClassUsers == null || Model.ClassUsers.Count < 1)
+                                {
+                                    <button class="btn input-group-text border" id="basic-addon2" disabled>
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="btn input-group-text border" id="basic-addon2">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                }
                             </div>
                         </div>
                     </div>

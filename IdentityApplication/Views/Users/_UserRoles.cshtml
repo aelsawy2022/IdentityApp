@@ -1,0 +1,107 @@
+﻿@model IdentityApplication.Models.ViewModels.UsersViewModel
+
+@Html.HiddenFor(x => Model.User.Id)
+@Html.HiddenFor(x => Model.User.Name)
+
+<ul class="list-group list-group-flush">
+
+    <li class="list-group-item">
+        @if (Model.Roles.Any())
+        {
+            <a data-bs-toggle="collapse" data-bs-target="#generalRoles"
+               onclick="showHideRoles('showGeneralRolesBtn')" id="general-roles">
+                <i id="showGeneralRolesBtn" class="fa fa-angle-down"></i>
+            </a>
+            <label for="general-roles">General Roles</label>
+        }
+
+        <ul id="generalRoles" class="list-group list-group-flush collapse">
+
+            @for (int i = 0; i < Model.Roles.Count; i++)
+            {
+                @Html.HiddenFor(au => Model.Roles[i].Name)
+                @Html.HiddenFor(au => Model.Roles[i].Id)
+                <li class="list-group-item">
+                    <div class="custom-control custom-checkbox btn-group">
+                        <div class="row">
+                            <div class="col-auto" style="margin-right: 5px;">
+                            </div>
+                            <div class="col-auto">
+                                @Html.CheckBoxFor(x => Model.Roles[i].IsSelected, new { @class = "custom-control-input", @id = Model.Roles[i].Id })
+                                <label class="custom-control-label" for="@Model.Roles[i].Id">@Model.Roles[i].Name</label>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </li>
+
+
+    <li class="list-group-item">
+        @if (Model.Schools.Any())
+        {
+            <a data-bs-toggle="collapse" data-bs-target="#schoolsRoles"
+               onclick="showHideRoles('showSchoolsRoles')" id="schools-roles">
+                <i id="showSchoolsRoles" class="fa fa-angle-down"></i>
+            </a>
+            <label for="schools-roles">Schools Roles</label>
+        }
+
+        <ul id="schoolsRoles" class="list-group list-group-flush collapse">
+
+            @for (int i = 0; i < Model.Schools.Count; i++)
+            {
+                @Html.HiddenFor(x => Model.Schools[i].Id)
+                @Html.HiddenFor(x => Model.Schools[i].Name)
+
+                string _id = "school" + i;
+                string _expandId = "expandSchool" + i;
+
+
+            <li class="list-group-item">
+                @if (Model.Schools[i].Roles.Any())
+                {
+                    <a data-bs-toggle="collapse" data-bs-target="#@_id"
+                       onclick="showHideRoles('@_expandId')" id="@Model.Schools[i].Id">
+                        <i id="@_expandId" class="fa fa-angle-down"></i>
+                    </a>
+                    <label for="@Model.Schools[i].Id">@Model.Schools[i].Name</label>
+                }
+
+                <ul id="@_id" class="list-group list-group-flush collapse">
+
+                    <li class="list-group-item">
+                        <ul class="list-group list-group-flush">
+                            @for (int j = 0; j < Model.Schools[i].Roles.Count; j++)
+                            {
+                                @Html.HiddenFor(x => Model.Schools[i].Roles[j].Id)
+                                @Html.HiddenFor(x => Model.Schools[i].Roles[j].Name)
+
+                                <li class="list-group-item">
+                                    <div class="custom-control custom-checkbox btn-group">
+                                        <div class="row">
+                                            <div class="col-auto">
+                                            </div>
+                                            <div class="col-auto">
+                                                @{
+                                                    string roleName = Model.Schools[i].Roles[j].Name;
+                                                    if (Model.Schools[i].Roles[j].Activity != null) roleName += " Activity";
+                                                }
+                                                @Html.CheckBoxFor(x => Model.Schools[i].Roles[j].IsSelected, new { @class = "custom-control-input", @id = Model.Schools[i].Roles[j].Id })
+                                                <label class="custom-control-label" for="@Model.Schools[i].Roles[j].Id">@roleName</label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </li>
+
+                </ul>
+            </li>
+            }
+        </ul>
+    </li>
+</ul>

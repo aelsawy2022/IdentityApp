@@ -45,25 +45,13 @@ namespace IdentityApplication.Controllers
             _environment = environment;
         }
 
-        public IActionResult Index(UsersFilter filter)
+        public IActionResult Index()
         {
-            //Expression<Func<User, bool>> _Expression = null;
-
-            //if (filter != null)
-            //{
-            //    _Expression =
-            //    (
-            //        x => (!string.IsNullOrEmpty(filter.Name) ? (x.Name == filter.Name || x.UserName == filter.Name) : true)
-            //        && (!string.IsNullOrEmpty(filter.Id) ? x.Id == filter.Id : true)
-            //    );
-            //}
-
-            //await _unitOfWork.
             return View();
         }
 
         [Authorize]
-        public async Task<IActionResult> List(int currentPage = 1, int maxRows = 2)
+        public async Task<IActionResult> List(int currentPage = 1, int maxRows = 2, string searchTxt = "")
         {
             UsersViewModel usersViewModel = new UsersViewModel();
             usersViewModel.Users = _mapper.Map<List<UsersModel>>(
@@ -157,7 +145,6 @@ namespace IdentityApplication.Controllers
 
             usersViewModel.Schools = _mapper.Map<List<SchoolModel>>(await _unitOfWork.SchoolRepository.GetSchoolWithActivitiesAndRolesAsync(null, o => o.OrderBy(s => s.Name)) as List<School>);
             usersViewModel.Roles = _mapper.Map<List<RolesModel>>(await _unitOfWork.RoleRepository.GetAsync(r => r.School == null && r.Activity == null, o => o.OrderBy(r => r.Name)) as List<Role>);
-            //usersViewModel.Activities = _mapper.Map<List<ActivityModel>>(await _unitOfWork.ActivityRepository.GetAllAsync(o => o.OrderBy(a => a.Name), "Roles") as List<Activity>);
 
             usersViewModel.Governorates = await _governorateRepository.GetAllAsync(o => o.OrderBy(g => g.Name)) as List<Governorate>;
 
@@ -168,16 +155,16 @@ namespace IdentityApplication.Controllers
 
         private void SyncUserRolesWithSystemRoles(UsersViewModel usersViewModel)
         {
-            foreach(SchoolModel school in usersViewModel.Schools)
+            foreach (SchoolModel school in usersViewModel.Schools)
             {
-                foreach(RolesModel schoolRole in school.Roles)
+                foreach (RolesModel schoolRole in school.Roles)
                 {
                     if (usersViewModel.User.Roles.Any() && usersViewModel.User.Roles.Any(ur => ur.RoleId == schoolRole.Id))
                         schoolRole.IsSelected = true;
                 }
-                foreach(ActivityModel activity in school.Activities)
+                foreach (ActivityModel activity in school.Activities)
                 {
-                    foreach(RolesModel activityRole in activity.Roles)
+                    foreach (RolesModel activityRole in activity.Roles)
                     {
                         if (usersViewModel.User.Roles.Any(ur => ur.RoleId == activityRole.Id))
                             activityRole.IsSelected = true;
@@ -191,7 +178,7 @@ namespace IdentityApplication.Controllers
                 if (school.Activities.Any() && !school.Activities.Any(a => !a.IsSelected))
                     school.IsActivitiesSelected = true;
             }
-            foreach(RolesModel generalRole in usersViewModel.Roles)
+            foreach (RolesModel generalRole in usersViewModel.Roles)
             {
                 if (usersViewModel.User.Roles.Any(ur => ur.RoleId == generalRole.Id))
                     generalRole.IsSelected = true;
@@ -204,19 +191,21 @@ namespace IdentityApplication.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(UsersModel user)
+        public async Task<IActionResult> Edit(UsersViewModel usersViewModel)
         {
             try
             {
-                User u = await _unitOfWork.UserRepository.GetByIDAsync(user.Id);
+                User u = await _unitOfWork.UserRepository.GetOneAsync(u => u.Id == usersViewModel.User.Id, "UserRoles");
 
-                if(user.ImageFile != null)
+                AssignRolesToUser(u, usersViewModel);
+
+                if (usersViewModel.User.ImageFile != null)
                 {
                     DeleteCurrentImageIfExists(u.Image);
+                    u.Image = await UploadImage(usersViewModel.User.ImageFile);
                 }
-                u.Image = await UploadImage(user.ImageFile);
-                u.Governorate = await _governorateRepository.GetByIDAsync(user.Governorate.Id);
-                u.Name = user.Name;
+                u.Governorate = await _governorateRepository.GetByIDAsync(usersViewModel.User.Governorate.Id);
+                u.Name = usersViewModel.User.Name;
 
                 await _unitOfWork.UserRepository.UpdateAsync(u);
                 await _unitOfWork.SaveAsync();
@@ -250,18 +239,106 @@ namespace IdentityApplication.Controllers
 
         private void DeleteCurrentImageIfExists(string image)
         {
-            string imagePath = Path.Combine(_environment.WebRootPath, "Upload", "Images", image);
-
-            if (System.IO.File.Exists(imagePath))
+            if (!string.IsNullOrEmpty(image))
             {
-                System.IO.File.Delete(imagePath);
+                string imagePath = Path.Combine(_environment.WebRootPath, "Upload", "Images", image);
+
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
             }
+
         }
 
-        public async Task<IActionResult> AssignRolesToUser(UsersViewModel usersViewModel)
-        {
 
-            return View();
+        //public async Task<IActionResult> AssignRolesToUser(UsersViewModel usersViewModel)
+        //{
+        //    try
+        //    {
+        //        usersViewModel.User = _mapper.Map<UsersModel>(await _unitOfWork.UserRepository.GetOneAsync(
+        //                                                            u => u.Id == usersViewModel.User.Id, "Governorate,UserRoles"));
+
+        //        usersViewModel.Governorates = await _governorateRepository.GetAllAsync(o => o.OrderBy(g => g.Name)) as List<Governorate>;
+
+        //        if (usersViewModel.IsGeneralRolesSelected)
+        //        {
+        //            foreach (RolesModel gr in usersViewModel.Roles)
+        //            {
+        //                gr.IsSelected = true;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (!usersViewModel.Roles.Any(gr => !gr.IsSelected))
+        //                usersViewModel.IsGeneralRolesSelected = true;
+        //        }
+
+        //        if (usersViewModel.IsSchoolsRolesSelected)
+        //        {
+        //            foreach (SchoolModel s in usersViewModel.Schools)
+        //            {
+        //                s.IsSelected = true;
+        //                foreach (RolesModel sr in s.Roles)
+        //                {
+        //                    sr.IsSelected = true;
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            foreach (SchoolModel s in usersViewModel.Schools)
+        //            {
+        //                if (s.IsSelected)
+        //                {
+        //                    foreach (RolesModel sr in s.Roles)
+        //                    {
+        //                        sr.IsSelected = true;
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    if (!s.Roles.Any(sr => !sr.IsSelected))
+        //                        s.IsSelected = true;
+        //                }
+        //            }
+        //            if (!usersViewModel.Schools.Any(s => !s.IsSelected))
+        //                usersViewModel.IsSchoolsRolesSelected = true;
+        //        }
+        //        return View("Edit", usersViewModel);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        while (ex.InnerException != null) ex = ex.InnerException;
+        //        ErrorViewModel errorViewModel = new ErrorViewModel();
+        //        errorViewModel.ErrorMessage = ex.Message.ToString();
+        //        return View("Error", errorViewModel);
+        //    }
+        //}
+
+        private void AssignRolesToUser(User user, UsersViewModel usersViewModel)
+        {
+            user.UserRoles = new List<UserRole>();
+
+            foreach (RolesModel gr in usersViewModel.Roles)
+            {
+                if (gr.IsSelected)
+                {
+                    user.UserRoles.Add(new UserRole() { RoleId = gr.Id, UserId = user.Id });
+                }
+            }
+
+            foreach (SchoolModel s in usersViewModel.Schools)
+            {
+                foreach (RolesModel sr in s.Roles)
+                {
+                    if (sr.IsSelected)
+                    {
+                        user.UserRoles.Add(new UserRole() { RoleId = sr.Id, UserId = user.Id });
+                    }
+                }
+
+            }
         }
     }
 }

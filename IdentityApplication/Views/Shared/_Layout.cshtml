@@ -30,11 +30,11 @@
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
                         @*<li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                            </li>*@
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>*@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <partial name="_ManageAdminNav" />
@@ -45,35 +45,36 @@
             </div>
         </nav>
 
-        @if (!string.IsNullOrEmpty((string)ViewBag.Error))
+    </header>
+    <div class="container">
+
+        @if (!string.IsNullOrEmpty((string)TempData["ErrorMsg"]))
         {
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                @ViewData["Error"].ToString();
+                @TempData["ErrorMsg"]
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }
 
-    </header>
-    <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
         @*@if (SignInManager.IsSignedIn(User))
-            {
-                <div class="row">
-                    <div class="col-md-3">
-                        <partial name="_ManageAdminNav" />
-                    </div>
-                    <div class="col-md-9">
-                        <main role="main" class="pb-3">
-                            @RenderBody()
-                        </main>
-                    </div>
+        {
+            <div class="row">
+                <div class="col-md-3">
+                    <partial name="_ManageAdminNav" />
                 </div>
-            }
-            else
-            {
-            }*@
+                <div class="col-md-9">
+                    <main role="main" class="pb-3">
+                        @RenderBody()
+                    </main>
+                </div>
+            </div>
+        }
+        else
+        {
+        }*@
     </div>
 
     <footer class="border-top footer text-muted">
