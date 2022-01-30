@@ -251,93 +251,90 @@ namespace IdentityApplication.Controllers
 
         }
 
-
-        //public async Task<IActionResult> AssignRolesToUser(UsersViewModel usersViewModel)
-        //{
-        //    try
-        //    {
-        //        usersViewModel.User = _mapper.Map<UsersModel>(await _unitOfWork.UserRepository.GetOneAsync(
-        //                                                            u => u.Id == usersViewModel.User.Id, "Governorate,UserRoles"));
-
-        //        usersViewModel.Governorates = await _governorateRepository.GetAllAsync(o => o.OrderBy(g => g.Name)) as List<Governorate>;
-
-        //        if (usersViewModel.IsGeneralRolesSelected)
-        //        {
-        //            foreach (RolesModel gr in usersViewModel.Roles)
-        //            {
-        //                gr.IsSelected = true;
-        //            }
-        //        }
-        //        else
-        //        {
-        //            if (!usersViewModel.Roles.Any(gr => !gr.IsSelected))
-        //                usersViewModel.IsGeneralRolesSelected = true;
-        //        }
-
-        //        if (usersViewModel.IsSchoolsRolesSelected)
-        //        {
-        //            foreach (SchoolModel s in usersViewModel.Schools)
-        //            {
-        //                s.IsSelected = true;
-        //                foreach (RolesModel sr in s.Roles)
-        //                {
-        //                    sr.IsSelected = true;
-        //                }
-        //            }
-        //        }
-        //        else
-        //        {
-        //            foreach (SchoolModel s in usersViewModel.Schools)
-        //            {
-        //                if (s.IsSelected)
-        //                {
-        //                    foreach (RolesModel sr in s.Roles)
-        //                    {
-        //                        sr.IsSelected = true;
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    if (!s.Roles.Any(sr => !sr.IsSelected))
-        //                        s.IsSelected = true;
-        //                }
-        //            }
-        //            if (!usersViewModel.Schools.Any(s => !s.IsSelected))
-        //                usersViewModel.IsSchoolsRolesSelected = true;
-        //        }
-        //        return View("Edit", usersViewModel);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        while (ex.InnerException != null) ex = ex.InnerException;
-        //        ErrorViewModel errorViewModel = new ErrorViewModel();
-        //        errorViewModel.ErrorMessage = ex.Message.ToString();
-        //        return View("Error", errorViewModel);
-        //    }
-        //}
-
         private void AssignRolesToUser(User user, UsersViewModel usersViewModel)
         {
             user.UserRoles = new List<UserRole>();
 
-            foreach (RolesModel gr in usersViewModel.Roles)
+            if (usersViewModel.Roles != null)
             {
-                if (gr.IsSelected)
+                foreach (RolesModel gr in usersViewModel.Roles)
                 {
-                    user.UserRoles.Add(new UserRole() { RoleId = gr.Id, UserId = user.Id });
+                    if (gr.IsSelected)
+                    {
+                        user.UserRoles.Add(new UserRole() { RoleId = gr.Id, UserId = user.Id });
+                    }
                 }
             }
 
-            foreach (SchoolModel s in usersViewModel.Schools)
+            if (usersViewModel.Schools != null)
             {
-                foreach (RolesModel sr in s.Roles)
+                foreach (SchoolModel s in usersViewModel.Schools)
                 {
-                    if (sr.IsSelected)
+                    if (s.Roles != null)
                     {
-                        user.UserRoles.Add(new UserRole() { RoleId = sr.Id, UserId = user.Id });
+                        foreach (RolesModel sr in s.Roles)
+                        {
+                            if (sr.IsSelected)
+                            {
+                                user.UserRoles.Add(new UserRole() { RoleId = sr.Id, UserId = user.Id });
+                            }
+                        }
                     }
                 }
+            }
+        }
 
+        public async Task<IActionResult> Create()
+        {
+            UsersViewModel usersViewModel = new UsersViewModel();
+
+            usersViewModel.User = new UsersModel();
+
+            usersViewModel.Schools = _mapper.Map<List<SchoolModel>>(await _unitOfWork.SchoolRepository.GetSchoolWithActivitiesAndRolesAsync(null, o => o.OrderBy(s => s.Name)) as List<School>);
+            usersViewModel.Roles = _mapper.Map<List<RolesModel>>(await _unitOfWork.RoleRepository.GetAsync(r => r.School == null && r.Activity == null, o => o.OrderBy(r => r.Name)) as List<Role>);
+
+            usersViewModel.Governorates = await _governorateRepository.GetAllAsync(o => o.OrderBy(g => g.Name)) as List<Governorate>;
+
+            return View(usersViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(UsersViewModel usersViewModel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    string userPass = "Test@123";
+                    string userEmail = usersViewModel.User.Name.Trim().Replace(" ", ".").ToLower() + usersViewModel.ServerName;
+
+                    var user = new User 
+                    { 
+                        UserName = userEmail, 
+                        Email = userEmail,
+                        Name = usersViewModel.User.Name,
+                        Governorate = await _governorateRepository.GetByIDAsync(usersViewModel.User.Governorate.Id),
+                        Active = true,
+                        EmailConfirmed = true
+                    };
+
+                    AssignRolesToUser(user, usersViewModel);
+
+                    var result = await _userManager.CreateAsync(user, userPass);
+
+                    if(result.Succeeded) return RedirectToAction("List");
+
+                    foreach (var error in result.Errors)
+                    {
+                        TempData["ErrorMsg"] += error.Description + " ";
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
+                return RedirectToAction("Create");
+            }
+            catch(Exception ex)
+            {
+                throw;
             }
         }
     }

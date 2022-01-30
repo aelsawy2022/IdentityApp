@@ -19,6 +19,7 @@ namespace IdentityApplication.Models.ViewModels
 
         public bool IsGeneralRolesSelected { get; set; }
         public bool IsSchoolsRolesSelected { get; set; }
+        public string ServerName { get; set; } = "@school.com";
     }
 
     public class UsersFilter : PagingModel

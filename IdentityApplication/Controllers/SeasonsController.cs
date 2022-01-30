@@ -45,7 +45,9 @@ namespace IdentityApplication.Controllers
             {
                 season.CreationDate = DateTime.Now;
                 season.Id = Guid.NewGuid();
-                season.School = await _unitOfWork.SchoolRepository.GetByIDAsync(season.School.Id);
+                season.School = await _unitOfWork.SchoolRepository.GetOneAsync(s => s.Id == season.School.Id, "Seasons");
+
+                if (!season.School.Seasons.Any(s => s.Current)) season.Current = true;
 
                 await _unitOfWork.SeasonRepository.AddAsync(season);
                 await _unitOfWork.SaveAsync();

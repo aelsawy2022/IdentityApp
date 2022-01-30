@@ -51,13 +51,10 @@
         <div class="col-md-6">
             <h3>User Roles</h3>
             <br />
-            
-            @await Html.PartialAsync("_UserRoles", Model)
+            <div>
+                @await Html.PartialAsync("_UserRoles", Model)
+            </div>
 
-            @*<form asp-action="AssignRolesToUser" asp-controller="Users">
-
-                </form>*@
-            <br />
         </div>
     </div>
 </form>
@@ -77,7 +74,6 @@
         });
 
         function showHideRoles(id) {
-            debugger;
             if (document.getElementById(id).classList.contains('fa-angle-down')) {
                 document.getElementById(id).classList.remove("fa-angle-down");
                 document.getElementById(id).classList.add("fa-angle-up");
