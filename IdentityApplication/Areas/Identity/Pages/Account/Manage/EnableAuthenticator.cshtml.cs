@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using IdentityApplication.Data.Entities;
+using SchoolManagement.Persistance.Data.Entities;
 
 namespace IdentityApplication.Areas.Identity.Pages.Account.Manage
 {

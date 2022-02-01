@@ -1,43 +1,38 @@
-﻿using IdentityApplication.Data.Entities;
-using IdentityApplication.Data.UnitOfWorks;
-using IdentityApplication.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SchoolManagement.Core.Services.Interfaces;
+using SchoolManagement.Models.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace IdentityApplication.Controllers
 {
     public class UserTypesController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserTypeService _userTypeService;
 
-        public UserTypesController(IUnitOfWork unitOfWork)
+        public UserTypesController(IUserTypeService userTypeService)
         {
-            _unitOfWork = unitOfWork;
+            _userTypeService = userTypeService;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View(await _unitOfWork.UserTypeRepository.GetAllAsync(o => o.OrderBy(ut => ut.CreationDate)) as List<UserType>);
+            return View(await _userTypeService.GetAllUserTypes());
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View(new UserType());
+            return View(await _userTypeService.InitiateCreate());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(UserType userType)
+        public async Task<IActionResult> Create(UserTypeModel userType)
         {
             try
             {
-                userType.CreationDate = DateTime.Now;
-                userType.Id = Guid.NewGuid();
-                await _unitOfWork.UserTypeRepository.AddAsync(userType);
-                await _unitOfWork.SaveAsync();
+                bool succeded = await _userTypeService.Create(userType);
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -55,17 +50,8 @@ namespace IdentityApplication.Controllers
         {
             try
             {
-
-                UserType type = await _unitOfWork.UserTypeRepository.GetByIDAsync(typeId);
-                if (type == null)
-                {
-                    ViewBag.Error = "Type not found";
-                    return View("Index");
-                }
-
-                type.Active = !type.Active;
-                await _unitOfWork.UserTypeRepository.UpdateAsync(type);
-                await _unitOfWork.SaveAsync();
+                bool succeded = await _userTypeService.ActivateType(typeId);
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -79,16 +65,16 @@ namespace IdentityApplication.Controllers
 
         public async Task<IActionResult> Edit(Guid userTypeId)
         {
-            return View(await _unitOfWork.UserTypeRepository.GetByIDAsync(userTypeId));
+            return View(await _userTypeService.InitiateEdit(userTypeId));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(UserType userType)
+        public async Task<IActionResult> Edit(UserTypeModel userType)
         {
             try
             {
-                await _unitOfWork.UserTypeRepository.UpdateAsync(userType);
-                await _unitOfWork.SaveAsync();
+                bool succeded = await _userTypeService.Edit(userType);
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -104,15 +90,8 @@ namespace IdentityApplication.Controllers
         {
             try
             {
-                UserType userType = await _unitOfWork.UserTypeRepository.GetByIDAsync(userTypeId);
-                if (userType == null)
-                {
-                    ViewBag.Error = "Not Found";
-                    return View("Index");
-                }
-
-                await _unitOfWork.UserTypeRepository.DeleteAsync(userType);
-                await _unitOfWork.SaveAsync();
+                bool succeded = await _userTypeService.Delete(userTypeId);
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)

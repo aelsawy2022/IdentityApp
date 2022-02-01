@@ -1,56 +1,40 @@
-﻿using IdentityApplication.Data.Entities;
-using IdentityApplication.Data.UnitOfWorks;
-using IdentityApplication.Models;
-using IdentityApplication.Models.ViewModels;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SchoolManagement.Core.Services.Interfaces;
+using SchoolManagement.Models.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace IdentityApplication.Controllers
 {
     public class SeasonsController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly ISeasonService _seasonService;
 
-        public SeasonsController(IUnitOfWork unitOfWork)
+        public SeasonsController(ISeasonService seasonService)
         {
-            _unitOfWork = unitOfWork;
+            _seasonService = seasonService;
         }
 
         public async Task<IActionResult> Index(Guid schoolId)
         {
             if (schoolId == null || schoolId == Guid.Empty) return RedirectToAction("Index", "Schools");
 
-            SeasonViewModel seasonViewModel = new SeasonViewModel();
-            seasonViewModel.Seasons = await _unitOfWork.SeasonRepository.GetAsync(a => a.School.Id == schoolId, o => o.OrderBy(a => a.CreationDate)) as List<Season>;
-            seasonViewModel.School = await _unitOfWork.SchoolRepository.GetByIDAsync(schoolId);
-            return View(seasonViewModel);
+            return View(await _seasonService.Initiate(schoolId));
         }
 
         public async Task<IActionResult> Create(Guid schoolId)
         {
-            SeasonViewModel activityViewModel = new SeasonViewModel();
-            activityViewModel.Season = new Season();
-            activityViewModel.School = await _unitOfWork.SchoolRepository.GetByIDAsync(schoolId);
-            return View(activityViewModel);
+            return View(await _seasonService.InitiateCreate(schoolId));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Season season)
+        public async Task<IActionResult> Create(SeasonModel season)
         {
             try
             {
-                season.CreationDate = DateTime.Now;
-                season.Id = Guid.NewGuid();
-                season.School = await _unitOfWork.SchoolRepository.GetOneAsync(s => s.Id == season.School.Id, "Seasons");
-
-                if (!season.School.Seasons.Any(s => s.Current)) season.Current = true;
-
-                await _unitOfWork.SeasonRepository.AddAsync(season);
-                await _unitOfWork.SaveAsync();
+                bool succeded = await _seasonService.Create(season);
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
                 return RedirectToAction("Index", new { schoolId = season.School.Id });
             }
             catch (Exception ex)
@@ -67,24 +51,8 @@ namespace IdentityApplication.Controllers
         {
             try
             {
-
-                Season season = await _unitOfWork.SeasonRepository.GetByIDAsync(seasonId);
-                if (season == null)
-                {
-                    ViewBag.Error = "Type not found";
-                    return View("Index");
-                }
-                season.Current = true;
-                await _unitOfWork.SeasonRepository.UpdateAsync(season);
-
-                Season currentSeason = await _unitOfWork.SeasonRepository.GetOneAsync(s => s.Current);
-                if (currentSeason != null)
-                {
-                    currentSeason.Current = false;
-                    await _unitOfWork.SeasonRepository.UpdateAsync(currentSeason);
-                }
-
-                await _unitOfWork.SaveAsync();
+                bool succeded = await _seasonService.ActivateSeason(seasonId);
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
                 return RedirectToAction("Index", new { schoolId = schoolId });
             }
             catch (Exception ex)
@@ -99,21 +67,16 @@ namespace IdentityApplication.Controllers
 
         public async Task<IActionResult> Edit(Guid seasonId, Guid schoolId)
         {
-            SeasonViewModel seasonViewModel = new SeasonViewModel();
-            seasonViewModel.Season = await _unitOfWork.SeasonRepository.GetByIDAsync(seasonId);
-            seasonViewModel.School = await _unitOfWork.SchoolRepository.GetByIDAsync(schoolId);
-            return View(seasonViewModel);
+            return View(await _seasonService.InitiateEdit(seasonId, schoolId));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Season season)
+        public async Task<IActionResult> Edit(SeasonModel season)
         {
             try
             {
-                season.School = await _unitOfWork.SchoolRepository.GetByIDAsync(season.School.Id);
-
-                await _unitOfWork.SeasonRepository.UpdateAsync(season);
-                await _unitOfWork.SaveAsync();
+                bool succeded = await _seasonService.Edit(season);
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
                 return RedirectToAction("Index", new { schoolId = season.School.Id });
             }
             catch (Exception ex)
@@ -129,15 +92,8 @@ namespace IdentityApplication.Controllers
         {
             try
             {
-                Season season = await _unitOfWork.SeasonRepository.GetByIDAsync(seasonId);
-                if (season == null)
-                {
-                    ViewBag.Error = "Not Found";
-                    return View("Index");
-                }
-
-                await _unitOfWork.SeasonRepository.DeleteAsync(season);
-                await _unitOfWork.SaveAsync();
+                bool succeded = await _seasonService.Delete(seasonId);
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
                 return RedirectToAction("Index", new { schoolId = schoolId });
             }
             catch (Exception ex)

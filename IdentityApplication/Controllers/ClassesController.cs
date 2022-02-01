@@ -1,8 +1,8 @@
-﻿using IdentityApplication.Data.Entities;
-using IdentityApplication.Data.UnitOfWorks;
-using IdentityApplication.Models;
-using IdentityApplication.Models.ViewModels;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using SchoolManagement.Core.Services.Interfaces;
+using SchoolManagement.Models.Models;
+using SchoolManagement.Persistance.Data.Entities;
+using SchoolManagement.Persistance.UnitOfWorks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,46 +12,33 @@ namespace IdentityApplication.Controllers
 {
     public class ClassesController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IClassService _classService;
 
-        public ClassesController(IUnitOfWork unitOfWork)
+        public ClassesController(IClassService classService)
         {
-            _unitOfWork = unitOfWork;
+            _classService = classService;
         }
 
         public async Task<IActionResult> Index(Guid gradeId, Guid schoolId)
         {
             if (gradeId == null || gradeId == Guid.Empty) return RedirectToAction("Index", "Grades", new { schoolId = schoolId });
 
-            ClassViewModel classViewModel = new ClassViewModel();
-            classViewModel.Classes = await _unitOfWork.ClassRepository.GetAsync(c => c.Grade.Id == gradeId, o => o.OrderBy(c => c.CreationDate)) as List<Class>;
-            classViewModel.Grade = await _unitOfWork.GradeRepository.GetByIDAsync(gradeId);
-            classViewModel.SchoolId = schoolId;
-            return View(classViewModel);
+            return View(await _classService.Initiate(gradeId, schoolId));
         }
 
         public async Task<IActionResult> Create(Guid gradeId, Guid schoolId)
         {
-            ClassViewModel classViewModel = new ClassViewModel();
-            classViewModel.Class = new Class();
-            classViewModel.Grade = await _unitOfWork.GradeRepository.GetByIDAsync(gradeId);
-            classViewModel.SchoolId = schoolId;
-            return View(classViewModel);
+            return View(await _classService.InitiateCreate(gradeId, schoolId));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Class Class)
+        public async Task<IActionResult> Create(ClassModel Class)
         {
             try
             {
                 Guid schoolId = Class.Grade.School.Id;
-
-                Class.CreationDate = DateTime.Now;
-                Class.Id = Guid.NewGuid();
-                Class.Grade = await _unitOfWork.GradeRepository.GetByIDAsync(Class.Grade.Id);
-
-                await _unitOfWork.ClassRepository.AddAsync(Class);
-                await _unitOfWork.SaveAsync();
+                bool succeded = await _classService.Create(Class);
+                if(!succeded) TempData["ErrorMsg"] = "Something wrong";
                 return RedirectToAction("Index", new { gradeId = Class.Grade.Id, schoolId = schoolId });
             }
             catch (Exception ex)
@@ -65,26 +52,18 @@ namespace IdentityApplication.Controllers
 
         public async Task<IActionResult> Edit(Guid classId, Guid gradeId, Guid schoolId)
         {
-            ClassViewModel classViewModel = new ClassViewModel();
-            classViewModel.Class = await _unitOfWork.ClassRepository.GetByIDAsync(classId);
-            classViewModel.Grade = await _unitOfWork.GradeRepository.GetByIDAsync(gradeId);
-            classViewModel.SchoolId = schoolId;
-            return View(classViewModel);
+            return View(await _classService.InitiateEdit(classId, gradeId, schoolId));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Class Class)
+        public async Task<IActionResult> Edit(ClassModel _class)
         {
             try
             {
-                Guid schoolId = Class.Grade.School.Id;
-
-                Class.Grade = await _unitOfWork.GradeRepository.GetByIDAsync(Class.Grade.Id);
-
-                await _unitOfWork.ClassRepository.UpdateAsync(Class);
-                await _unitOfWork.SaveAsync();
-
-                return RedirectToAction("Index", new { gradeId = Class.Grade.Id, schoolId = schoolId });
+                Guid schoolId = _class.Grade.School.Id;
+                bool succeded = await _classService.Edit(_class);
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
+                return RedirectToAction("Index", new { gradeId = _class.Grade.Id, schoolId = schoolId });
             }
             catch (Exception ex)
             {
@@ -99,13 +78,9 @@ namespace IdentityApplication.Controllers
         {
             try
             {
-                Class _class = await _unitOfWork.ClassRepository.GetByIDAsync(classId);
 
-                if (_class == null) ViewBag.Error = "Not Found";
-
-                await _unitOfWork.ClassRepository.DeleteAsync(_class);
-                await _unitOfWork.SaveAsync();
-
+                bool succeded = await _classService.Delete(classId);
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
                 return RedirectToAction("Index", new { gradeId = gradeId, schoolId = schoolId });
             }
             catch (Exception ex)

@@ -1,53 +1,39 @@
-﻿using IdentityApplication.Data.Entities;
-using IdentityApplication.Data.UnitOfWorks;
-using IdentityApplication.Models;
-using IdentityApplication.Models.ViewModels;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using SchoolManagement.Core.Services.Interfaces;
+using SchoolManagement.Models.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace IdentityApplication.Controllers
 {
     public class GradesController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IGradesService _gradesService;
 
-        public GradesController(IUnitOfWork unitOfWork)
+        public GradesController(IGradesService gradesService)
         {
-            _unitOfWork = unitOfWork;
+            _gradesService = gradesService;
         }
 
         public async Task<IActionResult> Index(Guid schoolId)
         {
             if (schoolId == null || schoolId == Guid.Empty) return RedirectToAction("Index", "Schools");
 
-            GradeViewModel gradeViewModel = new GradeViewModel();
-            gradeViewModel.Grades = await _unitOfWork.GradeRepository.GetAsync(x => x.School.Id == schoolId, o => o.OrderBy(g => g.Name)) as List<Grade>;
-            gradeViewModel.School = await _unitOfWork.SchoolRepository.GetByIDAsync(schoolId);
-            return View(gradeViewModel);
+            return View(await _gradesService.Initiate(schoolId));
         }
 
         public async Task<IActionResult> Create(Guid schoolId)
         {
-            GradeViewModel gradeViewModel = new GradeViewModel();
-            gradeViewModel.Grade = new Grade();
-            gradeViewModel.School = await _unitOfWork.SchoolRepository.GetByIDAsync(schoolId);
-            return View(gradeViewModel);
+            return View(await _gradesService.InitiateCreate(schoolId));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Grade grade)
+        public async Task<IActionResult> Create(GradeModel grade)
         {
             try
             {
-                grade.CreationDate = DateTime.Now;
-                grade.Id = Guid.NewGuid();
-                grade.School = await _unitOfWork.SchoolRepository.GetByIDAsync(grade.School.Id);
-
-                await _unitOfWork.GradeRepository.AddAsync(grade);
-                await _unitOfWork.SaveAsync();
+                bool succeded = await _gradesService.Create(grade);
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
                 return RedirectToAction("Index", new { schoolId = grade.School.Id });
             }
             catch (Exception ex)
@@ -61,21 +47,16 @@ namespace IdentityApplication.Controllers
 
         public async Task<IActionResult> Edit(Guid gradeId, Guid schoolId)
         {
-            GradeViewModel gradeViewModel = new GradeViewModel();
-            gradeViewModel.Grade = await _unitOfWork.GradeRepository.GetByIDAsync(gradeId);
-            gradeViewModel.School = await _unitOfWork.SchoolRepository.GetByIDAsync(schoolId);
-            return View(gradeViewModel);
+            return View(await _gradesService.InitiateEdit(gradeId, schoolId));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Grade grade)
+        public async Task<IActionResult> Edit(GradeModel grade)
         {
             try
             {
-                grade.School = await _unitOfWork.SchoolRepository.GetByIDAsync(grade.School.Id);
-
-                await _unitOfWork.GradeRepository.UpdateAsync(grade);
-                await _unitOfWork.SaveAsync();
+                bool succeded = await _gradesService.Edit(grade);
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
                 return RedirectToAction("Index", new { schoolId = grade.School.Id });
             }
             catch (Exception ex)
@@ -91,12 +72,8 @@ namespace IdentityApplication.Controllers
         {
             try
             {
-                Grade grade = await _unitOfWork.GradeRepository.GetByIDAsync(gradeId);
-
-                if (grade == null)  ViewBag.Error = "Not Found";
-
-                await _unitOfWork.GradeRepository.DeleteAsync(grade);
-                await _unitOfWork.SaveAsync();
+                bool succeded = await _gradesService.Delete(gradeId);
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
 
                 return View("Index", new { schoolId = schoolId });
             }

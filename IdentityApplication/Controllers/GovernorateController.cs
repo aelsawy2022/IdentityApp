@@ -1,43 +1,38 @@
-﻿using IdentityApplication.Data.Entities;
-using IdentityApplication.Data.Repositories.GovernorateRepo;
-using IdentityApplication.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using SchoolManagement.Core.Services.Interfaces;
+using SchoolManagement.Models.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace IdentityApplication.Controllers
 {
     public class GovernorateController : Controller
     {
-        private readonly IGovernorateRepository _governorateRepository;
+        private readonly IGovernorateService _governorateService;
         public GovernorateController(
-            IGovernorateRepository governorateRepository
+            IGovernorateService governorateService
             )
         {
-            _governorateRepository = governorateRepository;
+            _governorateService = governorateService;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View(await _governorateRepository.GetAllAsync() as List<Governorate>);
+            return View(await _governorateService.GetAllGovernorates());
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View(new Governorate());
+            return View(await _governorateService.InitiateCreate());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Governorate governorate)
+        public async Task<IActionResult> Create(GovernorateModel governorate)
         {
             try
             {
-                governorate.CreationDate = DateTime.Now;
-                governorate.Id = Guid.NewGuid();
-                await _governorateRepository.AddAsync(governorate);
-                await _governorateRepository.SaveAsync();
+                bool succeded = await _governorateService.Create(governorate);
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -51,16 +46,16 @@ namespace IdentityApplication.Controllers
 
         public async Task<IActionResult> Edit(Guid governorateId)
         {
-            return View(await _governorateRepository.GetByIDAsync(governorateId));
+            return View(await _governorateService.InitiateEdit(governorateId));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Governorate governorate)
+        public async Task<IActionResult> Edit(GovernorateModel governorate)
         {
             try
             {
-                await _governorateRepository.UpdateAsync(governorate);
-                await _governorateRepository.SaveAsync();
+                bool succeded = await _governorateService.Edit(governorate);
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -76,15 +71,8 @@ namespace IdentityApplication.Controllers
         {
             try
             {
-                Governorate governorate = await _governorateRepository.GetByIDAsync(governorateId);
-                if (governorate == null)
-                {
-                    ViewBag.Error = "Not Found";
-                    return View("Index");
-                }
-
-                await _governorateRepository.DeleteAsync(governorate);
-                await _governorateRepository.SaveAsync();
+                bool succeded = await _governorateService.Delete(governorateId);
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)

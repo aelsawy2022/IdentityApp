@@ -6,14 +6,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Data\Migrations\20220125144559_LinkUserAndRoleEntities.cs" />
-    <Compile Remove="Data\Migrations\20220125144559_LinkUserAndRoleEntities.Designer.cs" />
-    <Compile Remove="Data\Migrations\20220125151547_LinkUserAndRoleEntitiesAndApplySeedingData.cs" />
-    <Compile Remove="Data\Migrations\20220125151547_LinkUserAndRoleEntitiesAndApplySeedingData.Designer.cs" />
-    <Compile Remove="Data\Migrations\20220125152802_LinkUserAndRoleEntitiesAndApplySeedingData.cs" />
-    <Compile Remove="Data\Migrations\20220125152802_LinkUserAndRoleEntitiesAndApplySeedingData.Designer.cs" />
-    <Compile Remove="Data\Migrations\20220125152909_LinkUserAndRoleEntitiesAndApplySeedingData.cs" />
-    <Compile Remove="Data\Migrations\20220125152909_LinkUserAndRoleEntitiesAndApplySeedingData.Designer.cs" />
+    <Compile Remove="AutoMapperConfig\**" />
+    <Compile Remove="Data\**" />
+    <Compile Remove="Migrations\**" />
+    <Compile Remove="Models\**" />
+    <Content Remove="AutoMapperConfig\**" />
+    <Content Remove="Data\**" />
+    <Content Remove="Migrations\**" />
+    <Content Remove="Models\**" />
+    <EmbeddedResource Remove="AutoMapperConfig\**" />
+    <EmbeddedResource Remove="Data\**" />
+    <EmbeddedResource Remove="Migrations\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <None Remove="AutoMapperConfig\**" />
+    <None Remove="Data\**" />
+    <None Remove="Migrations\**" />
+    <None Remove="Models\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,9 +38,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Migrations\" />
-    <Folder Include="Models\Repositories\" />
     <Folder Include="wwwroot\Upload\Images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SchoolManagement.Core\SchoolManagement.Core.csproj" />
+    <ProjectReference Include="..\SchoolManagement.Persistance\SchoolManagement.Persistance.csproj" />
   </ItemGroup>
 
 </Project>

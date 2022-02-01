@@ -1,4 +1,4 @@
-﻿@inject SignInManager<IdentityApplication.Data.Entities.User> SignInManager
+﻿@inject SignInManager<SchoolManagement.Persistance.Data.Entities.User> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }

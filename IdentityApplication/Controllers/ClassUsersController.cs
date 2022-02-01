@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
-using IdentityApplication.Data.Entities;
-using IdentityApplication.Data.UnitOfWorks;
-using IdentityApplication.Models;
-using IdentityApplication.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using SchoolManagement.Core.Services.Interfaces;
+using SchoolManagement.Models.Models;
+using SchoolManagement.Models.Models.ViewModels;
+using SchoolManagement.Persistance.Data.Entities;
+using SchoolManagement.Persistance.UnitOfWorks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,77 +15,26 @@ namespace IdentityApplication.Controllers
 {
     public class ClassUsersController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
+        private readonly IClassUserService _classUserService;
 
-        public ClassUsersController(IUnitOfWork unitOfWork, IMapper mapper)
+        public ClassUsersController(IClassUserService classUserService)
         {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
+            _classUserService = classUserService;
         }
 
         public async Task<IActionResult> Index(Guid gradeId, Guid schoolId, Guid classId)
         {
             if (classId == Guid.Empty) return RedirectToAction("Index", "Classes", new { gradeId = gradeId, schoolId = schoolId });
 
-            ClassUserViewModel classUserViewModel = new ClassUserViewModel();
-            classUserViewModel.usersFilter = new UsersFilter();
-
-            var classUsers = (await _unitOfWork.ClassUserRepository.GetAsync(cu => cu.ClassId == classId,
-                                                o => o.OrderBy(cu => cu.UserId), "User,UserType,Season") as List<ClassUser>).ToList();
-            classUserViewModel.ClassUsers = _mapper.Map<List<ClassUsersModel>>(classUsers);
-
-            var allUsers = await _unitOfWork.UserRepository.GetAsync(GenerateAllUsersExpression(classId), o => o.OrderBy(u => u.Name), "ClassUsers") as List<User>;
-            classUserViewModel.AllUsers = _mapper.Map<List<UsersModel>>(allUsers);
-            //var allUsers = await _unitOfWork.UserRepository.GetAllAsync(o => o.OrderBy(u => u.UserName)) as List<User>;
-            //classUserViewModel.AllUsers = _mapper.Map<List<UsersModel>>(allUsers);
-
-            classUserViewModel.Types = await _unitOfWork.UserTypeRepository.GetAllAsync(o => o.OrderBy(ut => ut.Name)) as List<UserType>;
-
-            classUserViewModel.Class = await _unitOfWork.ClassRepository.GetByIDAsync(classId);
-            classUserViewModel.SchoolId = schoolId;
-            classUserViewModel.GradeId = gradeId;
-
-            return View(classUserViewModel);
-        }
-
-        private Expression<Func<User, bool>> GenerateAllUsersExpression(Guid classId)
-        {
-            Expression<Func<User, bool>> _Expression = (
-                x => (x.ClassUsers == null || x.ClassUsers.Count == 0)
-                || (!x.ClassUsers.Any(cu => cu.ClassId == classId))
-            );
-            return _Expression;
+            return View(await _classUserService.Initiate(gradeId, schoolId, classId));
         }
 
         public async Task<IActionResult> AddUsers(ClassUserViewModel model)
         {
             try
             {
-                Season schoolCurrentSeason = await _unitOfWork.SeasonRepository.GetOneAsync(s => s.Current && s.School.Id == model.SchoolId);
-
-                if(schoolCurrentSeason == null)
-                {
-                    TempData["ErrorMsg"] = "No Seasons added to this school yet, Please add season first and try again";
-                }
-                else if (model.SelectedTypeId == null || model.SelectedTypeId == Guid.Empty)
-                {
-                    TempData["ErrorMsg"] = "You must select user type";
-                }
-                else
-                {
-                    foreach (UsersModel user in model.AllUsers.Where(u => u.IsSelected))
-                    {
-                        ClassUser _classUser = new ClassUser();
-                        _classUser.UserId = user.Id;
-                        _classUser.UserTypeId = model.SelectedTypeId;
-                        _classUser.ClassId = model.Class.Id;
-                        _classUser.SeasonId = schoolCurrentSeason.Id;
-
-                        await _unitOfWork.ClassUserRepository.AddAsync(_classUser);
-                    }
-                    await _unitOfWork.SaveAsync();
-                }
+                var result = await _classUserService.AddUsers(model);
+                if(!result.isSucceded) TempData["ErrorMsg"] = result.message.ToString();
                 return RedirectToAction("Index", new { gradeId = model.GradeId, schoolId = model.SchoolId, classId = model.Class.Id });
             }
             catch (Exception ex)
@@ -100,14 +50,8 @@ namespace IdentityApplication.Controllers
         {
             try
             {
-                foreach (ClassUsersModel classUser in model.ClassUsers.Where(u => u.User.IsSelected))
-                {
-                    await _unitOfWork.ClassUserRepository.DeleteAsync(await _unitOfWork.ClassUserRepository.GetOneAsync(cu => cu.UserId == classUser.User.Id
-                                                                        && cu.ClassId == model.Class.Id
-                                                                        && cu.SeasonId == classUser.SeasonId
-                                                                        && cu.UserTypeId == classUser.UserTypeId));
-                }
-                await _unitOfWork.ClassUserRepository.SaveAsync();
+                var result = await _classUserService.DeleteUsers(model);
+                if (!result.isSucceded) TempData["ErrorMsg"] = result.message.ToString();
                 return RedirectToAction("Index", new { gradeId = model.GradeId, schoolId = model.SchoolId, classId = model.Class.Id });
             }
             catch(Exception ex)

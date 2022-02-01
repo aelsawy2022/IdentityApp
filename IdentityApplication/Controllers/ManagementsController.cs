@@ -1,56 +1,39 @@
-﻿using IdentityApplication.Data.Entities;
-using IdentityApplication.Data.Repositories.GovernorateRepo;
-using IdentityApplication.Data.Repositories.ManagementRepo;
-using IdentityApplication.Models;
-using IdentityApplication.Models.ViewModels;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using SchoolManagement.Core.Services.Interfaces;
+using SchoolManagement.Models.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace IdentityApplication.Controllers
 {
     public class ManagementsController : Controller
     {
-        private readonly IManagementRepository _managementRepository;
-        private readonly IGovernorateRepository _governorateRepository;
+        private readonly IManagementService _managementService;
 
         public ManagementsController(
-            IManagementRepository managementRepository,
-            IGovernorateRepository governorateRepository
+            IManagementService managementService
             )
         {
-            _managementRepository = managementRepository;
-            _governorateRepository = governorateRepository;
+            _managementService = managementService;
         }
 
         public async Task<IActionResult> Index()
         {
-            ManagementViewModel managementViewModel = new ManagementViewModel();
-            managementViewModel.Managements = await _managementRepository.GetAllAsync(o => o.OrderBy(m => m.CreationDate), "Governorate") as List<Management>;
-            return View(managementViewModel);
+            return View(await _managementService.Initiate());
         }
 
         public async Task<IActionResult> Create()
         {
-            ManagementViewModel managementViewModel = new ManagementViewModel();
-            managementViewModel.Management = new Management();
-            managementViewModel.Governorates = await _governorateRepository.GetAllAsync() as List<Governorate>;
-            return View(managementViewModel);
+            return View(await _managementService.InitiateCreate());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Management management)
+        public async Task<IActionResult> Create(ManagementModel management)
         {
             try
             {
-                management.CreationDate = DateTime.Now;
-                management.Id = Guid.NewGuid();
-                Governorate governorate = await _governorateRepository.GetByIDAsync(management.Governorate.Id);
-                management.Governorate = governorate;
-                await _managementRepository.AddAsync(management);
-                await _managementRepository.SaveAsync();
+                bool succeded = await _managementService.Create(management);
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -64,21 +47,16 @@ namespace IdentityApplication.Controllers
 
         public async Task<IActionResult> Edit(Guid managementId)
         {
-            ManagementViewModel managementViewModel = new ManagementViewModel();
-            managementViewModel.Management = await _managementRepository.GetByIDAsync(managementId);
-            managementViewModel.Governorates = await _governorateRepository.GetAllAsync() as List<Governorate>;
-            return View(managementViewModel);
+            return View(await _managementService.InitiateEdit(managementId));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Management management)
+        public async Task<IActionResult> Edit(ManagementModel management)
         {
             try
             {
-                management.Governorate = await _governorateRepository.GetByIDAsync(management.Governorate.Id);
-
-                await _managementRepository.UpdateAsync(management);
-                await _managementRepository.SaveAsync();
+                bool succeded = await _managementService.Edit(management);
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -94,15 +72,8 @@ namespace IdentityApplication.Controllers
         {
             try
             {
-                Management management = await _managementRepository.GetByIDAsync(managementId);
-                if (management == null)
-                {
-                    ViewBag.Error = "Not Found";
-                    return View("Index");
-                }
-
-                await _managementRepository.DeleteAsync(management);
-                await _managementRepository.SaveAsync();
+                bool succeded = await _managementService.Delete(managementId);
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)

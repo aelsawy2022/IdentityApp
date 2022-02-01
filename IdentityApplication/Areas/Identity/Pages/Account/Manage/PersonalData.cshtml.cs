@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using IdentityApplication.Data.Entities;
+using SchoolManagement.Persistance.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

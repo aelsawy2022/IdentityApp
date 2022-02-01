@@ -1,5 +1,4 @@
-using IdentityApplication.Data;
-using IdentityApplication.Data.Entities;
+using SchoolManagement.Persistance.Data.Entities;
 using IdentityApplication.ExtensionMethods;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,7 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using static IdentityApplication.Models.Enums;
+using SchoolManagement.Persistance.Data;
+using static SchoolManagement.Models.Models.Enums;
+using SchoolManagement.Core.Mappers;
 
 namespace IdentityApplication
 {
@@ -34,9 +35,10 @@ namespace IdentityApplication
                  .AddDefaultTokenProviders();
 
             // extension method to register services
-            services.Register();
+            services.RegisterRepositories();
+            services.RegisterServices();
 
-            services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(typeof(MappingProfiles));
 
             services.AddAuthorization(options =>
             {
