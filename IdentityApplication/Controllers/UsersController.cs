@@ -3,10 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Core.Services;
 using SchoolManagement.Core.Services.Interfaces;
 using SchoolManagement.Models.Models;
-using SchoolManagement.Models.Models.ViewModels;
-using SchoolManagement.Persistance.Data.Entities;
+using SchoolManagement.ViewModels.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace IdentityApplication.Controllers
@@ -56,7 +54,7 @@ namespace IdentityApplication.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(UsersViewModel usersViewModel)
+        public async Task<IActionResult> Edit(UserVM usersViewModel)
         {
             try
             {
@@ -79,7 +77,7 @@ namespace IdentityApplication.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(UsersViewModel usersViewModel)
+        public async Task<IActionResult> Create(UserVM usersViewModel)
         {
             try
             {

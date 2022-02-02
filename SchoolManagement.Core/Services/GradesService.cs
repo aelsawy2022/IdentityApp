@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using SchoolManagement.Core.Services.Interfaces;
 using SchoolManagement.Models.Models;
-using SchoolManagement.Models.Models.ViewModels;
+using SchoolManagement.ViewModels.ViewModels;
 using SchoolManagement.Persistance.Data.Entities;
 using SchoolManagement.Persistance.UnitOfWorks;
 using System;
@@ -61,27 +61,27 @@ namespace SchoolManagement.Core.Services
             return true;
         }
 
-        public async Task<GradeViewModel> Initiate(params object[] arguments)
+        public async Task<GradeVM> Initiate(params object[] arguments)
         {
-            GradeViewModel gradeViewModel = new GradeViewModel();
+            GradeVM gradeViewModel = new GradeVM();
             gradeViewModel.Grades = _mapper.Map<List<GradeModel>>(await _unitOfWork.GradeRepository.GetAsync(x => x.School.Id == (Guid)arguments[0], o => o.OrderBy(g => g.Name)) as List<Grade>);
             gradeViewModel.School = _mapper.Map<SchoolModel>(await _unitOfWork.SchoolRepository.GetByIDAsync(arguments[0]));
 
             return gradeViewModel;
         }
 
-        public async Task<GradeViewModel> InitiateCreate(params object[] arguments)
+        public async Task<GradeVM> InitiateCreate(params object[] arguments)
         {
-            GradeViewModel gradeViewModel = new GradeViewModel();
+            GradeVM gradeViewModel = new GradeVM();
             gradeViewModel.Grade = new GradeModel();
             gradeViewModel.School = _mapper.Map<SchoolModel>(await _unitOfWork.SchoolRepository.GetByIDAsync(arguments[0]));
 
             return gradeViewModel;
         }
 
-        public async Task<GradeViewModel> InitiateEdit(params object[] arguments)
+        public async Task<GradeVM> InitiateEdit(params object[] arguments)
         {
-            GradeViewModel gradeViewModel = new GradeViewModel();
+            GradeVM gradeViewModel = new GradeVM();
             gradeViewModel.Grade = _mapper.Map<GradeModel>(await _unitOfWork.GradeRepository.GetByIDAsync(arguments[0]));
             gradeViewModel.School = _mapper.Map<SchoolModel>(await _unitOfWork.SchoolRepository.GetByIDAsync(arguments[1]));
 

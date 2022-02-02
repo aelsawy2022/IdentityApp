@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using SchoolManagement.Core.Services.Interfaces;
 using SchoolManagement.Models.Models;
-using SchoolManagement.Models.Models.ViewModels;
+using SchoolManagement.ViewModels.ViewModels;
 using SchoolManagement.Persistance.Data.Entities;
 using SchoolManagement.Persistance.Repositories.GovernorateRepo;
 using SchoolManagement.Persistance.Repositories.ManagementRepo;
@@ -66,26 +66,26 @@ namespace SchoolManagement.Core.Services
             return true;
         }
 
-        public async Task<ManagementViewModel> Initiate(params object[] arguments)
+        public async Task<ManagementVM> Initiate(params object[] arguments)
         {
-            ManagementViewModel managementViewModel = new ManagementViewModel();
+            ManagementVM managementViewModel = new ManagementVM();
             managementViewModel.Managements = _mapper.Map<List<ManagementModel>>(await _managementRepository.GetAllAsync(o => o.OrderBy(m => m.CreationDate), "Governorate") as List<Management>);
 
             return managementViewModel;
         }
 
-        public async Task<ManagementViewModel> InitiateCreate(params object[] arguments)
+        public async Task<ManagementVM> InitiateCreate(params object[] arguments)
         {
-            ManagementViewModel managementViewModel = new ManagementViewModel();
+            ManagementVM managementViewModel = new ManagementVM();
             managementViewModel.Management = new ManagementModel();
             managementViewModel.Governorates = _mapper.Map<List<GovernorateModel>>(await _governorateRepository.GetAllAsync() as List<Governorate>);
 
             return managementViewModel;
         }
 
-        public async Task<ManagementViewModel> InitiateEdit(params object[] arguments)
+        public async Task<ManagementVM> InitiateEdit(params object[] arguments)
         {
-            ManagementViewModel managementViewModel = new ManagementViewModel();
+            ManagementVM managementViewModel = new ManagementVM();
             managementViewModel.Management = _mapper.Map<ManagementModel>(await _managementRepository.GetOneAsync(m => m.Id == (Guid)arguments[0], "Governorate"));
             managementViewModel.Governorates = _mapper.Map<List<GovernorateModel>>(await _governorateRepository.GetAllAsync() as List<Governorate>);
 

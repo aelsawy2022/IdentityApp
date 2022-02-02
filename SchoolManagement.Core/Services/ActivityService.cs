@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using SchoolManagement.Core.Services.Interfaces;
 using SchoolManagement.Models.Models;
-using SchoolManagement.Models.Models.ViewModels;
+using SchoolManagement.ViewModels.ViewModels;
 using SchoolManagement.Persistance.Data.Entities;
 using SchoolManagement.Persistance.Repositories.ActivityRepo;
 using SchoolManagement.Persistance.Repositories.RoleRepo;
@@ -40,7 +40,7 @@ namespace SchoolManagement.Core.Services
 
         public async Task<bool> ActivateActivity(params object[] arguments)
         {
-            Activity activity = await _unitOfWork.ActivityRepository.GetByIDAsync(arguments[0]);
+            Persistance.Data.Entities.Activity activity = await _unitOfWork.ActivityRepository.GetByIDAsync(arguments[0]);
             if (activity == null)
             {
                 return false;
@@ -53,9 +53,9 @@ namespace SchoolManagement.Core.Services
             return true;
         }
 
-        public async Task<bool> Create(ActivityModel model)
+        public async Task<bool> Create(Models.Models.ActivityModel model)
         {
-            Activity activity = _mapper.Map<Activity>(model);
+            Persistance.Data.Entities.Activity activity = _mapper.Map<Persistance.Data.Entities.Activity>(model);
 
             activity.CreationDate = DateTime.Now;
             activity.Id = Guid.NewGuid();
@@ -76,7 +76,7 @@ namespace SchoolManagement.Core.Services
 
         public async Task<bool> Delete(params object[] arguments)
         {
-            Activity activity = (await _unitOfWork.ActivityRepository.GetAsync(a => a.Id == (Guid)arguments[0], null, "Roles")).FirstOrDefault();
+            Persistance.Data.Entities.Activity activity = (await _unitOfWork.ActivityRepository.GetAsync(a => a.Id == (Guid)arguments[0], null, "Roles")).FirstOrDefault();
 
             if (activity == null)
             {
@@ -96,9 +96,9 @@ namespace SchoolManagement.Core.Services
             return true;
         }
 
-        public async Task<bool> Edit(ActivityModel model)
+        public async Task<bool> Edit(Models.Models.ActivityModel model)
         {
-            Activity activity = _mapper.Map<Activity>(model);
+            Persistance.Data.Entities.Activity activity = _mapper.Map<Persistance.Data.Entities.Activity>(model);
             activity.School = await _unitOfWork.SchoolRepository.GetByIDAsync(activity.School.Id);
 
             Role role = await _unitOfWork.RoleRepository.GetOneAsync(r => r.School.Id == activity.School.Id && r.Activity.Id == activity.Id);
@@ -115,26 +115,26 @@ namespace SchoolManagement.Core.Services
             return true;
         }
 
-        public async Task<ActivityViewModel> Initiate(params object[] arguments)
+        public async Task<ActivityVM> Initiate(params object[] arguments)
         {
-            ActivityViewModel activityViewModel = new ActivityViewModel();
-            activityViewModel.Activities = _mapper.Map<List<ActivityModel>>(await _activityRepository.GetAsync(a => a.School.Id == (Guid)arguments[0], o => o.OrderBy(a => a.CreationDate)) as List<Activity>);
+            ActivityVM activityViewModel = new ActivityVM();
+            activityViewModel.Activities = _mapper.Map<List<Models.Models.ActivityModel>>(await _activityRepository.GetAsync(a => a.School.Id == (Guid)arguments[0], o => o.OrderBy(a => a.CreationDate)) as List<Persistance.Data.Entities.Activity>);
             activityViewModel.School = _mapper.Map<SchoolModel>(await _schoolRepository.GetByIDAsync(arguments[0]));
             return activityViewModel;
         }
 
-        public async Task<ActivityViewModel> InitiateCreate(params object[] arguments)
+        public async Task<ActivityVM> InitiateCreate(params object[] arguments)
         {
-            ActivityViewModel activityViewModel = new ActivityViewModel();
-            activityViewModel.Activity = new ActivityModel();
+            ActivityVM activityViewModel = new ActivityVM();
+            activityViewModel.Activity = new Models.Models.ActivityModel();
             activityViewModel.School = _mapper.Map<SchoolModel>(await _schoolRepository.GetByIDAsync(arguments[0]));
             return activityViewModel;
         }
 
-        public async Task<ActivityViewModel> InitiateEdit(params object[] arguments)
+        public async Task<ActivityVM> InitiateEdit(params object[] arguments)
         {
-            ActivityViewModel activityViewModel = new ActivityViewModel();
-            activityViewModel.Activity = _mapper.Map<ActivityModel>(await _unitOfWork.ActivityRepository.GetByIDAsync(arguments[0]));
+            ActivityVM activityViewModel = new ActivityVM();
+            activityViewModel.Activity = _mapper.Map<Models.Models.ActivityModel>(await _unitOfWork.ActivityRepository.GetByIDAsync(arguments[0]));
             activityViewModel.School = _mapper.Map<SchoolModel>(await _unitOfWork.SchoolRepository.GetByIDAsync(arguments[1]));
             return activityViewModel;
         }

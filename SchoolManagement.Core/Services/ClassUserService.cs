@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using SchoolManagement.Core.Services.Interfaces;
 using SchoolManagement.Models.Models;
-using SchoolManagement.Models.Models.ViewModels;
+using SchoolManagement.ViewModels.ViewModels;
 using SchoolManagement.Persistance.Data.Entities;
 using SchoolManagement.Persistance.UnitOfWorks;
 using System;
@@ -39,9 +39,9 @@ namespace SchoolManagement.Core.Services
             throw new NotImplementedException();
         }
 
-        public async Task<ClassUserViewModel> Initiate(params object[] arguments)
+        public async Task<ClassUserVM> Initiate(params object[] arguments)
         {
-            ClassUserViewModel classUserViewModel = new ClassUserViewModel();
+            ClassUserVM classUserViewModel = new ClassUserVM();
             classUserViewModel.usersFilter = new UsersFilter();
 
             var classUsers = (await _unitOfWork.ClassUserRepository.GetAsync(cu => cu.ClassId == (Guid)arguments[2],
@@ -69,17 +69,17 @@ namespace SchoolManagement.Core.Services
             return _Expression;
         }
 
-        public Task<ClassUserViewModel> InitiateCreate(params object[] arguments)
+        public Task<ClassUserVM> InitiateCreate(params object[] arguments)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ClassUserViewModel> InitiateEdit(params object[] arguments)
+        public Task<ClassUserVM> InitiateEdit(params object[] arguments)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<ClassUserServiceResponse> AddUsers(ClassUserViewModel viewModel)
+        public async Task<ClassUserServiceResponse> AddUsers(ClassUserVM viewModel)
         {
             Season schoolCurrentSeason = await _unitOfWork.SeasonRepository.GetOneAsync(s => s.Current && s.School.Id == viewModel.SchoolId);
 
@@ -109,7 +109,7 @@ namespace SchoolManagement.Core.Services
             }
         }
 
-        public async Task<ClassUserServiceResponse> DeleteUsers(ClassUserViewModel viewModel)
+        public async Task<ClassUserServiceResponse> DeleteUsers(ClassUserVM viewModel)
         {
             foreach (ClassUsersModel classUser in viewModel.ClassUsers.Where(u => u.User.IsSelected))
             {

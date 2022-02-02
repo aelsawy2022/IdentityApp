@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using SchoolManagement.Models.Models;
 
-namespace SchoolManagement.Models.Models.ViewModels
+namespace SchoolManagement.ViewModels.ViewModels
 {
-    public class SeasonViewModel
+    public class SeasonVM
     {
         public SeasonModel Season { get; set; }
         public List<SeasonModel> Seasons { get; set; }

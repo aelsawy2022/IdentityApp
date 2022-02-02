@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace SchoolManagement.Models.Models.ViewModels
+namespace SchoolManagement.ViewModels.ViewModels
 {
-    public class ClassUserViewModel
+    public class ClassUserVM
     {
         public List<ClassUsersModel> ClassUsers { get; set; }
         public List<UsersModel> AllUsers { get; set; }

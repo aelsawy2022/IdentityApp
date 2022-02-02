@@ -1,9 +1,9 @@
 ﻿using SchoolManagement.Models.Models;
 using System.Collections.Generic;
 
-namespace SchoolManagement.Models.Models.ViewModels
+namespace SchoolManagement.ViewModels.ViewModels
 {
-    public class ActivityViewModel
+    public class ActivityVM
     {
         public ActivityModel Activity { get; set; }
         public List<ActivityModel> Activities { get; set; }

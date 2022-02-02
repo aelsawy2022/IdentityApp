@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using SchoolManagement.Models.Models;
+using System.Collections.Generic;
 
-namespace SchoolManagement.Models.Models.ViewModels
+namespace SchoolManagement.ViewModels.ViewModels
 {
-    public class RoleViewModel
+    public class RoleVM
     {
         public RolesModel Role { get; set; }
         public List<RolesModel> Roles { get; set; }

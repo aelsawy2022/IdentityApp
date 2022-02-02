@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using SchoolManagement.Models.Models;
 
-namespace SchoolManagement.Models.Models.ViewModels
+namespace SchoolManagement.ViewModels.ViewModels
 {
-    public class UsersViewModel : PagingModel
+    public class UserVM : PagingModel
     {
         public List<UsersModel> Users { get; set; }
         public UsersModel User { get; set; }

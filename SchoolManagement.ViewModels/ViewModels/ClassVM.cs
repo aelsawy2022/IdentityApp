@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using SchoolManagement.Models.Models;
 
-namespace SchoolManagement.Models.Models.ViewModels
+namespace SchoolManagement.ViewModels.ViewModels
 {
-    public class ClassViewModel
+    public class ClassVM
     {
         public ClassModel Class { get; set; }
         public List<ClassModel> Classes { get; set; }

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using SchoolManagement.Core.Services.Interfaces;
 using SchoolManagement.Models.Models;
-using SchoolManagement.Models.Models.ViewModels;
+using SchoolManagement.ViewModels.ViewModels;
 using SchoolManagement.Persistance.Data.Entities;
 using SchoolManagement.Persistance.UnitOfWorks;
 using System;
@@ -81,27 +81,27 @@ namespace SchoolManagement.Core.Services
             return true;
         }
 
-        public async Task<SeasonViewModel> Initiate(params object[] arguments)
+        public async Task<SeasonVM> Initiate(params object[] arguments)
         {
-            SeasonViewModel seasonViewModel = new SeasonViewModel();
+            SeasonVM seasonViewModel = new SeasonVM();
             seasonViewModel.Seasons = _mapper.Map<List<SeasonModel>>(await _unitOfWork.SeasonRepository.GetAsync(a => a.School.Id == (Guid)arguments[0], o => o.OrderBy(a => a.CreationDate)) as List<Season>);
             seasonViewModel.School = _mapper.Map<SchoolModel>(await _unitOfWork.SchoolRepository.GetByIDAsync(arguments[0]));
 
             return seasonViewModel;
         }
 
-        public async Task<SeasonViewModel> InitiateCreate(params object[] arguments)
+        public async Task<SeasonVM> InitiateCreate(params object[] arguments)
         {
-            SeasonViewModel activityViewModel = new SeasonViewModel();
+            SeasonVM activityViewModel = new SeasonVM();
             activityViewModel.Season = new SeasonModel();
             activityViewModel.School = _mapper.Map<SchoolModel>(await _unitOfWork.SchoolRepository.GetByIDAsync(arguments[0]));
 
             return activityViewModel;
         }
 
-        public async Task<SeasonViewModel> InitiateEdit(params object[] arguments)
+        public async Task<SeasonVM> InitiateEdit(params object[] arguments)
         {
-            SeasonViewModel seasonViewModel = new SeasonViewModel();
+            SeasonVM seasonViewModel = new SeasonVM();
             seasonViewModel.Season = _mapper.Map<SeasonModel>(await _unitOfWork.SeasonRepository.GetByIDAsync(arguments[0]));
             seasonViewModel.School = _mapper.Map<SchoolModel>(await _unitOfWork.SchoolRepository.GetByIDAsync(arguments[1]));
 

@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SchoolManagement.Models\SchoolManagement.Models.csproj" />
     <ProjectReference Include="..\SchoolManagement.Persistance\SchoolManagement.Persistance.csproj" />
+    <ProjectReference Include="..\SchoolManagement.ViewModels\SchoolManagement.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>

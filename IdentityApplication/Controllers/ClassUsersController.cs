@@ -1,14 +1,8 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Core.Services.Interfaces;
 using SchoolManagement.Models.Models;
-using SchoolManagement.Models.Models.ViewModels;
-using SchoolManagement.Persistance.Data.Entities;
-using SchoolManagement.Persistance.UnitOfWorks;
+using SchoolManagement.ViewModels.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace IdentityApplication.Controllers
@@ -29,7 +23,7 @@ namespace IdentityApplication.Controllers
             return View(await _classUserService.Initiate(gradeId, schoolId, classId));
         }
 
-        public async Task<IActionResult> AddUsers(ClassUserViewModel model)
+        public async Task<IActionResult> AddUsers(ClassUserVM model)
         {
             try
             {
@@ -46,7 +40,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
-        public async Task<IActionResult> DeleteUser(ClassUserViewModel model)
+        public async Task<IActionResult> DeleteUser(ClassUserVM model)
         {
             try
             {
@@ -63,7 +57,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
-        public async Task<IActionResult> AddAllUsers(ClassUserViewModel model)
+        public async Task<IActionResult> AddAllUsers(ClassUserVM model)
         {
             foreach(UsersModel user in model.AllUsers)
             {
@@ -72,7 +66,7 @@ namespace IdentityApplication.Controllers
             return await AddUsers(model);
         }
 
-        public async Task<IActionResult> DeleteAllUsers(ClassUserViewModel model)
+        public async Task<IActionResult> DeleteAllUsers(ClassUserVM model)
         {
             foreach (ClassUsersModel user in model.ClassUsers)
             {

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using SchoolManagement.Core.Services.Interfaces;
 using SchoolManagement.Models.Models;
-using SchoolManagement.Models.Models.ViewModels;
+using SchoolManagement.ViewModels.ViewModels;
 using SchoolManagement.Persistance.Data.Entities;
 using SchoolManagement.Persistance.UnitOfWorks;
 using System;
@@ -72,23 +72,23 @@ namespace SchoolManagement.Core.Services
             return _mapper.Map<List<SchoolModel>>(schools);
         }
 
-        public Task<SchoolViewModel> Initiate(params object[] arguments)
+        public Task<SchoolVM> Initiate(params object[] arguments)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<SchoolViewModel> InitiateCreate(params object[] arguments)
+        public async Task<SchoolVM> InitiateCreate(params object[] arguments)
         {
-            SchoolViewModel schoolViewModel = new SchoolViewModel();
+            SchoolVM schoolViewModel = new SchoolVM();
             schoolViewModel.School = new SchoolModel();
             schoolViewModel.Managements = _mapper.Map<List<ManagementModel>>(await _unitOfWork.ManagementRepository.GetAllAsync() as List<Management>);
 
             return schoolViewModel;
         }
 
-        public async Task<SchoolViewModel> InitiateEdit(params object[] arguments)
+        public async Task<SchoolVM> InitiateEdit(params object[] arguments)
         {
-            SchoolViewModel schoolViewModel = new SchoolViewModel();
+            SchoolVM schoolViewModel = new SchoolVM();
             schoolViewModel.School = _mapper.Map<SchoolModel>(await _unitOfWork.SchoolRepository.GetOneAsync(e => e.Id == (Guid)arguments[0], "Address,Management"));
             schoolViewModel.Managements = _mapper.Map<List<ManagementModel>>(await _unitOfWork.ManagementRepository.GetAllAsync() as List<Management>);
 

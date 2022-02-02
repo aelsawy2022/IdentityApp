@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using SchoolManagement.Core.Services.Interfaces;
 using SchoolManagement.Models.Models;
-using SchoolManagement.Models.Models.ViewModels;
+using SchoolManagement.ViewModels.ViewModels;
 using SchoolManagement.Persistance.Data.Entities;
 using SchoolManagement.Persistance.Repositories.GovernorateRepo;
 using SchoolManagement.Persistance.UnitOfWorks;
@@ -12,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using static SchoolManagement.Models.Models.Enums;
 
@@ -44,12 +43,12 @@ namespace SchoolManagement.Core.Services
             _environment = environment;
         }
 
-        public Task<bool> Create(UsersViewModel model)
+        public Task<bool> Create(UserVM model)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<UserServiceResponse> CreateUser(UsersViewModel usersViewModel)
+        public async Task<UserServiceResponse> CreateUser(UserVM usersViewModel)
         {
             string userPass = "Test@123";
             string userEmail = usersViewModel.User.Name.Trim().Replace(" ", ".").ToLower() + usersViewModel.ServerName;
@@ -76,7 +75,7 @@ namespace SchoolManagement.Core.Services
             throw new NotImplementedException();
         }
 
-        public async Task<bool> Edit(UsersViewModel usersViewModel)
+        public async Task<bool> Edit(UserVM usersViewModel)
         {
 
             User u = await _unitOfWork.UserRepository.GetOneAsync(u => u.Id == usersViewModel.User.Id, "UserRoles");
@@ -97,7 +96,7 @@ namespace SchoolManagement.Core.Services
             return true;
         }
 
-        private void AssignRolesToUser(User user, UsersViewModel usersViewModel)
+        private void AssignRolesToUser(User user, UserVM usersViewModel)
         {
             user.UserRoles = new List<UserRole>();
 
@@ -161,14 +160,14 @@ namespace SchoolManagement.Core.Services
             return fileName;
         }
 
-        public Task<UsersViewModel> Initiate(params object[] arguments)
+        public Task<UserVM> Initiate(params object[] arguments)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<UsersViewModel> GetUsers(int currentPage, int maxRows)
+        public async Task<UserVM> GetUsers(int currentPage, int maxRows)
         {
-            UsersViewModel usersViewModel = new UsersViewModel();
+            UserVM usersViewModel = new UserVM();
             usersViewModel.Users = _mapper.Map<List<UsersModel>>(
                 await _unitOfWork.UserRepository.GetAllAsync(o => o.OrderBy(u => u.UserName), "Governorate",
                                                              maxRows, (currentPage - 1) * maxRows) as List<User>);
@@ -229,9 +228,9 @@ namespace SchoolManagement.Core.Services
             return result.Succeeded;
         }
 
-        public async Task<UsersViewModel> InitiateCreate(params object[] arguments)
+        public async Task<UserVM> InitiateCreate(params object[] arguments)
         {
-            UsersViewModel usersViewModel = new UsersViewModel();
+            UserVM usersViewModel = new UserVM();
 
             usersViewModel.User = new UsersModel();
 
@@ -243,11 +242,11 @@ namespace SchoolManagement.Core.Services
             return usersViewModel;
         }
 
-        public async Task<UsersViewModel> InitiateEdit(params object[] arguments)
+        public async Task<UserVM> InitiateEdit(params object[] arguments)
         {
             try
             {
-                UsersViewModel usersViewModel = new UsersViewModel();
+                UserVM usersViewModel = new UserVM();
                 usersViewModel.User = _mapper.Map<UsersModel>((await _unitOfWork.UserRepository.GetUsersWithRolesAsync(
                                                                         u => u.Id == (Guid)arguments[0], null) as List<User>).FirstOrDefault());
 
@@ -267,7 +266,7 @@ namespace SchoolManagement.Core.Services
             }
         }
 
-        private void SyncUserRolesWithSystemRoles(UsersViewModel usersViewModel)
+        private void SyncUserRolesWithSystemRoles(UserVM usersViewModel)
         {
             foreach (SchoolModel school in usersViewModel.Schools)
             {
@@ -277,7 +276,7 @@ namespace SchoolManagement.Core.Services
                     if (usersViewModel.User.Roles.Any() && usersViewModel.User.Roles.Any(ur => ur.Id == schoolRole.Id))
                         schoolRole.IsSelected = true;
                 }
-                foreach (ActivityModel activity in school.Activities)
+                foreach (Models.Models.ActivityModel activity in school.Activities)
                 {
                     foreach (RolesModel activityRole in activity.Roles)
                     {

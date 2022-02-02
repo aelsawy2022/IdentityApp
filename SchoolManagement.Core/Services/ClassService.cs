@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using SchoolManagement.Core.Services.Interfaces;
 using SchoolManagement.Models.Models;
-using SchoolManagement.Models.Models.ViewModels;
+using SchoolManagement.ViewModels.ViewModels;
 using SchoolManagement.Persistance.Data.Entities;
 using SchoolManagement.Persistance.UnitOfWorks;
 using System;
@@ -64,9 +64,9 @@ namespace SchoolManagement.Core.Services
             return true;
         }
 
-        public async Task<ClassViewModel> Initiate(params object[] arguments)
+        public async Task<ClassVM> Initiate(params object[] arguments)
         {
-            ClassViewModel classViewModel = new ClassViewModel();
+            ClassVM classViewModel = new ClassVM();
             classViewModel.Classes = _mapper.Map<List<ClassModel>>(await _unitOfWork.ClassRepository.GetAsync(c => c.Grade.Id == (Guid)arguments[0], o => o.OrderBy(c => c.CreationDate), "Grade") as List<Class>);
             classViewModel.Grade = _mapper.Map<GradeModel>(await _unitOfWork.GradeRepository.GetByIDAsync(arguments[0]));
             classViewModel.SchoolId = (Guid)arguments[1];
@@ -74,9 +74,9 @@ namespace SchoolManagement.Core.Services
             return classViewModel;
         }
 
-        public async Task<ClassViewModel> InitiateCreate(params object[] arguments)
+        public async Task<ClassVM> InitiateCreate(params object[] arguments)
         {
-            ClassViewModel classViewModel = new ClassViewModel();
+            ClassVM classViewModel = new ClassVM();
             classViewModel.Class = new ClassModel();
             classViewModel.Grade = _mapper.Map<GradeModel>(await _unitOfWork.GradeRepository.GetByIDAsync(arguments[0]));
             classViewModel.SchoolId = (Guid)arguments[1];
@@ -84,9 +84,9 @@ namespace SchoolManagement.Core.Services
             return classViewModel;
         }
 
-        public async Task<ClassViewModel> InitiateEdit(params object[] arguments)
+        public async Task<ClassVM> InitiateEdit(params object[] arguments)
         {
-            ClassViewModel classViewModel = new ClassViewModel();
+            ClassVM classViewModel = new ClassVM();
             classViewModel.Class = _mapper.Map<ClassModel>(await _unitOfWork.ClassRepository.GetByIDAsync(arguments[0]));
             classViewModel.Grade = _mapper.Map<GradeModel>(await _unitOfWork.GradeRepository.GetByIDAsync(arguments[1]));
             classViewModel.SchoolId = (Guid)arguments[2];

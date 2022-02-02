@@ -1,5 +1,5 @@
 ﻿using SchoolManagement.Models.Models;
-using SchoolManagement.Models.Models.ViewModels;
+using SchoolManagement.ViewModels.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace SchoolManagement.Core.Services.Interfaces
 {
-    public interface IUserService : IBaseService<UsersViewModel, UsersViewModel>
+    public interface IUserService : IBaseService<UserVM, UserVM>
     {
         Task<bool> AddToAdminRole(string userName, bool isAdmin);
         Task<bool> AddToSuperAdminRole(string userName, bool isSuperAdmin);
-        Task<UserServiceResponse> CreateUser(UsersViewModel usersViewModel);
-        Task<UsersViewModel> GetUsers(int currentPage, int maxRows);
+        Task<UserServiceResponse> CreateUser(UserVM usersViewModel);
+        Task<UserVM> GetUsers(int currentPage, int maxRows);
     }
 }
