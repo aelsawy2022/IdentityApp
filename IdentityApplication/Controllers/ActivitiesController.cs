@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using IdentityApplication.Bases;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Core.Services.Interfaces;
 using SchoolManagement.Models.Models;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace IdentityApplication.Controllers
 {
-    public class ActivitiesController : Controller
+    public class ActivitiesController : BaseController
     {
         private readonly IActivityService _activityService;
 
@@ -18,14 +19,27 @@ namespace IdentityApplication.Controllers
 
         public async Task<IActionResult> Index(Guid schoolId)
         {
-            if (schoolId == null || schoolId == Guid.Empty) return RedirectToAction("Index", "Schools");
-
-            return View(await _activityService.Initiate(schoolId));
+            try
+            {
+                if (schoolId == null || schoolId == Guid.Empty) return RedirectToAction("Index", "Schools");
+                return View(await _activityService.Initiate(schoolId));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public async Task<IActionResult> Create(Guid schoolId)
         {
-            return View(await _activityService.InitiateCreate(schoolId));
+            try
+            {
+                return View(await _activityService.InitiateCreate(schoolId));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         [HttpPost]
@@ -41,10 +55,7 @@ namespace IdentityApplication.Controllers
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
 
@@ -55,22 +66,26 @@ namespace IdentityApplication.Controllers
             {
                 bool succeded = await _activityService.ActivateActivity(activityId);
 
-                if(!succeded) TempData["ErrorMsg"] = "Something wrong";
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
 
                 return RedirectToAction("Index", new { schoolId = schoolId });
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
 
         public async Task<IActionResult> Edit(Guid activityId, Guid schoolId)
         {
-            return View(await _activityService.InitiateEdit(activityId, schoolId));
+            try
+            {
+                return View(await _activityService.InitiateEdit(activityId, schoolId));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         [HttpPost]
@@ -80,16 +95,13 @@ namespace IdentityApplication.Controllers
             {
                 bool succeded = await _activityService.Edit(activity);
 
-                if(!succeded ) TempData["ErrorMsg"] = "Something wrong";
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
 
                 return RedirectToAction("Index", new { schoolId = activity.School.Id });
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
 
@@ -98,17 +110,14 @@ namespace IdentityApplication.Controllers
             try
             {
                 bool succeded = await _activityService.Delete(activityId);
-                
-                if(!succeded) TempData["ErrorMsg"] = "Something wrong";
+
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
 
                 return RedirectToAction("Index", new { schoolId = schoolId });
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
     }

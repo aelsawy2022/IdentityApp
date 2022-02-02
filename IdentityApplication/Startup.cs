@@ -37,6 +37,7 @@ namespace IdentityApplication
             // extension method to register services
             services.RegisterRepositories();
             services.RegisterServices();
+            services.RegisterCustomFilters();
 
             services.AddAutoMapper(typeof(MappingProfiles));
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using IdentityApplication.Bases;
+using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Core.Services.Interfaces;
 using SchoolManagement.Models.Models;
 using SchoolManagement.ViewModels.ViewModels;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace IdentityApplication.Controllers
 {
-    public class ClassUsersController : Controller
+    public class ClassUsersController : BaseController
     {
         private readonly IClassUserService _classUserService;
 
@@ -18,9 +19,17 @@ namespace IdentityApplication.Controllers
 
         public async Task<IActionResult> Index(Guid gradeId, Guid schoolId, Guid classId)
         {
-            if (classId == Guid.Empty) return RedirectToAction("Index", "Classes", new { gradeId = gradeId, schoolId = schoolId });
+            try
+            {
+                if (classId == Guid.Empty) return RedirectToAction("Index", "Classes", new { gradeId = gradeId, schoolId = schoolId });
 
-            return View(await _classUserService.Initiate(gradeId, schoolId, classId));
+                return View(await _classUserService.Initiate(gradeId, schoolId, classId));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
         }
 
         public async Task<IActionResult> AddUsers(ClassUserVM model)
@@ -28,15 +37,12 @@ namespace IdentityApplication.Controllers
             try
             {
                 var result = await _classUserService.AddUsers(model);
-                if(!result.isSucceded) TempData["ErrorMsg"] = result.message.ToString();
+                if (!result.isSucceded) TempData["ErrorMsg"] = result.message.ToString();
                 return RedirectToAction("Index", new { gradeId = model.GradeId, schoolId = model.SchoolId, classId = model.Class.Id });
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
 
@@ -48,18 +54,15 @@ namespace IdentityApplication.Controllers
                 if (!result.isSucceded) TempData["ErrorMsg"] = result.message.ToString();
                 return RedirectToAction("Index", new { gradeId = model.GradeId, schoolId = model.SchoolId, classId = model.Class.Id });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
 
         public async Task<IActionResult> AddAllUsers(ClassUserVM model)
         {
-            foreach(UsersModel user in model.AllUsers)
+            foreach (UsersModel user in model.AllUsers)
             {
                 user.IsSelected = true;
             }

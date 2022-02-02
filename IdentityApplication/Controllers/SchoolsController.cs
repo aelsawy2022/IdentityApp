@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using IdentityApplication.Bases;
+using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Core.Services.Interfaces;
 using SchoolManagement.Models.Models;
 using System;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace IdentityApplication.Controllers
 {
-    public class SchoolsController : Controller
+    public class SchoolsController : BaseController
     {
         private readonly ISchoolService _schoolService;
 
@@ -23,7 +24,7 @@ namespace IdentityApplication.Controllers
             {
                 return View(await _schoolService.GetAllSchools());
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw;
             }
@@ -35,7 +36,7 @@ namespace IdentityApplication.Controllers
             {
                 return View(await _schoolService.InitiateCreate());
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw;
             }
@@ -52,10 +53,7 @@ namespace IdentityApplication.Controllers
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
 
@@ -65,7 +63,7 @@ namespace IdentityApplication.Controllers
             {
                 return View(await _schoolService.InitiateEdit(schoolId));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw;
             }
@@ -82,10 +80,7 @@ namespace IdentityApplication.Controllers
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
 
@@ -99,10 +94,7 @@ namespace IdentityApplication.Controllers
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
     }

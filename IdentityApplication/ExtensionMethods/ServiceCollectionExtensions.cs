@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SchoolManagement.Persistance.UnitOfWorks;
 using SchoolManagement.Core.Services.Interfaces;
 using SchoolManagement.Core.Services;
+using IdentityApplication.CustomFilters;
 
 namespace IdentityApplication.ExtensionMethods
 {
@@ -43,6 +44,7 @@ namespace IdentityApplication.ExtensionMethods
             //services.AddScoped(typeof(IGeneralManager), typeof(GeneralManager));
 
         }
+
         public static void RegisterServices(this IServiceCollection services)
         {
             services.AddScoped(typeof(IActivityService), typeof(ActivityService));
@@ -60,6 +62,11 @@ namespace IdentityApplication.ExtensionMethods
             //General Lists Manager
             //services.AddScoped(typeof(IGeneralManager), typeof(GeneralManager));
 
+        }
+
+        public static void RegisterCustomFilters(this IServiceCollection services)
+        {
+            services.AddScoped<CustomeExceptionFilter>();
         }
     }
 }

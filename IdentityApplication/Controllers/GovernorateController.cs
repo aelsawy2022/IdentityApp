@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using IdentityApplication.Bases;
+using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Core.Services.Interfaces;
 using SchoolManagement.Models.Models;
 using System;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace IdentityApplication.Controllers
 {
-    public class GovernorateController : Controller
+    public class GovernorateController : BaseController
     {
         private readonly IGovernorateService _governorateService;
         public GovernorateController(
@@ -18,12 +19,26 @@ namespace IdentityApplication.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _governorateService.GetAllGovernorates());
+            try
+            {
+                return View(await _governorateService.GetAllGovernorates());
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public async Task<IActionResult> Create()
         {
-            return View(await _governorateService.InitiateCreate());
+            try
+            {
+                return View(await _governorateService.InitiateCreate());
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         [HttpPost]
@@ -37,16 +52,20 @@ namespace IdentityApplication.Controllers
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
 
         public async Task<IActionResult> Edit(Guid governorateId)
         {
-            return View(await _governorateService.InitiateEdit(governorateId));
+            try
+            {
+                return View(await _governorateService.InitiateEdit(governorateId));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         [HttpPost]
@@ -60,10 +79,7 @@ namespace IdentityApplication.Controllers
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
 
@@ -77,10 +93,7 @@ namespace IdentityApplication.Controllers
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
     }

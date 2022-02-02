@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using IdentityApplication.Bases;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Core.Services;
 using SchoolManagement.Core.Services.Interfaces;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace IdentityApplication.Controllers
 {
-    public class UsersController : Controller
+    public class UsersController : BaseController
     {
         private readonly IUserService _userService;
 
@@ -28,29 +29,57 @@ namespace IdentityApplication.Controllers
         [Authorize]
         public async Task<IActionResult> List(int currentPage = 1, int maxRows = 2, string searchTxt = "")
         {
-            return View(await _userService.GetUsers(currentPage, maxRows));
+            try
+            {
+                return View(await _userService.GetUsers(currentPage, maxRows));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         [Authorize(Policy = "RequireSuperAdmin")]
         public async Task<IActionResult> MakeAsAdmin(bool isAdmin, string userName, int currentPage = 1, int maxRows = 2)
         {
-            bool succeded = await _userService.AddToAdminRole(userName, isAdmin);
-            if (!succeded) TempData["ErrorMsg"] = "Something wrong";
+            try
+            {
+                bool succeded = await _userService.AddToAdminRole(userName, isAdmin);
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
 
-            return RedirectToAction("List", new { currentPage = currentPage, maxRows = maxRows });
+                return RedirectToAction("List", new { currentPage = currentPage, maxRows = maxRows });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         [Authorize(Policy = "RequireSuperAdmin")]
         public async Task<IActionResult> AddToSuperAdminRole(bool isSuperAdmin, string userName, int currentPage = 1, int maxRows = 2)
         {
-            bool succeded = await _userService.AddToSuperAdminRole(userName, isSuperAdmin);
-            if (!succeded) TempData["ErrorMsg"] = "Something wrong";
-            return RedirectToAction("List", new { currentPage = currentPage, maxRows = maxRows });
+            try
+            {
+                bool succeded = await _userService.AddToSuperAdminRole(userName, isSuperAdmin);
+                if (!succeded) TempData["ErrorMsg"] = "Something wrong";
+                return RedirectToAction("List", new { currentPage = currentPage, maxRows = maxRows });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public async Task<IActionResult> Edit(Guid userId)
         {
-            return View(await _userService.InitiateEdit(userId));
+            try
+            {
+                return View(await _userService.InitiateEdit(userId));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         [HttpPost]
@@ -64,16 +93,20 @@ namespace IdentityApplication.Controllers
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
 
         public async Task<IActionResult> Create()
         {
-            return View(await _userService.InitiateCreate());
+            try
+            {
+                return View(await _userService.InitiateCreate());
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         [HttpPost]

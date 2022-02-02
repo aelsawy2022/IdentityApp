@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using IdentityApplication.Bases;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Models.Models;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 namespace IdentityApplication.Controllers
 {
     [Authorize(Policy = "RequireSuperAdmin")]
-    public class RolesController : Controller
+    public class RolesController : BaseController
     {
         private readonly RoleManager<Role> _roleManager;
 
@@ -21,8 +22,15 @@ namespace IdentityApplication.Controllers
 
         public IActionResult Index()
         {
-            var roles = _roleManager.Roles.Where(r => r.School == null && r.Activity == null).ToList();
-            return View(roles);
+            try
+            {
+                var roles = _roleManager.Roles.Where(r => r.School == null && r.Activity == null).ToList();
+                return View(roles);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public IActionResult Create()
@@ -33,13 +41,27 @@ namespace IdentityApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Role role)
         {
-            await _roleManager.CreateAsync(role);
-            return RedirectToAction("Index");
+            try
+            {
+                await _roleManager.CreateAsync(role);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public async Task<IActionResult> Edit(string roleId)
         {
-            return View(await _roleManager.FindByIdAsync(roleId));
+            try
+            {
+                return View(await _roleManager.FindByIdAsync(roleId));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         [HttpPost]
@@ -52,10 +74,7 @@ namespace IdentityApplication.Controllers
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
 
@@ -75,10 +94,7 @@ namespace IdentityApplication.Controllers
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
     }

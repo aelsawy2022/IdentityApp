@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using IdentityApplication.Bases;
+using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Core.Services.Interfaces;
 using SchoolManagement.Models.Models;
 using System;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace IdentityApplication.Controllers
 {
-    public class ManagementsController : Controller
+    public class ManagementsController : BaseController
     {
         private readonly IManagementService _managementService;
 
@@ -19,12 +20,26 @@ namespace IdentityApplication.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _managementService.Initiate());
+            try
+            {
+                return View(await _managementService.Initiate());
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public async Task<IActionResult> Create()
         {
-            return View(await _managementService.InitiateCreate());
+            try
+            {
+                return View(await _managementService.InitiateCreate());
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         [HttpPost]
@@ -38,16 +53,20 @@ namespace IdentityApplication.Controllers
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
 
         public async Task<IActionResult> Edit(Guid managementId)
         {
-            return View(await _managementService.InitiateEdit(managementId));
+            try
+            {
+                return View(await _managementService.InitiateEdit(managementId));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         [HttpPost]
@@ -61,10 +80,7 @@ namespace IdentityApplication.Controllers
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
 
@@ -78,10 +94,7 @@ namespace IdentityApplication.Controllers
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using IdentityApplication.Bases;
+using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Core.Services.Interfaces;
 using SchoolManagement.Models.Models;
 using System;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace IdentityApplication.Controllers
 {
-    public class GradesController : Controller
+    public class GradesController : BaseController
     {
         private readonly IGradesService _gradesService;
 
@@ -17,14 +18,28 @@ namespace IdentityApplication.Controllers
 
         public async Task<IActionResult> Index(Guid schoolId)
         {
-            if (schoolId == null || schoolId == Guid.Empty) return RedirectToAction("Index", "Schools");
+            try
+            {
+                if (schoolId == null || schoolId == Guid.Empty) return RedirectToAction("Index", "Schools");
 
-            return View(await _gradesService.Initiate(schoolId));
+                return View(await _gradesService.Initiate(schoolId));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public async Task<IActionResult> Create(Guid schoolId)
         {
-            return View(await _gradesService.InitiateCreate(schoolId));
+            try
+            {
+                return View(await _gradesService.InitiateCreate(schoolId));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         [HttpPost]
@@ -38,16 +53,20 @@ namespace IdentityApplication.Controllers
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
 
         public async Task<IActionResult> Edit(Guid gradeId, Guid schoolId)
         {
-            return View(await _gradesService.InitiateEdit(gradeId, schoolId));
+            try
+            {
+                return View(await _gradesService.InitiateEdit(gradeId, schoolId));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         [HttpPost]
@@ -61,10 +80,7 @@ namespace IdentityApplication.Controllers
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
 
@@ -79,10 +95,7 @@ namespace IdentityApplication.Controllers
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
     }

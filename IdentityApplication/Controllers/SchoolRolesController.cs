@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using IdentityApplication.Bases;
+using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Core.Services.Interfaces;
 using SchoolManagement.Models.Models;
 using System;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace IdentityApplication.Controllers
 {
-    public class SchoolRolesController : Controller
+    public class SchoolRolesController : BaseController
     {
         private readonly ISchoolRoleService _schoolRoleService;
 
@@ -21,12 +22,9 @@ namespace IdentityApplication.Controllers
             {
                 return View(await _schoolRoleService.Initiate(schoolId));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
 
@@ -45,19 +43,23 @@ namespace IdentityApplication.Controllers
 
                 return RedirectToAction("Index", new { schoolId = role.School.Id });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
 
 
-        public async Task<IActionResult> Edit(string roleId, Guid schoolId)
+        public async Task<IActionResult> Edit(Guid roleId, Guid schoolId)
         {
-            return View(await _schoolRoleService.InitiateEdit(roleId, schoolId));
+            try
+            {
+                return View(await _schoolRoleService.InitiateEdit(roleId, schoolId));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         [HttpPost]
@@ -72,14 +74,11 @@ namespace IdentityApplication.Controllers
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
 
-        public async Task<IActionResult> Delete(string roleId, Guid schoolId)
+        public async Task<IActionResult> Delete(Guid roleId, Guid schoolId)
         {
             try
             {
@@ -90,10 +89,7 @@ namespace IdentityApplication.Controllers
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
 
@@ -108,10 +104,7 @@ namespace IdentityApplication.Controllers
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null) ex = ex.InnerException;
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.ErrorMessage = ex.Message.ToString();
-                return View("Error", errorViewModel);
+                throw;
             }
         }
     }

@@ -25,20 +25,20 @@ namespace SchoolManagement.Core.Services
 
         public async Task<bool> ActivateSeason(Guid seasonId)
         {
-            Season season = await _unitOfWork.SeasonRepository.GetByIDAsync(seasonId);
-
-            if (season == null) return false;
-
-            season.Current = true;
-            await _unitOfWork.SeasonRepository.UpdateAsync(season);
-
-            Season currentSeason = await _unitOfWork.SeasonRepository.GetOneAsync(s => s.Current);
+            Season currentSeason = (await _unitOfWork.SeasonRepository.GetAsync(s => s.Current)).FirstOrDefault();
             if (currentSeason != null)
             {
                 currentSeason.Current = false;
                 await _unitOfWork.SeasonRepository.UpdateAsync(currentSeason);
             }
 
+            Season season = await _unitOfWork.SeasonRepository.GetByIDAsync(seasonId);
+
+            if (season == null) return false;
+
+            season.Current = true;
+
+            await _unitOfWork.SeasonRepository.UpdateAsync(season);
             await _unitOfWork.SaveAsync();
 
             return true;
