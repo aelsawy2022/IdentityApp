@@ -1,7 +1,7 @@
 ﻿using IdentityApplication.Bases;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Core.Services.Interfaces;
+using SchoolManagement.Infrastructure.CustomFilters;
 using SchoolManagement.Models.Models;
 using System;
 using System.Threading.Tasks;
@@ -17,6 +17,7 @@ namespace IdentityApplication.Controllers
             _activityService = activityService;
         }
 
+        [Authorize(Roles.ADMIN, Roles.SCHOOL_ADMIN)]
         public async Task<IActionResult> Index(Guid schoolId)
         {
             try
@@ -30,6 +31,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
+        [Authorize(Roles.ADMIN, Roles.SCHOOL_ADMIN)]
         public async Task<IActionResult> Create(Guid schoolId)
         {
             try
@@ -59,7 +61,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
-        [Authorize(Policy = "RequireSuperAdmin")]
+        [Authorize(Roles.SCHOOL_ACTIVITY)]
         public async Task<IActionResult> ActivateActivity(Guid activityId, Guid schoolId)
         {
             try
@@ -76,6 +78,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
+        [Authorize(Roles.SCHOOL_ACTIVITY)]
         public async Task<IActionResult> Edit(Guid activityId, Guid schoolId)
         {
             try
@@ -105,6 +108,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
+        [Authorize(Roles.SCHOOL_ACTIVITY)]
         public async Task<IActionResult> Delete(Guid activityId, Guid schoolId)
         {
             try

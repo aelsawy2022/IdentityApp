@@ -10,5 +10,6 @@ namespace SchoolManagement.Core.Services.Interfaces
     public interface IActivityService : IBaseService<ActivityModel, ActivityVM>
     {
         Task<bool> ActivateActivity(params object[] arguments);
+        Task<ActivityModel> GetById(Guid id);
     }
 }

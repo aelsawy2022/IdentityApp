@@ -115,6 +115,11 @@ namespace SchoolManagement.Core.Services
             return true;
         }
 
+        public async Task<ActivityModel> GetById(Guid id)
+        {
+            return _mapper.Map<ActivityModel>(await _unitOfWork.ActivityRepository.GetByIDAsync(id));
+        }
+
         public async Task<ActivityVM> Initiate(params object[] arguments)
         {
             ActivityVM activityViewModel = new ActivityVM();

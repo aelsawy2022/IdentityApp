@@ -1,12 +1,9 @@
-﻿using IdentityApplication.CustomFilters;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Mvc;
+using SchoolManagement.Infrastructure.CustomFilters;
 
 namespace IdentityApplication.Bases
 {
+    [Authorize]
     [ServiceFilter(typeof(CustomeExceptionFilter))]
     public class BaseController : Controller
     {

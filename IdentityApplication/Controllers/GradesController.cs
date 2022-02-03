@@ -1,6 +1,7 @@
 ﻿using IdentityApplication.Bases;
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Core.Services.Interfaces;
+using SchoolManagement.Infrastructure.CustomFilters;
 using SchoolManagement.Models.Models;
 using System;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ namespace IdentityApplication.Controllers
             _gradesService = gradesService;
         }
 
+        [Authorize(Roles.ADMIN, Roles.SCHOOL_ADMIN)]
         public async Task<IActionResult> Index(Guid schoolId)
         {
             try
@@ -30,6 +32,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
+        [Authorize(Roles.ADMIN, Roles.SCHOOL_ADMIN)]
         public async Task<IActionResult> Create(Guid schoolId)
         {
             try
@@ -57,6 +60,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
+        [Authorize(Roles.ADMIN, Roles.SCHOOL_ADMIN)]
         public async Task<IActionResult> Edit(Guid gradeId, Guid schoolId)
         {
             try
@@ -84,6 +88,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
+        [Authorize(Roles.ADMIN, Roles.SCHOOL_ADMIN)]
         public async Task<IActionResult> Delete(Guid gradeId, Guid schoolId)
         {
             try
@@ -91,7 +96,7 @@ namespace IdentityApplication.Controllers
                 bool succeded = await _gradesService.Delete(gradeId);
                 if (!succeded) TempData["ErrorMsg"] = "Something wrong";
 
-                return View("Index", new { schoolId = schoolId });
+                return RedirectToAction("Index", new { schoolId = schoolId });
             }
             catch (Exception ex)
             {

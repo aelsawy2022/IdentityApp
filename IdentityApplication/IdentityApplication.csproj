@@ -7,18 +7,26 @@
 
   <ItemGroup>
     <Compile Remove="AutoMapperConfig\**" />
+    <Compile Remove="CustomAuthorization\**" />
+    <Compile Remove="CustomFilters\**" />
     <Compile Remove="Data\**" />
     <Compile Remove="Migrations\**" />
     <Compile Remove="Models\**" />
     <Content Remove="AutoMapperConfig\**" />
+    <Content Remove="CustomAuthorization\**" />
+    <Content Remove="CustomFilters\**" />
     <Content Remove="Data\**" />
     <Content Remove="Migrations\**" />
     <Content Remove="Models\**" />
     <EmbeddedResource Remove="AutoMapperConfig\**" />
+    <EmbeddedResource Remove="CustomAuthorization\**" />
+    <EmbeddedResource Remove="CustomFilters\**" />
     <EmbeddedResource Remove="Data\**" />
     <EmbeddedResource Remove="Migrations\**" />
     <EmbeddedResource Remove="Models\**" />
     <None Remove="AutoMapperConfig\**" />
+    <None Remove="CustomAuthorization\**" />
+    <None Remove="CustomFilters\**" />
     <None Remove="Data\**" />
     <None Remove="Migrations\**" />
     <None Remove="Models\**" />
@@ -43,6 +51,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SchoolManagement.Core\SchoolManagement.Core.csproj" />
+    <ProjectReference Include="..\SchoolManagement.Infrastructure\SchoolManagement.Infrastructure.csproj" />
     <ProjectReference Include="..\SchoolManagement.Persistance\SchoolManagement.Persistance.csproj" />
   </ItemGroup>
 

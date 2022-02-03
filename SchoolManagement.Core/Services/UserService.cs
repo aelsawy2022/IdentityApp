@@ -304,6 +304,20 @@ namespace SchoolManagement.Core.Services
                 usersViewModel.IsSchoolsRolesSelected = true;
         }
 
+        public async Task<UsersModel> GetByName(string username)
+        {
+            User user = await _unitOfWork.UserRepository.GetOneAsync(u => u.UserName == username || u.Name == username, "Governorate,UserRoles");
+            foreach(UserRole ur in user.UserRoles)
+            {
+                ur.Role = await _unitOfWork.RoleRepository.GetOneAsync(r => r.Id == ur.RoleId, "School,Activity");
+            }
+            return _mapper.Map<UsersModel>(user);
+        }
+
+        public async Task<UsersModel> GetById(Guid id)
+        {
+            return _mapper.Map<UsersModel>((await _unitOfWork.UserRepository.GetUsersWithRolesAsync(u => u.Id == id) as List<User>).FirstOrDefault());
+        }
     }
 
     public class UserServiceResponse

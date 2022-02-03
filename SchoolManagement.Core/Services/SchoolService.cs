@@ -72,6 +72,11 @@ namespace SchoolManagement.Core.Services
             return _mapper.Map<List<SchoolModel>>(schools);
         }
 
+        public async Task<SchoolModel> GetById(object Id)
+        {
+            return _mapper.Map<SchoolModel>((await _unitOfWork.SchoolRepository.GetAsync(s => s.Id == (Guid)Id)).FirstOrDefault());
+        }
+
         public Task<SchoolVM> Initiate(params object[] arguments)
         {
             throw new NotImplementedException();

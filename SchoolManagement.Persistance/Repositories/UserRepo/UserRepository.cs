@@ -29,7 +29,6 @@ namespace SchoolManagement.Persistance.Repositories.UserRepo
             }
         }
 
-
         public IQueryable<User> GetQueryable(Expression<Func<User, bool>> filter, Func<IQueryable<User>, IOrderedQueryable<User>> orderBy = null, string includeProperties = "", int? take = null, int? skip = null, bool asNoTracking = false)
         {
             try
@@ -40,7 +39,10 @@ namespace SchoolManagement.Persistance.Repositories.UserRepo
                 if (filter != null)
                     query = query.Where(filter);
 
-                query = query.Include(u => u.Governorate).Include(u => u.UserRoles).ThenInclude(r => r.Role);
+                query = query.Include(u => u.Governorate)
+                    .Include(ur => ur.UserRoles)
+                    .ThenInclude(r => r.Role)
+                    .ThenInclude(s => s.School);
 
                 if (orderBy != null)
                     query = orderBy(query);

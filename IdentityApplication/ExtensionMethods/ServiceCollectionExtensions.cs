@@ -15,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SchoolManagement.Persistance.UnitOfWorks;
 using SchoolManagement.Core.Services.Interfaces;
 using SchoolManagement.Core.Services;
-using IdentityApplication.CustomFilters;
+using SchoolManagement.Infrastructure.CustomFilters;
 
 namespace IdentityApplication.ExtensionMethods
 {

@@ -5,13 +5,11 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using SchoolManagement.Models.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace IdentityApplication.CustomFilters
+namespace SchoolManagement.Infrastructure.CustomFilters
 {
     public class CustomeExceptionFilter : ExceptionFilterAttribute
     {

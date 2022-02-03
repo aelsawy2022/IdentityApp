@@ -13,5 +13,7 @@ namespace SchoolManagement.Core.Services.Interfaces
         Task<bool> AddToSuperAdminRole(string userName, bool isSuperAdmin);
         Task<UserServiceResponse> CreateUser(UserVM usersViewModel);
         Task<UserVM> GetUsers(int currentPage, int maxRows);
+        Task<UsersModel> GetByName(string username);
+        Task<UsersModel> GetById(Guid id);
     }
 }

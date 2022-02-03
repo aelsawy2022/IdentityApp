@@ -10,5 +10,6 @@ namespace SchoolManagement.Core.Services.Interfaces
     public interface ISchoolService : IBaseService<SchoolModel, SchoolVM>
     {
         Task<List<SchoolModel>> GetAllSchools();
+        Task<SchoolModel> GetById(object Id);
     }
 }
