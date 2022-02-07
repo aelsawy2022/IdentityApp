@@ -11,6 +11,8 @@ namespace SchoolManagement.Persistance.Data.Entities
         public string Name { get; set; }
         public string Image { get; set; }
         public bool Active { get; set; }
+        public string? RefreshToken { get; set; }
+        public DateTime RefreshTokenExpiryTime { get; set; }
 
         public Governorate Governorate { get; set; }
         public ICollection<ClassUser> ClassUsers { get; set; }

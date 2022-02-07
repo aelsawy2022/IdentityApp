@@ -1,58 +1,61 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <UserSecretsId>aspnet-IdentityApplication-CB1DB1B1-84DF-4993-80EE-AA4ABFDC2E21</UserSecretsId>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<UserSecretsId>aspnet-IdentityApplication-CB1DB1B1-84DF-4993-80EE-AA4ABFDC2E21</UserSecretsId>
+		<LangVersion>latest</LangVersion>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="AutoMapperConfig\**" />
-    <Compile Remove="CustomAuthorization\**" />
-    <Compile Remove="CustomFilters\**" />
-    <Compile Remove="Data\**" />
-    <Compile Remove="Migrations\**" />
-    <Compile Remove="Models\**" />
-    <Content Remove="AutoMapperConfig\**" />
-    <Content Remove="CustomAuthorization\**" />
-    <Content Remove="CustomFilters\**" />
-    <Content Remove="Data\**" />
-    <Content Remove="Migrations\**" />
-    <Content Remove="Models\**" />
-    <EmbeddedResource Remove="AutoMapperConfig\**" />
-    <EmbeddedResource Remove="CustomAuthorization\**" />
-    <EmbeddedResource Remove="CustomFilters\**" />
-    <EmbeddedResource Remove="Data\**" />
-    <EmbeddedResource Remove="Migrations\**" />
-    <EmbeddedResource Remove="Models\**" />
-    <None Remove="AutoMapperConfig\**" />
-    <None Remove="CustomAuthorization\**" />
-    <None Remove="CustomFilters\**" />
-    <None Remove="Data\**" />
-    <None Remove="Migrations\**" />
-    <None Remove="Models\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="AutoMapperConfig\**" />
+		<Compile Remove="CustomAuthorization\**" />
+		<Compile Remove="CustomFilters\**" />
+		<Compile Remove="Data\**" />
+		<Compile Remove="Migrations\**" />
+		<Compile Remove="Models\**" />
+		<Content Remove="AutoMapperConfig\**" />
+		<Content Remove="CustomAuthorization\**" />
+		<Content Remove="CustomFilters\**" />
+		<Content Remove="Data\**" />
+		<Content Remove="Migrations\**" />
+		<Content Remove="Models\**" />
+		<EmbeddedResource Remove="AutoMapperConfig\**" />
+		<EmbeddedResource Remove="CustomAuthorization\**" />
+		<EmbeddedResource Remove="CustomFilters\**" />
+		<EmbeddedResource Remove="Data\**" />
+		<EmbeddedResource Remove="Migrations\**" />
+		<EmbeddedResource Remove="Models\**" />
+		<None Remove="AutoMapperConfig\**" />
+		<None Remove="CustomAuthorization\**" />
+		<None Remove="CustomFilters\**" />
+		<None Remove="Data\**" />
+		<None Remove="Migrations\**" />
+		<None Remove="Models\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.12" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.21" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.21" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.21" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.21">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.21" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.12" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.21" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.21" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.21" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.21" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.21">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\Upload\Images\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="wwwroot\Upload\Images\" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SchoolManagement.Core\SchoolManagement.Core.csproj" />
-    <ProjectReference Include="..\SchoolManagement.Infrastructure\SchoolManagement.Infrastructure.csproj" />
-    <ProjectReference Include="..\SchoolManagement.Persistance\SchoolManagement.Persistance.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SchoolManagement.Core\SchoolManagement.Core.csproj" />
+		<ProjectReference Include="..\SchoolManagement.Infrastructure\SchoolManagement.Infrastructure.csproj" />
+		<ProjectReference Include="..\SchoolManagement.Persistance\SchoolManagement.Persistance.csproj" />
+	</ItemGroup>
 
 </Project>

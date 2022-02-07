@@ -64,6 +64,12 @@ namespace SchoolManagement.Core.Services
             return true;
         }
 
+        public async Task<List<ClassModel>> GetByGradeId(Guid gradeId)
+        {
+            List<Class> classes = await _unitOfWork.ClassRepository.GetAsync(c => c.Grade.Id == gradeId, o => o.OrderBy(c => c.CreationDate)) as List<Class>;
+            return _mapper.Map<List<ClassModel>>(classes);
+        }
+
         public async Task<ClassVM> Initiate(params object[] arguments)
         {
             ClassVM classViewModel = new ClassVM();

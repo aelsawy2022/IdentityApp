@@ -61,6 +61,12 @@ namespace SchoolManagement.Core.Services
             return true;
         }
 
+        public async Task<SchoolModel> GetGradeSchool(object Id)
+        {
+            Grade grade = await _unitOfWork.GradeRepository.GetOneAsync(g => g.Id == Guid.Parse(Id.ToString()), "School");
+            return _mapper.Map<SchoolModel>(grade.School);
+        }
+
         public async Task<GradeVM> Initiate(params object[] arguments)
         {
             GradeVM gradeViewModel = new GradeVM();

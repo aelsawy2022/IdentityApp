@@ -58,6 +58,8 @@ namespace IdentityApplication.ExtensionMethods
             services.AddScoped(typeof(ISeasonService), typeof(SeasonService));
             services.AddScoped(typeof(IUserService), typeof(UserService));
             services.AddScoped(typeof(IUserTypeService), typeof(UserTypeService));
+            services.AddScoped(typeof(IAuthenticateService), typeof(AuthenticateService));
+            services.AddScoped(typeof(ITokenService), typeof(TokenService));
 
             //General Lists Manager
             //services.AddScoped(typeof(IGeneralManager), typeof(GeneralManager));

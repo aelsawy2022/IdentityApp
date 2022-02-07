@@ -24,6 +24,7 @@ namespace SchoolManagement.Infrastructure.CustomFilters
 
         public override void OnException(ExceptionContext context)
         {
+            bool isApiRequest = context.HttpContext.Request.Path.Value.StartsWith("/api");
             var ex = context.Exception;
             while (ex.InnerException != null) ex = ex.InnerException;
 
@@ -58,17 +59,32 @@ namespace SchoolManagement.Infrastructure.CustomFilters
 
             _logger.LogError(ex, LogMessage);
 
-            var result = new ViewResult { ViewName = "Error" };
-            var modelMetadata = new EmptyModelMetadataProvider();
-            result.ViewData = new ViewDataDictionary(modelMetadata, context.ModelState);
-
-            if (_hostEnvironment.IsDevelopment())
+            dynamic result;
+            if (!isApiRequest)
             {
-                result.ViewData.Add("ErrorMsg", ResponseMessage);
+                result = new ViewResult { ViewName = "Error" };
+                var modelMetadata = new EmptyModelMetadataProvider();
+                result.ViewData = new ViewDataDictionary(modelMetadata, context.ModelState);
+
+                if (_hostEnvironment.IsDevelopment())
+                {
+                    result.ViewData.Add("ErrorMsg", ResponseMessage);
+                }
+                else
+                {
+                    result.ViewData.Add("ErrorMsg", "An unexpected fault happened. Try again later");
+                }
             }
             else
             {
-                result.ViewData.Add("ErrorMsg", "An unexpected fault happened. Try again later");
+                if (_hostEnvironment.IsDevelopment())
+                {
+                    result = new JsonResult(new { error = ResponseMessage });
+                }
+                else
+                {
+                    result = new JsonResult(new { error = "An unexpected fault happened. Try again later" });
+                }
             }
 
             context.Result = result;

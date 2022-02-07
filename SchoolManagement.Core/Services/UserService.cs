@@ -318,6 +318,26 @@ namespace SchoolManagement.Core.Services
         {
             return _mapper.Map<UsersModel>((await _unitOfWork.UserRepository.GetUsersWithRolesAsync(u => u.Id == id) as List<User>).FirstOrDefault());
         }
+
+        public async Task<UsersModel> GetByEmail(string email)
+        {
+            User user = await _unitOfWork.UserRepository.GetOneAsync(u => u.UserName == email, "UserRoles");
+            foreach (UserRole ur in user.UserRoles)
+            {
+                ur.Role = await _unitOfWork.RoleRepository.GetOneAsync(r => r.Id == ur.RoleId, "School,Activity");
+            }
+            return _mapper.Map<UsersModel>(user);
+        }
+
+        public async Task<bool> Update(UsersModel model)
+        {
+            if (model == null) return false;
+
+            await _unitOfWork.UserRepository.UpdateAsync(_mapper.Map<User>(model));
+            await _unitOfWork.SaveAsync();
+
+            return true;
+        }
     }
 
     public class UserServiceResponse

@@ -79,7 +79,7 @@ namespace SchoolManagement.Persistance.Data.Migrations
                         column: x => x.GovernorateId,
                         principalTable: "Governorates",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
