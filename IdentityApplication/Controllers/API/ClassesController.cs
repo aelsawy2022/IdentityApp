@@ -30,7 +30,6 @@ namespace IdentityApplication.Controllers.API
         {
             try
             {
-                throw new NotImplementedException();
                 List<ClassModel> classes = await _classService.GetByGradeId(gradeId);
                 if(classes != null)
                 {
