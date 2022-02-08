@@ -31,15 +31,18 @@
                     <ul class="navbar-nav flex-grow-1">
                         @*<li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
+                            </li>
+                            <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>*@
+                            </li>*@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <partial name="_ManageAdminNav" />
                         }
 
+                        <li class="nav-item">
+                            <a href="swagger/index.html" class="nav-link text-dark">Swagger</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -60,21 +63,21 @@
             @RenderBody()
         </main>
         @*@if (SignInManager.IsSignedIn(User))
-        {
+            {
             <div class="row">
-                <div class="col-md-3">
-                    <partial name="_ManageAdminNav" />
-                </div>
-                <div class="col-md-9">
-                    <main role="main" class="pb-3">
-                        @RenderBody()
-                    </main>
-                </div>
+            <div class="col-md-3">
+            <partial name="_ManageAdminNav" />
             </div>
-        }
-        else
-        {
-        }*@
+            <div class="col-md-9">
+            <main role="main" class="pb-3">
+            @RenderBody()
+            </main>
+            </div>
+            </div>
+            }
+            else
+            {
+            }*@
     </div>
 
     <footer class="border-top footer text-muted">
