@@ -15,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.OpenApi.Models;
 
 namespace IdentityApplication
 {
@@ -59,32 +60,6 @@ namespace IdentityApplication
                     };
                 });
 
-            //services.AddAuthentication(options =>
-            //{
-            //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            //})
-
-            //// Adding Jwt Bearer
-            //.AddJwtBearer(options =>
-            //{
-            //    options.SaveToken = true;
-            //    options.RequireHttpsMetadata = false;
-            //    options.TokenValidationParameters = new TokenValidationParameters()
-            //    {
-            //        ValidateIssuer = true,
-            //        ValidateAudience = true,
-            //        ValidateLifetime = true,
-            //        ValidateIssuerSigningKey = true,
-            //        ClockSkew = TimeSpan.Zero,
-
-            //        ValidAudience = Configuration["Jwt:Issuer"],
-            //        ValidIssuer = Configuration["Jwt:Issuer"],
-            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
-            //    };
-            //});
-
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
@@ -102,6 +77,14 @@ namespace IdentityApplication
                 options.AddPolicy("RequireSuperAdmin",
                      policy => policy.RequireRole(SystemRoles.SuperAdmin.ToString()));
             });
+
+            services.AddSwaggerGen(
+                swagger =>
+                {
+                    swagger.SwaggerDoc("v1", new OpenApiInfo { Title = "My API" });
+                }
+                );
+            services.AddSwaggerGenNewtonsoftSupport();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -122,11 +105,6 @@ namespace IdentityApplication
                 app.UseHsts();
             }
 
-            //app.UseWhen(context => context.Request.Path.Value.StartsWith("/api"), subBranch =>
-            //{
-            //    subBranch.UseAuthenticationOverride(JwtBearerDefaults.AuthenticationScheme);
-            //});
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -141,6 +119,17 @@ namespace IdentityApplication
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+            });
+
+            //app.UseWhen(context => context.Request.Path.Value.StartsWith("/api"), subBranch =>
+            //{
+            //    subBranch.UseAuthenticationOverride(JwtBearerDefaults.AuthenticationScheme);
+            //});
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "School Management Api");
+                //c.RoutePrefix = string.Empty;
             });
         }
     }
