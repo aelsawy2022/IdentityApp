@@ -25,6 +25,8 @@ namespace IdentityApplication
 
         public static void Main(string[] args)
         {
+            Serilog.Debugging.SelfLog.Enable(Console.WriteLine);
+
             Log.Logger = new LoggerConfiguration()
                .ReadFrom.Configuration(Configuration)
                .WriteTo.EmailCustom(LogEventLevel.Warning)
@@ -32,6 +34,7 @@ namespace IdentityApplication
 
             try
             {
+                Log.Warning("Application Starting...");
                 Log.Information("Application Starting...");
                 CreateHostBuilder(args).Build().Run();
             }
