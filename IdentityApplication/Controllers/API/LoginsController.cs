@@ -49,7 +49,8 @@ namespace IdentityApplication.Controllers.API
                 var result = await _authenticateService.Authenticate(loginModel);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User logged in.");
+                    _logger.LogWarning("User logged in.");
+
                     //var user = await _userService.GetByEmail(loginModel.Email);
                     var user = await _userManager.FindByEmailAsync(loginModel.Email);
                     string token = _tokenService.GenerateToken(_authenticateService.GenerateClaims(new UsersModel() { Name = user.UserName, Id = user.Id, Email = user.Email }));

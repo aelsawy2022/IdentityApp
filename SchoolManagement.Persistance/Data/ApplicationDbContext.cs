@@ -83,5 +83,6 @@ namespace SchoolManagement.Persistance.Data
         public virtual DbSet<UserType> UserTypes { get; set; }
         public virtual DbSet<Season> Seasons { get; set; }
         public virtual DbSet<ClassUser> ClassUsers { get; set; }
+        //public virtual DbSet<Log> Logs { get; set; }
     }
 }

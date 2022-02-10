@@ -16,6 +16,7 @@ using System.Text;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.OpenApi.Models;
+using Serilog.Context;
 
 namespace IdentityApplication
 {
@@ -112,6 +113,13 @@ namespace IdentityApplication
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            //app.Use(async (httpContext, next) =>
+            //{
+            //    var userName = httpContext.User.Identity.IsAuthenticated ? httpContext.User.Identity.Name : "Guest"; //Gets user Name from user Identity  
+            //    LogContext.PushProperty("Username", userName); //Push user in LogContext;  
+            //    await next.Invoke();
+            //});
 
             app.UseEndpoints(endpoints =>
             {

@@ -7,12 +7,15 @@
   <ItemGroup>
     <Compile Remove="Data\Migrations\20220206163122_addRefreshTokenToUserEntity.cs" />
     <Compile Remove="Data\Migrations\20220206163122_addRefreshTokenToUserEntity.Designer.cs" />
+    <Compile Remove="Data\Migrations\20220209161729_addLogEntity.cs" />
+    <Compile Remove="Data\Migrations\20220209161729_addLogEntity.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.21" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.21" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.21" />
+    <PackageReference Include="Serilog.Sinks.Email" Version="2.4.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
   </ItemGroup>
 
