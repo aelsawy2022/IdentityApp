@@ -1,7 +1,7 @@
 ﻿using IdentityApplication.Bases;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SchoolManagement.Infrastructure.CustomFilters;
 using SchoolManagement.Models.Models;
 using SchoolManagement.Persistance.Data.Entities;
 using System;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace IdentityApplication.Controllers
 {
-    [Authorize(Policy = "RequireSuperAdmin")]
+    //[Authorize(Policy = "RequireSuperAdmin")]
     public class RolesController : BaseController
     {
         private readonly RoleManager<Role> _roleManager;
@@ -20,6 +20,7 @@ namespace IdentityApplication.Controllers
             _roleManager = roleManager;
         }
 
+        [Authorize(Roles.ADMIN)]
         public IActionResult Index()
         {
             try
@@ -33,6 +34,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
+        [Authorize(Roles.SUPER_ADMIN)]
         public IActionResult Create()
         {
             return View(new Role());
@@ -52,6 +54,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
+        [Authorize(Roles.SUPER_ADMIN)]
         public async Task<IActionResult> Edit(string roleId)
         {
             try
@@ -78,6 +81,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
+        [Authorize(Roles.SUPER_ADMIN)]
         public async Task<IActionResult> Delete(string roleId)
         {
             try

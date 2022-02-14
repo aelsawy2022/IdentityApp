@@ -23,7 +23,10 @@
     </div>
 </div>
 
-<a asp-action="Create">Create</a>
+@if (User.IsInRole("SuperAdmin"))
+{
+    <a asp-action="Create">Create</a>
+}
 <table class="table table-striped table-bordered">
     <thead>
         <tr>
@@ -42,11 +45,14 @@
                 <td>@governorate.CreationDate.ToString("MM/dd/yyyy")</td>
                 <td>
                     <a class="btn btn-info" asp-action="Edit" asp-controller="Governorate"
-                       asp-route-governorateId="@governorate.Id">Edit</a>
+                   asp-route-governorateId="@governorate.Id">Edit</a>
 
-                    <a class="btn btn-danger" asp-action="Delete" asp-controller="Governorate"
-                       asp-route-governorateId="@governorate.Id"
-                       onclick="return confirm('Are you sure you want to delete @governorate.Name?')">Delete</a>
+                    @if (User.IsInRole("SuperAdmin"))
+                    {
+                        <a class="btn btn-danger" asp-action="Delete" asp-controller="Governorate"
+                   asp-route-governorateId="@governorate.Id"
+                   onclick="return confirm('Are you sure you want to delete @governorate.Name?')">Delete</a>
+                    }
                 </td>
             </tr>
 

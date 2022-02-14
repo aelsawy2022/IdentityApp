@@ -1,6 +1,7 @@
 ﻿using IdentityApplication.Bases;
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Core.Services.Interfaces;
+using SchoolManagement.Infrastructure.CustomFilters;
 using SchoolManagement.Models.Models;
 using System;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ namespace IdentityApplication.Controllers
             _schoolRoleService = schoolRoleService;
         }
 
+        [Authorize(Roles.ADMIN, Roles.SCHOOL_ADMIN)]
         public async Task<IActionResult> Index(Guid schoolId)
         {
             try
@@ -28,6 +30,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
+        [Authorize(Roles.ADMIN, Roles.SCHOOL_SUPER_ADMIN)]
         public async Task<IActionResult> Create(Guid schoolId)
         {
             return View(await _schoolRoleService.InitiateCreate(schoolId));
@@ -49,7 +52,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
-
+        [Authorize(Roles.ADMIN, Roles.SCHOOL_SUPER_ADMIN)]
         public async Task<IActionResult> Edit(Guid roleId, Guid schoolId)
         {
             try
@@ -78,6 +81,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
+        [Authorize(Roles.ADMIN, Roles.SCHOOL_SUPER_ADMIN)]
         public async Task<IActionResult> Delete(Guid roleId, Guid schoolId)
         {
             try
@@ -93,6 +97,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
+        [Authorize(Roles.ADMIN, Roles.SCHOOL_SUPER_ADMIN)]
         public async Task<IActionResult> ActivateRole(Guid roleId, Guid schoolId)
         {
             try

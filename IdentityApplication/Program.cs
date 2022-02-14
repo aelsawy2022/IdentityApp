@@ -34,7 +34,6 @@ namespace IdentityApplication
 
             try
             {
-                Log.Warning("Application Starting...");
                 Log.Information("Application Starting...");
                 CreateHostBuilder(args).Build().Run();
             }

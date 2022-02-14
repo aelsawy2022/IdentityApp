@@ -91,14 +91,6 @@ namespace IdentityApplication.Areas.Identity.Pages.Account
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
-                //if (result.IsNotAllowed)
-                //{
-                //    var user = await _userManager.FindByEmailAsync(Input.Email);
-                //    if (!user.EmailConfirmed)
-                //    {
-                //        await ConfirmEmail(user, returnUrl);
-                //    }
-                //}
                 if (result.RequiresTwoFactor)
                 {
                     return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
@@ -110,9 +102,6 @@ namespace IdentityApplication.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    //var user = await _userManager.FindByEmailAsync(Input.Email);
-                    //if(user != null) return RedirectToPage("./LoginConfirmation");
-
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return Page();
                 }
@@ -120,20 +109,6 @@ namespace IdentityApplication.Areas.Identity.Pages.Account
 
             // If we got this far, something failed, redisplay form
             return Page();
-        }
-
-        private async Task ConfirmEmail(User user, string returnUrl)
-        {
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var callbackUrl = Url.Page(
-                "/Account/ConfirmEmail",
-                pageHandler: null,
-                values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
-                protocol: Request.Scheme);
-
-            await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
         }
     }
 }

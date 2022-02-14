@@ -17,13 +17,13 @@ namespace IdentityApplication.Controllers
             _classUserService = classUserService;
         }
 
-        public async Task<IActionResult> Index(Guid gradeId, Guid schoolId, Guid classId)
+        public async Task<IActionResult> Index(Guid gradeId, Guid schoolId, Guid classId, int currentPage = 1, int maxRows = 3)
         {
             try
             {
                 if (classId == Guid.Empty) return RedirectToAction("Index", "Classes", new { gradeId = gradeId, schoolId = schoolId });
 
-                return View(await _classUserService.Initiate(gradeId, schoolId, classId));
+                return View(await _classUserService.Initiate(gradeId, schoolId, classId, currentPage, maxRows));
             }
             catch (Exception ex)
             {

@@ -1,6 +1,7 @@
 ﻿using IdentityApplication.Bases;
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Core.Services.Interfaces;
+using SchoolManagement.Infrastructure.CustomFilters;
 using SchoolManagement.Models.Models;
 using System;
 using System.Threading.Tasks;
@@ -30,6 +31,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
+        [Authorize(Roles.SUPER_ADMIN)]
         public async Task<IActionResult> Create()
         {
             try
@@ -84,6 +86,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
+        [Authorize(Roles.SUPER_ADMIN)]
         public async Task<IActionResult> Delete(Guid managementId)
         {
             try

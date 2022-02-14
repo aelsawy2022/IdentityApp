@@ -32,7 +32,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
-        [Authorize(Roles.ADMIN)]
+        [Authorize(Roles.SUPER_ADMIN)]
         public async Task<IActionResult> Create()
         {
             try
@@ -88,7 +88,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
-        [Authorize(Roles.ADMIN, Roles.SCHOOL_SUPER_ADMIN)]
+        [Authorize(Roles.SUPER_ADMIN, Roles.SCHOOL_SUPER_ADMIN)]
         public async Task<IActionResult> Delete(Guid schoolId)
         {
             try

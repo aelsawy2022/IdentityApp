@@ -44,8 +44,11 @@ namespace SchoolManagement.Core.Services
             ClassUserVM classUserViewModel = new ClassUserVM();
             classUserViewModel.usersFilter = new UsersFilter();
 
+            int currentPage = (int)arguments[3];
+            int maxRows = (int)arguments[4];
+
             var classUsers = (await _unitOfWork.ClassUserRepository.GetAsync(cu => cu.ClassId == (Guid)arguments[2],
-                                                o => o.OrderBy(cu => cu.UserId), "User,UserType,Season") as List<ClassUser>).ToList();
+                                                o => o.OrderBy(cu => cu.UserId), "User,UserType,Season", maxRows, (currentPage - 1) * maxRows) as List<ClassUser>).ToList();
             classUserViewModel.ClassUsers = _mapper.Map<List<ClassUsersModel>>(classUsers);
 
             var allUsers = await _unitOfWork.UserRepository.GetAsync(GenerateAllUsersExpression((Guid)arguments[2]), o => o.OrderBy(u => u.Name), "ClassUsers") as List<User>;

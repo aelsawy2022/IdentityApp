@@ -29,6 +29,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
+        [SchoolManagement.Infrastructure.CustomFilters.Authorize(SchoolManagement.Infrastructure.CustomFilters.Roles.SUPER_ADMIN)]
         public async Task<IActionResult> Create()
         {
             try
@@ -99,6 +100,7 @@ namespace IdentityApplication.Controllers
             }
         }
 
+        [SchoolManagement.Infrastructure.CustomFilters.Authorize(SchoolManagement.Infrastructure.CustomFilters.Roles.SUPER_ADMIN)]
         public async Task<IActionResult> Delete(Guid userTypeId)
         {
             try

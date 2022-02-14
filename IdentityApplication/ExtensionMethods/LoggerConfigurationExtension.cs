@@ -13,13 +13,6 @@ namespace IdentityApplication.ExtensionMethods
     {
         public static LoggerConfiguration EmailCustom(this LoggerSinkConfiguration sinkConfiguration, LogEventLevel restrictedToMinimumLevel)
         {
-            List<string> toEmails = new List<string>();
-            toEmails.Add("ahmed_elsawy22@hotmail.com");
-            toEmails.Add("ahmed_elsawy16@hotmail.com");
-            toEmails.Add("aabdelwahab@fcih1.com");
-
-            //return sinkConfiguration.Email("ahmedragabelsawy13@gmail.com", toEmails, "smtp.gmail.com");
-
             return sinkConfiguration.Email(new EmailConnectionInfo()
             {
                 FromEmail = "aelsawy2023@gmail.com",
