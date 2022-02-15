@@ -14,6 +14,6 @@ namespace SchoolManagement.Models.Models
         public int MaterialsNo { get; set; }
         public SchoolModel School { get; set; }
 
-        public ICollection<ClassModel> Classes { get; set; }
+        public List<ClassModel> Classes { get; set; }
     }
 }

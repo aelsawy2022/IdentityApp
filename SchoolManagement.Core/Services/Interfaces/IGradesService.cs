@@ -10,5 +10,6 @@ namespace SchoolManagement.Core.Services.Interfaces
     public interface IGradesService : IBaseService<GradeModel, GradeVM>
     {
         Task<SchoolModel> GetGradeSchool(object Id);
+        Task<List<GradeModel>> GetGradsWithClassesBySchoolId(object Id);
     }
 }

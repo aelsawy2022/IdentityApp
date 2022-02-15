@@ -12,7 +12,9 @@ namespace SchoolManagement.Models.Models
         public bool Active { get; set; }
         public SchoolModel School { get; set; }
         public List<RolesModel> Roles { get; set; }
-
+        public List<ActivityClassModel> Classes { get; set; }
+        public List<ActivitySlotModel> Slots { get; set; }
+        public List<ActivityUserTypeModel> UserTypes { get; set; }
         public bool IsSelected { get; set; }
     }
 }

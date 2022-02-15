@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SchoolManagement.Persistance.Data;
 
 namespace SchoolManagement.Persistance.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220214171512_addActivityDetailsEntities")]
+    partial class addActivityDetailsEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -160,13 +162,7 @@ namespace SchoolManagement.Persistance.Data.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("From")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Slot")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("To")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -292,14 +288,14 @@ namespace SchoolManagement.Persistance.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("cf3c237d-1c93-4258-8fcf-24639819eb0a"),
-                            CreationDate = new DateTime(2022, 2, 15, 16, 9, 11, 309, DateTimeKind.Local).AddTicks(4883),
+                            Id = new Guid("bf087ece-fc4e-4a24-91cc-17487fd05867"),
+                            CreationDate = new DateTime(2022, 2, 14, 19, 15, 11, 853, DateTimeKind.Local).AddTicks(8305),
                             Name = "Cairo"
                         },
                         new
                         {
-                            Id = new Guid("bfcb79b7-4e98-44b4-9ddd-8547c53211dd"),
-                            CreationDate = new DateTime(2022, 2, 15, 16, 9, 11, 309, DateTimeKind.Local).AddTicks(4918),
+                            Id = new Guid("8e7dc563-8688-4c9b-b579-ca3f63d56516"),
+                            CreationDate = new DateTime(2022, 2, 14, 19, 15, 11, 853, DateTimeKind.Local).AddTicks(8333),
                             Name = "Giza"
                         });
                 });
@@ -403,17 +399,17 @@ namespace SchoolManagement.Persistance.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("94f77288-96e5-4593-867e-7e5853d50d97"),
+                            Id = new Guid("ac451410-fbe7-4c8b-ae44-3724ff03ee33"),
                             Active = true,
-                            ConcurrencyStamp = "0ddd32fe-1371-43b0-99d6-72d090dde51a",
+                            ConcurrencyStamp = "a69c93f8-9132-4cae-86c0-7fadbda84e59",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("91ac1843-6e4f-41c3-99f5-96eeccaa1515"),
+                            Id = new Guid("6b7e4be6-521c-4ce4-bb7c-8b3c868752f3"),
                             Active = true,
-                            ConcurrencyStamp = "ca776d6d-e2fd-480e-ae7a-2511400af3a8",
+                            ConcurrencyStamp = "e1e72760-e776-4336-a24a-6bc1572d8420",
                             Name = "SuperAdmin",
                             NormalizedName = "SUPERADMIN"
                         });
@@ -565,7 +561,7 @@ namespace SchoolManagement.Persistance.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b74eac6c-2b37-4e95-9ecb-d81e1bc4356c"),
+                            Id = new Guid("2038b628-9cbb-40cc-ae01-1fe46cb18d50"),
                             AccessFailedCount = 0,
                             Active = true,
                             ConcurrencyStamp = "b9bf9aea-a77d-42f6-b466-a8ce0221b807",
@@ -621,23 +617,23 @@ namespace SchoolManagement.Persistance.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("473c2490-2830-4ee3-be45-2907f82901d3"),
+                            Id = new Guid("aba81a6e-667e-4805-9929-d9c859d8bc2e"),
                             Active = true,
-                            CreationDate = new DateTime(2022, 2, 15, 16, 9, 11, 308, DateTimeKind.Local).AddTicks(6531),
+                            CreationDate = new DateTime(2022, 2, 14, 19, 15, 11, 853, DateTimeKind.Local).AddTicks(876),
                             Name = "Student"
                         },
                         new
                         {
-                            Id = new Guid("d19d24a6-f2bc-4fca-aeb0-03541bf7d924"),
+                            Id = new Guid("4b37a74e-e177-4b99-88b6-28680ef842fc"),
                             Active = true,
-                            CreationDate = new DateTime(2022, 2, 15, 16, 9, 11, 309, DateTimeKind.Local).AddTicks(4081),
+                            CreationDate = new DateTime(2022, 2, 14, 19, 15, 11, 853, DateTimeKind.Local).AddTicks(7556),
                             Name = "Teacher"
                         },
                         new
                         {
-                            Id = new Guid("b301da00-8d9f-4a2a-bced-02f161a73403"),
+                            Id = new Guid("586335f6-c5e3-4889-88e9-32ba5b175118"),
                             Active = true,
-                            CreationDate = new DateTime(2022, 2, 15, 16, 9, 11, 309, DateTimeKind.Local).AddTicks(4106),
+                            CreationDate = new DateTime(2022, 2, 14, 19, 15, 11, 853, DateTimeKind.Local).AddTicks(7579),
                             Name = "Manager"
                         });
                 });

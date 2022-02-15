@@ -16,7 +16,7 @@ namespace IdentityApplication.ExtensionMethods
             return sinkConfiguration.Email(new EmailConnectionInfo()
             {
                 FromEmail = "aelsawy2023@gmail.com",
-                ToEmail = "ahmed_elsawy22@hotmail.com,ahmed_elsawy16@hotmail.com,aabdelwahab@fcih1.com",
+                ToEmail = "ahmed_elsawy22@hotmail.com",
                 EnableSsl = true,
                 IsBodyHtml = false,
                 EmailSubject = "Error!!",

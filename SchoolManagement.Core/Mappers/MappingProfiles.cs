@@ -27,6 +27,9 @@ namespace SchoolManagement.Core.Mappers
             CreateMap<Season, SeasonModel>().ReverseMap();
             //CreateMap<UserRoleModel, UserRole>().ReverseMap();
             CreateMap<UserType, UserTypeModel>().ReverseMap();
+            CreateMap<ActivityClass, ActivityClassModel>().ReverseMap();
+            CreateMap<ActivitySlot, ActivitySlotModel>().ReverseMap();
+            CreateMap<ActivityUserType, ActivityUserTypeModel>().ReverseMap();
 
             //.ForMember(dto=> dto.Chain, conf => conf.MapFrom(r=>r.Chain))
         }

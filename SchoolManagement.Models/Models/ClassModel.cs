@@ -15,6 +15,7 @@ namespace SchoolManagement.Models.Models
         public int StudenstNo { get; set; }
         public int MaterilasNo { get; set; }
         public GradeModel Grade { get; set; }
+        public bool IsSelected { get; set; }
         public ICollection<ClassUsersModel> ClassUsers { get; set; }
     }
 }

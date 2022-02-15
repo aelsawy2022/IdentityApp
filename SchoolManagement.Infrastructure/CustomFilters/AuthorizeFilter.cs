@@ -86,7 +86,7 @@ namespace SchoolManagement.Infrastructure.CustomFilters
                                         Guid activityId = isApiRequest ? Guid.Parse(context.RouteData.Values["activityId"].ToString()) : Guid.Parse(context.HttpContext.Request.Query["activityId"]);
                                         var activity = _activityService.GetById(activityId).Result;
                                         schoolId = isApiRequest ? GetSchoolIdForApiRequest(context.RouteData) : GetSchoolId(context.HttpContext.Request);
-                                        flagClaim = user.Roles.Any(r => r.Name.ToLower() == activity.Name.ToLower() && (r.School != null ? r.School.Id == schoolId : false) && (r.Activity != null ? r.Activity.Id == activityId : false));
+                                        flagClaim = user.Roles.Any(r => r.Name.ToLower() == activity.Name?.ToLower() && (r.School != null ? r.School.Id == schoolId : false) && (r.Activity != null ? r.Activity.Id == activityId : false));
                                         break;
 
                                     default:

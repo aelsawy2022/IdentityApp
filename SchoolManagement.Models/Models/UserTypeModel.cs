@@ -9,6 +9,7 @@ namespace SchoolManagement.Models.Models
     {
         public string Name { get; set; }
         public bool Active { get; set; }
+        public bool IsSelected { get; set; }
         public ICollection<ClassUsersModel> ClassUsers { get; set; }
     }
 }

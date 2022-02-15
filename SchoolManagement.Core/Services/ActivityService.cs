@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SchoolManagement.Persistance.Repositories.GenericRepo;
 
 namespace SchoolManagement.Core.Services
 {
@@ -20,6 +21,9 @@ namespace SchoolManagement.Core.Services
         private readonly IActivityRepository _activityRepository;
         private readonly ISchoolRepository _schoolRepository;
         private readonly IRoleRepository _roleRepository;
+        private readonly IRepository<ActivityClass> _activityClassRepository;
+        private readonly IRepository<ActivityUserType> _activityUserTypeRepository;
+        private readonly IRepository<ActivitySlot> _activitySlotRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
@@ -29,13 +33,16 @@ namespace SchoolManagement.Core.Services
             IRoleRepository roleRepository,
             IUnitOfWork unitOfWork,
             IMapper mapper
-            )
+, IRepository<ActivityClass> activityClassRepository, IRepository<ActivityUserType> activityUserTypeRepository, IRepository<ActivitySlot> activitySlotRepository)
         {
             _activityRepository = activityRepository;
             _schoolRepository = schoolRepository;
             _mapper = mapper;
             _roleRepository = roleRepository;
             _unitOfWork = unitOfWork;
+            _activityClassRepository = activityClassRepository;
+            _activityUserTypeRepository = activityUserTypeRepository;
+            _activitySlotRepository = activitySlotRepository;
         }
 
         public async Task<bool> ActivateActivity(params object[] arguments)
@@ -49,6 +56,77 @@ namespace SchoolManagement.Core.Services
 
             await _unitOfWork.ActivityRepository.UpdateAsync(activity);
             await _unitOfWork.SaveAsync();
+
+            return true;
+        }
+
+        public async Task<bool> AddSlots(ActivityModel activity, List<ActivitySlotModel> activitySlots)
+        {
+            foreach (var slot in activitySlots)
+            {
+                await AddSlots(activity, slot);
+            }
+            return true;
+        }
+
+        public async Task<bool> AddSlots(ActivityModel activity, ActivitySlotModel activitySlot)
+        {
+            if (activity == null) return false;
+            if (activitySlot == null) return false;
+
+            Activity activityEntity = await _activityRepository.GetByIDAsync(activity.Id);
+
+            if (activityEntity.Slots == null) activityEntity.Slots = new List<ActivitySlot>();
+            activityEntity.Slots.Add(_mapper.Map<ActivitySlot>(activitySlot));
+
+            await _activityRepository.UpdateAsync(activityEntity);
+            await _activityRepository.SaveAsync();
+
+            return true;
+        }
+
+        public async Task<bool> Configure(ActivityVM activityVM)
+        {
+            if (activityVM == null || activityVM.Activity == null) return false;
+
+            Persistance.Data.Entities.Activity activity = _unitOfWork.ActivityRepository.GetByID(activityVM.Activity.Id);
+
+            if (activityVM.UserTypes != null)
+            {
+                foreach (UserTypeModel userType in activityVM.UserTypes)
+                {
+                    if (!userType.IsSelected) continue;
+
+                    await _activityUserTypeRepository.AddAsync(new ActivityUserType()
+                    {
+                        UserType = await _unitOfWork.UserTypeRepository.GetByIDAsync(userType.Id),
+                        UserTypeId = userType.Id,
+                        Activity = activity,
+                        ActivityId = activity.Id
+                    });
+                }
+                await _activityUserTypeRepository.SaveAsync();
+            }
+
+            if (activityVM.Grades != null)
+            {
+                foreach (GradeModel grade in activityVM.Grades)
+                {
+                    foreach (ClassModel _class in grade.Classes)
+                    {
+                        if (!_class.IsSelected) continue;
+
+                        await _activityClassRepository.AddAsync(new ActivityClass()
+                        {
+                            Class = await _unitOfWork.ClassRepository.GetByIDAsync(_class.Id),
+                            ClassId = _class.Id,
+                            Activity = activity,
+                            ActivityId = activity.Id
+                        });
+                    }
+                }
+                await _activityClassRepository.SaveAsync();
+            }
 
             return true;
         }
@@ -96,6 +174,20 @@ namespace SchoolManagement.Core.Services
             return true;
         }
 
+        public async Task<bool> DeleteSlot(Guid slotId)
+        {
+            if (slotId == Guid.Empty) return false;
+
+            ActivitySlot slot = await _activitySlotRepository.GetByIDAsync(slotId);
+
+            if (slot == null) return false;
+
+            await _activitySlotRepository.DeleteAsync(slot);
+            await _activitySlotRepository.SaveAsync();
+
+                return true;
+        }
+
         public async Task<bool> Edit(Models.Models.ActivityModel model)
         {
             Persistance.Data.Entities.Activity activity = _mapper.Map<Persistance.Data.Entities.Activity>(model);
@@ -115,9 +207,29 @@ namespace SchoolManagement.Core.Services
             return true;
         }
 
+        public async Task<List<ClassModel>> GetActivityClasses(Guid activityId)
+        {
+            List<Class> activityClasses = (await _activityClassRepository.GetAsync(a => a.ActivityId == activityId, null, "Class") as List<ActivityClass>).Select(s => s.Class).ToList();
+            return _mapper.Map<List<ClassModel>>(activityClasses);
+        }
+
+        public async Task<List<UserTypeModel>> GetActivityUserTypes(Guid activityId)
+        {
+            List<UserType> userTypes = (await _activityUserTypeRepository.GetAsync(a => a.ActivityId == activityId, null, "UserType") as List<ActivityUserType>).Select(s => s.UserType).ToList();
+            return _mapper.Map<List<UserTypeModel>>(userTypes);
+        }
+
         public async Task<ActivityModel> GetById(Guid id)
         {
             return _mapper.Map<ActivityModel>(await _unitOfWork.ActivityRepository.GetByIDAsync(id));
+        }
+
+        public async Task<ActivityModel> GetWithSlotsById(Guid id)
+        {
+            if (id == Guid.Empty) return null;
+
+            Activity activity = await _activityRepository.GetOneAsync(a => a.Id == id, "Slots");
+            return _mapper.Map<ActivityModel>(activity);
         }
 
         public async Task<ActivityVM> Initiate(params object[] arguments)
@@ -135,6 +247,12 @@ namespace SchoolManagement.Core.Services
             activityViewModel.School = _mapper.Map<SchoolModel>(await _schoolRepository.GetByIDAsync(arguments[0]));
             return activityViewModel;
         }
+        /*
+         activityViewModel.ActivitySlots = new List<ActivitySlotModel>();
+            activityViewModel.UserTypes = _mapper.Map<List<UserTypeModel>>(await _unitOfWork.UserTypeRepository.GetAllAsync());
+            var grades = await _unitOfWork.GradeRepository.GetAsync(g => g.School.Id == activityViewModel.School.Id, o => o.OrderBy(g => g.CreationDate), "Classes") as List<Grade>;
+            activityViewModel.Grades = _mapper.Map<List<GradeModel>>(grades);
+         */
 
         public async Task<ActivityVM> InitiateEdit(params object[] arguments)
         {

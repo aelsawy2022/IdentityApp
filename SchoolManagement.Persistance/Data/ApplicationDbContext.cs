@@ -41,6 +41,9 @@ namespace SchoolManagement.Persistance.Data
                     .IsRequired();
             });
 
+            modelBuilder.Entity<ActivityClass>().HasKey(ac => new { ac.ActivityId, ac.ClassId });
+            modelBuilder.Entity<ActivityUserType>().HasKey(aut => new { aut.ActivityId, aut.UserTypeId });
+
             modelBuilder.Entity<Role>().HasData(
                             new Role { Id = Guid.NewGuid(), Active = true, Name = "Admin", NormalizedName = "ADMIN" },
                             new Role { Id = Guid.NewGuid(), Active = true, Name = "SuperAdmin", NormalizedName = "SUPERADMIN" });
@@ -83,6 +86,9 @@ namespace SchoolManagement.Persistance.Data
         public virtual DbSet<UserType> UserTypes { get; set; }
         public virtual DbSet<Season> Seasons { get; set; }
         public virtual DbSet<ClassUser> ClassUsers { get; set; }
+        public virtual DbSet<ActivitySlot> ActivitySlots { get; set; }
+        public virtual DbSet<ActivityUserType> ActivityUserTypes { get; set; }
+        public virtual DbSet<ActivityClass> ActivityClasses { get; set; }
         //public virtual DbSet<Log> Logs { get; set; }
     }
 }
