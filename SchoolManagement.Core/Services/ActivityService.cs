@@ -95,15 +95,22 @@ namespace SchoolManagement.Core.Services
             {
                 foreach (UserTypeModel userType in activityVM.UserTypes)
                 {
-                    if (!userType.IsSelected) continue;
+                    ActivityUserType activityUserType = await _activityUserTypeRepository.GetOneAsync(aut => aut.UserTypeId == userType.Id && aut.ActivityId == activity.Id);
 
-                    await _activityUserTypeRepository.AddAsync(new ActivityUserType()
+                    if (userType.IsSelected && activityUserType == null)
                     {
-                        UserType = await _unitOfWork.UserTypeRepository.GetByIDAsync(userType.Id),
-                        UserTypeId = userType.Id,
-                        Activity = activity,
-                        ActivityId = activity.Id
-                    });
+                        await _activityUserTypeRepository.AddAsync(new ActivityUserType()
+                        {
+                            UserType = await _unitOfWork.UserTypeRepository.GetByIDAsync(userType.Id),
+                            UserTypeId = userType.Id,
+                            Activity = activity,
+                            ActivityId = activity.Id
+                        });
+                    }
+                    else if(!userType.IsSelected && activityUserType != null)
+                    {
+                        await _activityUserTypeRepository.DeleteAsync(activityUserType);
+                    }
                 }
                 await _activityUserTypeRepository.SaveAsync();
             }
@@ -114,15 +121,22 @@ namespace SchoolManagement.Core.Services
                 {
                     foreach (ClassModel _class in grade.Classes)
                     {
-                        if (!_class.IsSelected) continue;
+                        ActivityClass activityClass = await _activityClassRepository.GetOneAsync(ac => ac.ClassId == _class.Id && ac.ActivityId == activity.Id);
 
-                        await _activityClassRepository.AddAsync(new ActivityClass()
+                        if (_class.IsSelected && activityClass == null)
                         {
-                            Class = await _unitOfWork.ClassRepository.GetByIDAsync(_class.Id),
-                            ClassId = _class.Id,
-                            Activity = activity,
-                            ActivityId = activity.Id
-                        });
+                            await _activityClassRepository.AddAsync(new ActivityClass()
+                            {
+                                Class = await _unitOfWork.ClassRepository.GetByIDAsync(_class.Id),
+                                ClassId = _class.Id,
+                                Activity = activity,
+                                ActivityId = activity.Id
+                            });
+                        }
+                        else if (!_class.IsSelected && activityClass != null)
+                        {
+                            await _activityClassRepository.DeleteAsync(activityClass);
+                        }
                     }
                 }
                 await _activityClassRepository.SaveAsync();
@@ -185,7 +199,7 @@ namespace SchoolManagement.Core.Services
             await _activitySlotRepository.DeleteAsync(slot);
             await _activitySlotRepository.SaveAsync();
 
-                return true;
+            return true;
         }
 
         public async Task<bool> Edit(Models.Models.ActivityModel model)
