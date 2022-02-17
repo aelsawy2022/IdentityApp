@@ -14,18 +14,26 @@ namespace IdentityApplication.Controllers
     public class ActivitiesController : BaseController
     {
         private readonly IActivityService _activityService;
+        private readonly IActivityInstanceService _activityInstanceService;
         private readonly IUserTypeService _userTypeService;
         private readonly IGradesService _gradesService;
         private readonly ISchoolService _schoolService;
+        private readonly ISeasonService _seasonService;
+        private readonly IUserService _userService;
 
         public ActivitiesController(
             IActivityService activityService,
-            IUserTypeService userTypeService, IGradesService gradesService, ISchoolService schoolService)
+            IUserTypeService userTypeService, IGradesService gradesService,
+            ISchoolService schoolService, IActivityInstanceService activityInstanceService, 
+            ISeasonService seasonService, IUserService userService)
         {
             _activityService = activityService;
             _userTypeService = userTypeService;
             _gradesService = gradesService;
             _schoolService = schoolService;
+            _activityInstanceService = activityInstanceService;
+            _seasonService = seasonService;
+            _userService = userService;
         }
 
         [Authorize(Roles.ADMIN, Roles.SCHOOL_ADMIN)]
@@ -217,6 +225,53 @@ namespace IdentityApplication.Controllers
             {
                 throw;
             }
+        }
+
+        [Authorize(Roles.SCHOOL_ACTIVITY)]
+        public async Task<IActionResult> Instances(Guid activityId, Guid schoolId)
+        {
+            ActivityVM activityVM = new ActivityVM();
+            activityVM.Activity = await _activityService.GetWithSlotsById(activityId);
+            activityVM.School = await _schoolService.GetById(schoolId);
+            activityVM.ActivityInstances = await _activityInstanceService.GetAllActivityInstances(activityId);
+            return View(activityVM);
+        }
+
+        [HttpPost]
+        [Authorize(Roles.SCHOOL_ACTIVITY)]
+        public async Task<IActionResult> Instances(ActivityVM activityVM)
+        {
+            activityVM.ActivityInstance.ActivityId = activityVM.Activity.Id;
+            activityVM.ActivityInstance.SeasonId = (await _seasonService.GetCurrentSeason(activityVM.School.Id)).Id;
+            await _activityInstanceService.Create(activityVM.ActivityInstance);
+            return RedirectToAction("Instances", new { activityId = activityVM.ActivityInstance.ActivityId , schoolId = activityVM.School.Id });
+        }
+
+        [Authorize(Roles.SCHOOL_ACTIVITY)]
+        public async Task<IActionResult> Attendance(Guid activityId, Guid schoolId, Guid instanceId)
+        {
+            ActivityVM activityVM = new ActivityVM();
+            activityVM.Activity = await _activityService.GetWithSlotsById(activityId);
+            activityVM.School = await _schoolService.GetById(schoolId);
+            activityVM.ActivityInstance = await _activityInstanceService.GetById(instanceId);
+            activityVM.Users = await _userService.GetActivityUsers(activityId);
+
+            var attendedUsers = await _activityService.GetActivityAttendedUsers(instanceId);
+            foreach (var user in attendedUsers)
+            {
+                var _user = activityVM.Users.FirstOrDefault(u => u.Id == user.Id);
+                if (_user != null) _user.IsSelected = true;
+            }
+
+            return View(activityVM);
+        }
+
+        [HttpPost]
+        [Authorize(Roles.SCHOOL_ACTIVITY)]
+        public async Task<IActionResult> Attendance(ActivityVM activityVM)
+        {
+            bool succeded = await _activityService.ApplyAttendance(activityVM);
+            return RedirectToAction("Instances", new { activityId = activityVM.Activity.Id, schoolId = activityVM.School.Id });
         }
     }
 }

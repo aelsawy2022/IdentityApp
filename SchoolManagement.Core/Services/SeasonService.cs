@@ -81,6 +81,12 @@ namespace SchoolManagement.Core.Services
             return true;
         }
 
+        public async Task<SeasonModel> GetCurrentSeason(Guid schoolId)
+        {
+            Season season = await _unitOfWork.SeasonRepository.GetOneAsync(s => s.School.Id == schoolId && s.Current);
+            return _mapper.Map<SeasonModel>(season);
+        }
+
         public async Task<SeasonVM> Initiate(params object[] arguments)
         {
             SeasonVM seasonViewModel = new SeasonVM();

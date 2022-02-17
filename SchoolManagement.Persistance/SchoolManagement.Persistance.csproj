@@ -9,6 +9,8 @@
     <Compile Remove="Data\Migrations\20220206163122_addRefreshTokenToUserEntity.Designer.cs" />
     <Compile Remove="Data\Migrations\20220209161729_addLogEntity.cs" />
     <Compile Remove="Data\Migrations\20220209161729_addLogEntity.Designer.cs" />
+    <Compile Remove="Data\Migrations\20220217111923_addNewEntities.cs" />
+    <Compile Remove="Data\Migrations\20220217111923_addNewEntities.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

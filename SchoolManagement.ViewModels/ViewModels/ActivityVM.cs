@@ -12,6 +12,8 @@ namespace SchoolManagement.ViewModels.ViewModels
         public List<GradeModel> Grades { get; set; }
         public List<ActivitySlotModel> ActivitySlots { get; set; }
         public ActivitySlotModel Slot { get; set; }
-
+        public ActivityInstanceModel ActivityInstance { get; set; }
+        public List<ActivityInstanceModel> ActivityInstances { get; set; }
+        public List<UsersModel> Users { get; set; }
     }
 }

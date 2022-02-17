@@ -18,5 +18,7 @@ namespace SchoolManagement.Core.Services.Interfaces
         Task<bool> AddSlots(ActivityModel activity, List<ActivitySlotModel> activitySlots);
         Task<bool> AddSlots(ActivityModel activity, ActivitySlotModel activitySlot);
         Task<bool> DeleteSlot(Guid slotId);
+        Task<bool> ApplyAttendance(ActivityVM activityVM);
+        Task<List<UsersModel>> GetActivityAttendedUsers(Guid instanceId);
     }
 }

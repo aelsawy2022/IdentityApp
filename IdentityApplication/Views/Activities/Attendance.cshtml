@@ -1,0 +1,59 @@
+﻿@model SchoolManagement.ViewModels.ViewModels.ActivityVM
+
+@{
+    ViewData["Title"] = "Attendance";
+}
+
+<h1>Activity @Model.Activity.Name Attendance</h1>
+<hr />
+<form asp-action="Attendance">
+    <div class="row">
+        <div class="col-md-4">
+            @Html.HiddenFor(a => Model.Activity.Id)
+            @Html.HiddenFor(a => Model.Activity.Name)
+            @Html.HiddenFor(a => Model.School.Id)
+            @Html.HiddenFor(a => Model.School.Name)
+            @Html.HiddenFor(a => Model.ActivityInstance.Id)
+            @Html.HiddenFor(a => Model.ActivityInstance.Name)
+
+            <p>@Model.ActivityInstance.Name Attendance</p>
+            <ul class="list-group list-group-flush">
+                @if (Model.Users != null)
+                {
+                    for (int i = 0; i < Model.Users.Count; i++)
+                    {
+                        @Html.HiddenFor(au => Model.Users[i].Name)
+                        @Html.HiddenFor(au => Model.Users[i].Id)
+
+                        <li class="list-group-item">
+                            <div class="custom-control custom-checkbox btn-group">
+                                <div class="row">
+                                    <div class="col-auto">
+                                        @Html.CheckBoxFor(x => Model.Users[i].IsSelected, new { @class = "custom-control-input", @id = Model.Users[i].Id })
+                                        <label class="custom-control-label" for="@Model.Users[i].Id">@Model.Users[i].Name</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+</form>
+<br />
+<div>
+    <a asp-action="Index" asp-route-schoolId="@Model.School.Id">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+<script type="text/javascript">
+</script>
+}  

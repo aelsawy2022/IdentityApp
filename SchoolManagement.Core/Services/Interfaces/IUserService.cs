@@ -17,5 +17,6 @@ namespace SchoolManagement.Core.Services.Interfaces
         Task<UsersModel> GetById(Guid id);
         Task<UsersModel> GetByEmail(string email);
         Task<bool> Update(UsersModel model);
+        Task<List<UsersModel>> GetActivityUsers(Guid activityId);
     }
 }

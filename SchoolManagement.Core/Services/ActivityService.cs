@@ -24,6 +24,7 @@ namespace SchoolManagement.Core.Services
         private readonly IRepository<ActivityClass> _activityClassRepository;
         private readonly IRepository<ActivityUserType> _activityUserTypeRepository;
         private readonly IRepository<ActivitySlot> _activitySlotRepository;
+        private readonly IRepository<ActivityInstanceDetail> _activityInstanceDetailRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
@@ -32,8 +33,10 @@ namespace SchoolManagement.Core.Services
             ISchoolRepository schoolRepository,
             IRoleRepository roleRepository,
             IUnitOfWork unitOfWork,
-            IMapper mapper
-, IRepository<ActivityClass> activityClassRepository, IRepository<ActivityUserType> activityUserTypeRepository, IRepository<ActivitySlot> activitySlotRepository)
+            IMapper mapper,
+            IRepository<ActivityClass> activityClassRepository,
+            IRepository<ActivityUserType> activityUserTypeRepository,
+            IRepository<ActivitySlot> activitySlotRepository, IRepository<ActivityInstanceDetail> activityInstanceDetailRepository)
         {
             _activityRepository = activityRepository;
             _schoolRepository = schoolRepository;
@@ -43,6 +46,7 @@ namespace SchoolManagement.Core.Services
             _activityClassRepository = activityClassRepository;
             _activityUserTypeRepository = activityUserTypeRepository;
             _activitySlotRepository = activitySlotRepository;
+            _activityInstanceDetailRepository = activityInstanceDetailRepository;
         }
 
         public async Task<bool> ActivateActivity(params object[] arguments)
@@ -82,6 +86,30 @@ namespace SchoolManagement.Core.Services
             await _activityRepository.UpdateAsync(activityEntity);
             await _activityRepository.SaveAsync();
 
+            return true;
+        }
+
+        public async Task<bool> ApplyAttendance(ActivityVM activityVM)
+        {
+            foreach(UsersModel user in activityVM.Users)
+            {
+                ActivityInstanceDetail activityInstanceDetail = await _activityInstanceDetailRepository.GetOneAsync(aid => aid.InstanceId == activityVM.ActivityInstance.Id && aid.UserId == user.Id);
+
+                if (user.IsSelected && activityInstanceDetail == null)
+                {
+                    await _activityInstanceDetailRepository.AddAsync(new ActivityInstanceDetail()
+                    {
+                        UserId = user.Id,
+                        InstanceId = activityVM.ActivityInstance.Id,
+                        CreationDate = DateTime.Now
+                    });
+                }
+                else if (!user.IsSelected && activityInstanceDetail != null)
+                {
+                    await _activityInstanceDetailRepository.DeleteAsync(activityInstanceDetail);
+                }
+            }
+            await _activityInstanceDetailRepository.SaveAsync();
             return true;
         }
 
@@ -219,6 +247,12 @@ namespace SchoolManagement.Core.Services
             await _unitOfWork.SaveAsync();
 
             return true;
+        }
+
+        public async Task<List<UsersModel>> GetActivityAttendedUsers(Guid instanceId)
+        {
+            List<ActivityInstanceDetail> details = await _activityInstanceDetailRepository.GetAsync(aid => aid.InstanceId == instanceId, null, "User") as List<ActivityInstanceDetail>;
+            return _mapper.Map<List<UsersModel>>(details.Select(d => d.User));
         }
 
         public async Task<List<ClassModel>> GetActivityClasses(Guid activityId)

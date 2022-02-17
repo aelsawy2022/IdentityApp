@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using static SchoolManagement.Models.Models.Enums;
+using SchoolManagement.Persistance.Repositories.GenericRepo;
 
 namespace SchoolManagement.Core.Services
 {
@@ -24,6 +25,8 @@ namespace SchoolManagement.Core.Services
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGovernorateRepository _governorateRepository;
+        private readonly IRepository<ActivityClass> _activityClassesRepository;
+        private readonly IRepository<ActivityUserType> _activityUserTypeRepository;
         public static IWebHostEnvironment _environment;
 
         public UserService(
@@ -32,8 +35,9 @@ namespace SchoolManagement.Core.Services
             IMapper mapper,
             IUnitOfWork unitOfWork,
             IGovernorateRepository governorateRepository,
-            IWebHostEnvironment environment
-            )
+            IWebHostEnvironment environment,
+            IRepository<ActivityClass> activityClassesRepository,
+            IRepository<ActivityUserType> activityUserTypeRepository)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -41,6 +45,8 @@ namespace SchoolManagement.Core.Services
             _unitOfWork = unitOfWork;
             _governorateRepository = governorateRepository;
             _environment = environment;
+            _activityClassesRepository = activityClassesRepository;
+            _activityUserTypeRepository = activityUserTypeRepository;
         }
 
         public Task<bool> Create(UserVM model)
@@ -260,7 +266,7 @@ namespace SchoolManagement.Core.Services
 
                 return usersViewModel;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw;
             }
@@ -307,7 +313,7 @@ namespace SchoolManagement.Core.Services
         public async Task<UsersModel> GetByName(string username)
         {
             User user = await _unitOfWork.UserRepository.GetOneAsync(u => u.UserName == username || u.Name == username, "Governorate,UserRoles");
-            foreach(UserRole ur in user.UserRoles)
+            foreach (UserRole ur in user.UserRoles)
             {
                 ur.Role = await _unitOfWork.RoleRepository.GetOneAsync(r => r.Id == ur.RoleId, "School,Activity");
             }
@@ -337,6 +343,27 @@ namespace SchoolManagement.Core.Services
             await _unitOfWork.SaveAsync();
 
             return true;
+        }
+
+        public async Task<List<UsersModel>> GetActivityUsers(Guid activityId)
+        {
+            List<ActivityClass> activityClasses = await _activityClassesRepository.GetAsync(ac => ac.ActivityId == activityId) as List<ActivityClass>;
+            List<ActivityUserType> activityUserTypes = await _activityUserTypeRepository.GetAsync(aut => aut.ActivityId == activityId) as List<ActivityUserType>;
+
+            List<User> users = new List<User>();
+
+            foreach (var activityClass in activityClasses)
+            {
+                foreach (var activityUserType in activityUserTypes)
+                {
+                    List<ClassUser> classUsers = await _unitOfWork.ClassUserRepository.GetAsync(cu => cu.ClassId == activityClass.ClassId && cu.UserTypeId == activityUserType.UserTypeId, null, "User") as List<ClassUser>;
+
+                    List<User> result = classUsers?.Select(cu => cu.User).ToList();
+
+                    if (result != null) users.AddRange(result);
+                }
+            }
+            return _mapper.Map<List<UsersModel>>(users);
         }
     }
 

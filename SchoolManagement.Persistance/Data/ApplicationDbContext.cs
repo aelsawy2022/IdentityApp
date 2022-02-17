@@ -89,6 +89,8 @@ namespace SchoolManagement.Persistance.Data
         public virtual DbSet<ActivitySlot> ActivitySlots { get; set; }
         public virtual DbSet<ActivityUserType> ActivityUserTypes { get; set; }
         public virtual DbSet<ActivityClass> ActivityClasses { get; set; }
+        public virtual DbSet<ActivityInstance> ActivityInstances { get; set; }
+        public virtual DbSet<ActivityInstanceDetail> ActivityInstanceDetails { get; set; }
         //public virtual DbSet<Log> Logs { get; set; }
     }
 }

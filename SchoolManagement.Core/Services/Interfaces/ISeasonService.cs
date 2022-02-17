@@ -10,5 +10,6 @@ namespace SchoolManagement.Core.Services.Interfaces
     public interface ISeasonService : IBaseService<SeasonModel, SeasonVM>
     {
         Task<bool> ActivateSeason(Guid seasonId);
+        Task<SeasonModel> GetCurrentSeason(Guid schoolId);
     }
 }
