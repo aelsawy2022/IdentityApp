@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SchoolManagement.Persistance.Data;
 
 namespace SchoolManagement.Persistance.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220221102409_addActivityLogEntity")]
+    partial class addActivityLogEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -218,25 +220,13 @@ namespace SchoolManagement.Persistance.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Action")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Controller")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("IPAddress")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Request")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Response")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
@@ -391,14 +381,14 @@ namespace SchoolManagement.Persistance.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("be07e707-b75d-495c-ad6b-5710b527d176"),
-                            CreationDate = new DateTime(2022, 2, 21, 13, 21, 24, 931, DateTimeKind.Local).AddTicks(6699),
+                            Id = new Guid("5e38aa5a-3de9-4708-8c2e-10ec6b55a0b7"),
+                            CreationDate = new DateTime(2022, 2, 21, 12, 24, 9, 211, DateTimeKind.Local).AddTicks(7710),
                             Name = "Cairo"
                         },
                         new
                         {
-                            Id = new Guid("c65e3873-cb45-496a-8e4e-f32568fa8c78"),
-                            CreationDate = new DateTime(2022, 2, 21, 13, 21, 24, 931, DateTimeKind.Local).AddTicks(6797),
+                            Id = new Guid("c6f9a59a-6079-44fe-9c11-4d12304b7397"),
+                            CreationDate = new DateTime(2022, 2, 21, 12, 24, 9, 211, DateTimeKind.Local).AddTicks(7755),
                             Name = "Giza"
                         });
                 });
@@ -502,17 +492,17 @@ namespace SchoolManagement.Persistance.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d7647f15-919a-4e50-a372-5512ff93facf"),
+                            Id = new Guid("ca0cd065-36cb-4b1e-97bd-42d1a92cd713"),
                             Active = true,
-                            ConcurrencyStamp = "b58bf58e-d874-4557-9887-7c9d012c58a7",
+                            ConcurrencyStamp = "b5963b76-b659-4b40-897f-1441b5dd089f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("5306e131-d2cb-4b13-8571-63b80ecb3ba5"),
+                            Id = new Guid("d860ebac-dc9e-4fe4-8fc5-b78cf34a037a"),
                             Active = true,
-                            ConcurrencyStamp = "1294b4e5-e2b4-4784-aa88-dd722d91e4a1",
+                            ConcurrencyStamp = "613c6099-81c2-4f11-b3e9-273bb23013ee",
                             Name = "SuperAdmin",
                             NormalizedName = "SUPERADMIN"
                         });
@@ -664,7 +654,7 @@ namespace SchoolManagement.Persistance.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("33f913c2-7f3d-47b5-af50-0b724b007bc2"),
+                            Id = new Guid("7be31a5e-8803-4b88-92bf-5010ce1922b0"),
                             AccessFailedCount = 0,
                             Active = true,
                             ConcurrencyStamp = "b9bf9aea-a77d-42f6-b466-a8ce0221b807",
@@ -720,23 +710,23 @@ namespace SchoolManagement.Persistance.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("66988d47-f6c5-4a5d-be73-c74c063f9e67"),
+                            Id = new Guid("a95e629c-e903-47e9-a564-8453da9ebe66"),
                             Active = true,
-                            CreationDate = new DateTime(2022, 2, 21, 13, 21, 24, 929, DateTimeKind.Local).AddTicks(5775),
+                            CreationDate = new DateTime(2022, 2, 21, 12, 24, 9, 210, DateTimeKind.Local).AddTicks(6500),
                             Name = "Student"
                         },
                         new
                         {
-                            Id = new Guid("6ad73251-0c78-4ef5-a3de-13374f5bf414"),
+                            Id = new Guid("96cbd433-d155-4ee5-ad7e-8a6bc181a290"),
                             Active = true,
-                            CreationDate = new DateTime(2022, 2, 21, 13, 21, 24, 931, DateTimeKind.Local).AddTicks(4275),
+                            CreationDate = new DateTime(2022, 2, 21, 12, 24, 9, 211, DateTimeKind.Local).AddTicks(6746),
                             Name = "Teacher"
                         },
                         new
                         {
-                            Id = new Guid("ec8dcacd-2a7f-4809-819d-6a854a1db8c8"),
+                            Id = new Guid("6c0dfc35-e8f9-433a-b08e-62f55d5afede"),
                             Active = true,
-                            CreationDate = new DateTime(2022, 2, 21, 13, 21, 24, 931, DateTimeKind.Local).AddTicks(4346),
+                            CreationDate = new DateTime(2022, 2, 21, 12, 24, 9, 211, DateTimeKind.Local).AddTicks(6778),
                             Name = "Manager"
                         });
                 });

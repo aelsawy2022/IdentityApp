@@ -17,6 +17,11 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.OpenApi.Models;
 using Serilog.Context;
+using IdentityApplication.Middlewares;
+using SchoolManagement.Infrastructure.CustomFilters;
+using Hangfire;
+using Hangfire.SqlServer;
+using SchoolManagement.Core.Services.Interfaces;
 
 namespace IdentityApplication
 {
@@ -87,12 +92,34 @@ namespace IdentityApplication
                 );
             services.AddSwaggerGenNewtonsoftSupport();
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add(typeof(ActivityLoggingFilter));
+            });
             services.AddRazorPages();
+
+            services.AddHangfire(configuration => configuration
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection"), new SqlServerStorageOptions
+            {
+                CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                QueuePollInterval = TimeSpan.Zero,
+                UseRecommendedIsolationLevel = true,
+                DisableGlobalLocks = true
+            }));
+
+            services.AddHangfireServer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app, 
+            IWebHostEnvironment env,
+            IRecurringJobManager recurringJobManager,
+            IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -114,19 +141,13 @@ namespace IdentityApplication
             app.UseAuthentication();
             app.UseAuthorization();
 
-            //app.Use(async (httpContext, next) =>
-            //{
-            //    var userName = httpContext.User.Identity.IsAuthenticated ? httpContext.User.Identity.Name : "Guest"; //Gets user Name from user Identity  
-            //    LogContext.PushProperty("Username", userName); //Push user in LogContext;  
-            //    await next.Invoke();
-            //});
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHangfireDashboard();
             });
 
             //app.UseWhen(context => context.Request.Path.Value.StartsWith("/api"), subBranch =>
@@ -139,6 +160,11 @@ namespace IdentityApplication
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "School Management Api");
                 //c.RoutePrefix = string.Empty;
             });
+
+            app.UseHangfireDashboard();
+            recurringJobManager.AddOrUpdate("RemoveUsersActivitiesThatHasBeenOveraMonth",
+                () => serviceProvider.GetService<IActivityLogService>().RemoveUsersActivitiesThatHasBeenOveraMonth(),
+                Cron.Daily(23));
         }
     }
 }

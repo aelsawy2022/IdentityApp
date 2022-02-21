@@ -11,6 +11,8 @@
     <Compile Remove="Data\Migrations\20220209161729_addLogEntity.Designer.cs" />
     <Compile Remove="Data\Migrations\20220217111923_addNewEntities.cs" />
     <Compile Remove="Data\Migrations\20220217111923_addNewEntities.Designer.cs" />
+    <Compile Remove="Data\Migrations\20220221102005_addActivityLogEntity.cs" />
+    <Compile Remove="Data\Migrations\20220221102005_addActivityLogEntity.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -61,6 +61,7 @@ namespace IdentityApplication.ExtensionMethods
             services.AddScoped(typeof(IAuthenticateService), typeof(AuthenticateService));
             services.AddScoped(typeof(ITokenService), typeof(TokenService));
             services.AddScoped(typeof(IActivityInstanceService), typeof(ActivityInstanceService));
+            services.AddScoped(typeof(IActivityLogService), typeof(ActivityLogService));
 
             //General Lists Manager
             //services.AddScoped(typeof(IGeneralManager), typeof(GeneralManager));
