@@ -26,7 +26,7 @@ namespace IdentityApplication.Controllers
             string username = null,
             DateTime? created = null,
             int currentPage = 1, int maxRows = 10,
-            string searchBtn = null, string clearBtn = null
+            string searchBtn = null
             )
         {
             ActivityLogVM activityLogVM = new ActivityLogVM();

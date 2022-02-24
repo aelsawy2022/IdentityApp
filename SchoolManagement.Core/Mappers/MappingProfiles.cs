@@ -33,6 +33,7 @@ namespace SchoolManagement.Core.Mappers
             CreateMap<ActivityInstance, ActivityInstanceModel>().ReverseMap();
             CreateMap<ActivityInstanceDetail, ActivityInstanceDetailModel>().ReverseMap();
             CreateMap<ActivityLog, ActivityLogModel>().ReverseMap();
+            CreateMap<Log, ErrorLogModel>().ReverseMap();
 
             //.ForMember(dto=> dto.Chain, conf => conf.MapFrom(r=>r.Chain))
         }

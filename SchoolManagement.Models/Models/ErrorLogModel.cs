@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace SchoolManagement.Persistance.Data.Entities
+namespace SchoolManagement.Models.Models
 {
-    public class Log
+    public class ErrorLogModel
     {
-        [Key]
         public int Id { get; set; }
         public string Message { get; set; }
         public string MessageTemplate { get; set; }
@@ -15,5 +13,10 @@ namespace SchoolManagement.Persistance.Data.Entities
         public DateTime TimeStamp { get; set; }
         public string Exception { get; set; }
         public string Properties { get; set; }
+    }
+
+    public class ErrorLogFilter : PagingModel
+    {
+        public DateTime? TimeStamp { get; set; }
     }
 }

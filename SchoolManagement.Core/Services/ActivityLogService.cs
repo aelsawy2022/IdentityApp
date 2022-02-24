@@ -36,7 +36,7 @@ namespace SchoolManagement.Core.Services
                 );
             }
 
-            List<ActivityLog> activityLogs = await _activityLogRepository.GetAsync(_Expression, o => o.OrderBy(al => al.CreationDate), "", filter.MaxRows, (filter.CurrentPage - 1) * filter.MaxRows) as List<ActivityLog>;
+            List<ActivityLog> activityLogs = await _activityLogRepository.GetAsync(_Expression, o => o.OrderByDescending(al => al.CreationDate), "", filter.MaxRows, (filter.CurrentPage - 1) * filter.MaxRows) as List<ActivityLog>;
 
 
             int count = await _activityLogRepository.GetCountAsync(_Expression);
