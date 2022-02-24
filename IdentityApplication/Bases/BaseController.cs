@@ -5,6 +5,7 @@ namespace IdentityApplication.Bases
 {
     [Authorize]
     [ServiceFilter(typeof(CustomeExceptionFilter))]
+    [ServiceFilter(typeof(ActivityLoggingFilter))]
     public class BaseController : Controller
     {
     }

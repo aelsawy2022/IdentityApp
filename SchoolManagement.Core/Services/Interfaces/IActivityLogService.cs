@@ -10,5 +10,6 @@ namespace SchoolManagement.Core.Services.Interfaces
     {
         void Log(ActivityLogModel activityLog);
         Task RemoveUsersActivitiesThatHasBeenOveraMonth();
+        Task<List<ActivityLogModel>> GetLogs(ActivityLogFilter filter);
     }
 }

@@ -92,10 +92,10 @@ namespace IdentityApplication
                 );
             services.AddSwaggerGenNewtonsoftSupport();
 
-            services.AddControllersWithViews(options =>
+            services.AddControllersWithViews(/*options =>
             {
                 options.Filters.Add(typeof(ActivityLoggingFilter));
-            });
+            }*/);
             services.AddRazorPages();
 
             services.AddHangfire(configuration => configuration

@@ -16,4 +16,10 @@ namespace SchoolManagement.Models.Models
         public string Url { get; set; }
         public string IPAddress { get; set; }
     }
+
+    public class ActivityLogFilter : PagingModel
+    {
+        public DateTime? CreationDate { get; set; }
+        public string Username { get; set; }
+    }
 }

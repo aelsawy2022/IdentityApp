@@ -5,6 +5,8 @@ using SchoolManagement.Persistance.Data.Entities;
 using SchoolManagement.Persistance.Repositories.GenericRepo;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,6 +21,31 @@ namespace SchoolManagement.Core.Services
         {
             _activityLogRepository = activityLogRepository;
             _mapper = mapper;
+        }
+
+        public async Task<List<ActivityLogModel>> GetLogs(ActivityLogFilter filter)
+        {
+            Expression<Func<ActivityLog, bool>> _Expression = null;
+
+            if (filter != null)
+            {
+                _Expression =
+                (
+                    x => (!string.IsNullOrEmpty(filter.Username) ? x.Username.ToLower().Contains(filter.Username.ToLower()) : true)
+                       &&(filter.CreationDate != null ? x.CreationDate.Date == filter.CreationDate.Value.Date : true)
+                );
+            }
+
+            List<ActivityLog> activityLogs = await _activityLogRepository.GetAsync(_Expression, o => o.OrderBy(al => al.CreationDate), "", filter.MaxRows, (filter.CurrentPage - 1) * filter.MaxRows) as List<ActivityLog>;
+
+
+            int count = await _activityLogRepository.GetCountAsync(_Expression);
+
+            double pageCount = (double)((decimal)count / Convert.ToDecimal(filter.MaxRows));
+            filter.PageCount = (int)Math.Ceiling(pageCount);
+            filter.CurrentPage = filter.CurrentPage;
+
+            return _mapper.Map<List<ActivityLogModel>>(activityLogs);
         }
 
         public void Log(ActivityLogModel activityLog)

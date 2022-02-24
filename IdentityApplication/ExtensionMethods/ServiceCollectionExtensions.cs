@@ -71,6 +71,7 @@ namespace IdentityApplication.ExtensionMethods
         public static void RegisterCustomFilters(this IServiceCollection services)
         {
             services.AddScoped<CustomeExceptionFilter>();
+            services.AddScoped<ActivityLoggingFilter>();
         }
     }
 }
